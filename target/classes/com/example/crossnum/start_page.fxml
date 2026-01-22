@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+
 <BorderPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="root-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPage">
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
@@ -25,7 +26,8 @@
                   <Button id="play_button" alignment="CENTER" mnemonicParsing="false" prefHeight="75.0" prefWidth="233.0" styleClass="play_button" text="PLAY" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="25.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
                   <Button id="help_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="60.0" styleClass="help_button">
                      <graphic>
                         <ImageView fitHeight="41.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true">

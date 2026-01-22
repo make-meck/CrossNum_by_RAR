@@ -4,6 +4,7 @@
     -fx-background-size: cover;
     -fx-background-position: center;
 }
+
 .play_button {
     -fx-background-color: #2d532c;
     -fx-text-fill: white;
