@@ -1,0 +1,29 @@
+#play_button {
+    -fx-background-color: #2d532c;
+    -fx-text-fill: white;
+    -fx-background-radius: 15;
+}
+
+.help_button {
+    -fx-background-color: #6f966e;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.easy_button {
+    -fx-background-color: #6f966e;
+    -fx-text-fill: #354b34;
+    -fx-background-radius: 15;
+}
+
+.medium_button {
+    -fx-background-color: #6f966e;
+    -fx-text-fill: #354b34;
+    -fx-background-radius: 15;
+}
+
+.hard_button {
+    -fx-background-color: #6f966e;
+    -fx-text-fill: #354b34;
+    -fx-background-radius: 15;
+}
