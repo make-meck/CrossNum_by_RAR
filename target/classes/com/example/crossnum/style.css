@@ -1,4 +1,10 @@
-#play_button {
+.root-pane {
+    -fx-background-image: url("file:src/main/resources/com/example/crossnum/startingbg.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+.play_button {
     -fx-background-color: #2d532c;
     -fx-text-fill: white;
     -fx-background-radius: 15;
@@ -27,3 +33,4 @@
     -fx-text-fill: #354b34;
     -fx-background-radius: 15;
 }
+
