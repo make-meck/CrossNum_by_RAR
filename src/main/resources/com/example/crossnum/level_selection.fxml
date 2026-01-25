@@ -4,16 +4,13 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <StackPane alignment="BOTTOM_CENTER" style="-fx-background-color: rgba(0, 0, 0, 0.55);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-            prefWidth="350.0"
-            style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 30;" spacing="15.0">
+      <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="500.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 20 20 0 0; -fx-padding: 30;">
          <children>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="EASY" />
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="MEDIUM" />
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="HARD" />
+            <Button id="easy_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="easy_button" text="EASY" />
+            <Button id="medium_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="medium_button" text="MEDIUM" />
+            <Button id="hard_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="hard_button" text="HARD" />
          </children>
       </VBox>
    </children>
