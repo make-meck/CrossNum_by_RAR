@@ -1,38 +1,31 @@
 package com.example.crossnum;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import java.io.IOException;
 
 public class StartingPage {
+
+    // 1. Inject the StackPane
+    @FXML
+    private StackPane main_stack;
+
+    @FXML
+    private BorderPane root_pane;
 
     @FXML
     private Button play_button;
 
     @FXML
-    private Button help_button;
-
-    @FXML
-    private Rectangle bg_shadow;
-
-    @FXML
-    private Rectangle level_container;
-
-    @FXML
-    private Button easy_button;
-
-    @FXML
-    private Button medium_button;
-
-    @FXML
-    private Button hard_button;
-
-    @FXML
-    private void playClick() {
-        bg_shadow.setVisible(true);
-        level_container.setVisible(true);
-        easy_button.setVisible(true);
-        medium_button.setVisible(true);
-        hard_button.setVisible(true);
+    private void playClick() throws IOException {
+        FXMLLoader playLoader = new FXMLLoader(getClass().getResource("level_selection.fxml"));
+        Parent overlay = playLoader.load();
+        main_stack.getChildren().add(overlay);
+        StackPane.setAlignment(overlay, Pos.BOTTOM_CENTER);
     }
 }

@@ -17,6 +17,12 @@
     -fx-background-radius: 10;
 }
 
+.level_container {
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 6);
+}
+
 .easy_button {
     -fx-background-color: #6f966e;
     -fx-text-fill: #354b34;

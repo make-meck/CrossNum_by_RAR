@@ -12,49 +12,53 @@
 <?import javafx.scene.text.Font?>
 
 
-<BorderPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="root-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPage">
-   <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="TOP_CENTER" prefHeight="105.0" prefWidth="426.0" text="CROSSNUM" textAlignment="CENTER" textFill="#354b34">
-               <font>
-                  <Font name="Arial Bold" size="70.0" />
-               </font>
-            </Label>
-            <HBox alignment="BOTTOM_CENTER" prefHeight="177.0" prefWidth="320.0" spacing="10.0">
+<StackPane fx:id="main_stack" styleClass="root-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPage">
+   <children>
+      <BorderPane fx:id="root_pane" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="root_pane">
+         <center>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button id="play_button" alignment="CENTER" mnemonicParsing="false" prefHeight="75.0" prefWidth="233.0" styleClass="play_button" text="PLAY" textFill="WHITE">
+                  <Label alignment="TOP_CENTER" prefHeight="105.0" prefWidth="426.0" text="CROSSNUM" textAlignment="CENTER" textFill="#354b34">
                      <font>
-                        <Font name="Arial" size="25.0" />
+                        <Font name="Arial Bold" size="70.0" />
                      </font>
-                  </Button>
-                  <Button id="help_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="60.0" styleClass="help_button">
-                     <graphic>
-                        <ImageView fitHeight="41.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@helpbutton.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
+                  </Label>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="177.0" prefWidth="320.0" spacing="10.0">
+                     <children>
+                        <Button fx:id="play_button" alignment="CENTER" mnemonicParsing="false" onAction="#playClick" prefHeight="75.0" prefWidth="233.0" styleClass="play_button" text="PLAY" textFill="WHITE">
+                           <font>
+                              <Font name="Arial" size="25.0" />
+                           </font>
+                        </Button>
+                        <Button id="help_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="60.0" styleClass="help_button">
+                           <graphic>
+                              <ImageView fitHeight="41.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@helpbutton.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
                </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-         </children>
-      </VBox>
-   </center>
-   <top>
-      <StackPane prefHeight="59.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-   </top>
-   <left>
-      <StackPane prefHeight="212.0" prefWidth="70.0" BorderPane.alignment="CENTER" />
-   </left>
-   <right>
-      <StackPane prefHeight="212.0" prefWidth="70.0" BorderPane.alignment="CENTER" />
-   </right>
-   <bottom>
-      <StackPane prefHeight="53.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-   </bottom>
-</BorderPane>
+            </VBox>
+         </center>
+         <top>
+            <StackPane prefHeight="59.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+         </top>
+         <left>
+            <StackPane prefHeight="212.0" prefWidth="70.0" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <StackPane prefHeight="212.0" prefWidth="70.0" BorderPane.alignment="CENTER" />
+         </right>
+         <bottom>
+            <StackPane prefHeight="53.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
+   </children>
+</StackPane>
