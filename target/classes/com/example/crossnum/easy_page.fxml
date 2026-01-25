@@ -64,9 +64,6 @@
             </children>
         </StackPane>
     </center>
-    <bottom>
-        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-    </bottom>
     <left>
         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
     </left>
@@ -103,7 +100,7 @@
                         <Ellipse fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
                         <Label text="EASY" textFill="WHITE">
                            <font>
-                              <Font name="Arial" size="37.0" />
+                              <Font name="Arial" size="31.0" />
                            </font>
                         </Label>
                      </children>
@@ -134,4 +131,7 @@
          </center>
         </BorderPane>
     </top>
+   <bottom>
+      <BorderPane prefHeight="99.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+   </bottom>
 </BorderPane>
