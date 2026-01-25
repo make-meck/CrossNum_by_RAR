@@ -3,14 +3,24 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <StackPane alignment="BOTTOM_CENTER" style="-fx-background-color: rgba(0, 0, 0, 0.55);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPage">
    <children>
       <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="500.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 20 20 0 0; -fx-padding: 30;">
          <children>
-            <Button id="easy_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="easy_button" text="EASY" />
-            <Button id="medium_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="medium_button" text="MEDIUM" />
-            <Button id="hard_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="hard_button" text="HARD" />
+            <Button id="easy_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="easy_button" text="EASY" textFill="#354b34">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font></Button>
+            <Button id="medium_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="medium_button" text="MEDIUM" textFill="#354b34">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font></Button>
+            <Button id="hard_button" mnemonicParsing="false" prefHeight="75.0" prefWidth="400.0" styleClass="hard_button" text="HARD" textFill="#354b34">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font></Button>
          </children>
       </VBox>
    </children>
