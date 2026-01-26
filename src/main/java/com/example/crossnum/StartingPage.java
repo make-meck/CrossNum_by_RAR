@@ -14,12 +14,8 @@ import java.io.IOException;
 public class StartingPage {
 
     @FXML private StackPane main_stack;
-    @FXML private BorderPane root_pane;
-    @FXML private Button play_button;
+    @FXML private StackPane level_pane;
     @FXML private Button help_button;
-    @FXML private Button easy_button;
-    @FXML private Button medium_button;
-    @FXML private Button hard_button;
 
     @FXML
     private void playClick() throws IOException {
@@ -34,6 +30,29 @@ public class StartingPage {
 
         main_stack.getChildren().add(overlay);
         StackPane.setAlignment(overlay, Pos.BOTTOM_CENTER);
+    }
+
+    @FXML
+    private void handleLevel(String levelFileName) throws IOException {
+        FXMLLoader levelLoader = new FXMLLoader(getClass().getResource(levelFileName));
+        Stage stage = (Stage) level_pane.getScene().getWindow();
+        Parent root = levelLoader.load();
+        stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void easyLevel() throws IOException {
+        handleLevel("easy_page.fxml");
+    }
+
+    @FXML
+    private void mediumLevel() throws IOException {
+        handleLevel("easy_page.fxml");
+    }
+
+    @FXML
+    private void hardLevel() throws IOException {
+        handleLevel("hard_page.fxml");
     }
 
     @FXML
