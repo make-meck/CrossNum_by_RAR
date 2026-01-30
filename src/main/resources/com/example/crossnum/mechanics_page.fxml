@@ -1,6 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ecffec;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" />
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ecffec;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <HBox alignment="CENTER" prefHeight="260.0" prefWidth="600.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="260.0" prefWidth="540.0" style="-fx-background-color: #6f966e; -fx-background-radius: 20;">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="260.0" prefWidth="185.0">
+                           <children>
+                              <Label prefHeight="136.0" prefWidth="159.0" text="Remove numbers from the grid so that the remaining numbers in each row and column add up exactly to the target numbers shown at the top and left. Use the Erase mode." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                                 <font>
+                                    <Font name="Arial" size="13.0" />
+                                 </font>
+                              </Label>
+                              <ImageView fitHeight="120.0" fitWidth="139.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@easy1.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="260.0" prefWidth="170.0">
+                           <children>
+                              <ImageView fitHeight="120.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@easy2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label prefHeight="102.0" prefWidth="161.0" text="When you are certain a number is required to reach the correct sum, switch to Confirm mode to circle it. If multiple combinations are still possible, leave them for later." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="260.0" prefWidth="185.0">
+                           <children>
+                              <Label prefHeight="122.0" prefWidth="164.0" text="The puzzle is complete when every number on the grid has been either erased or confirmed. Think carefully—there is always a logical solution and you never need to guess." textFill="WHITE" wrapText="true" />
+                              <ImageView fitHeight="120.0" fitWidth="114.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@easy3.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</StackPane>
