@@ -15,6 +15,7 @@ public class StartingPageController {
     @FXML private StackPane main_stack;
     @FXML private StackPane level_pane;
     @FXML private Button help_button;
+    @FXML private Button backbutton;
 
     @FXML
     private void playClick() throws IOException {
@@ -59,6 +60,14 @@ public class StartingPageController {
         FXMLLoader helpLoader = new FXMLLoader(getClass().getResource("mechanics_page.fxml"));
         Stage stage = (Stage) help_button.getScene().getWindow();
         Parent root = helpLoader.load();
+        stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void backButton() throws IOException {
+        FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
+        Stage stage = (Stage) backbutton.getScene().getWindow();
+        Parent root = backbuttonLoader.load();
         stage.getScene().setRoot(root);
     }
 }
