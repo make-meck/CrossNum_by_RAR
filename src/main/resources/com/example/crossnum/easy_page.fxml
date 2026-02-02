@@ -135,7 +135,7 @@
         </BorderPane>
     </top>
    <bottom>
-      <BorderPane prefHeight="99.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <BorderPane prefHeight="119.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
@@ -159,13 +159,44 @@
          <left>
             <StackPane prefHeight="99.0" prefWidth="149.0" BorderPane.alignment="CENTER">
                <children>
-                  <Rectangle arcHeight="60.0" arcWidth="60.0" fill="#365d35" height="58.0" stroke="#365d35" strokeType="INSIDE" width="152.0" StackPane.alignment="TOP_LEFT" />
-                  <Button fx:id="eraser" mnemonicParsing="false" onAction="#onEraserClick" prefHeight="57.0" prefWidth="77.0" style="-fx-background-color: transparent;" StackPane.alignment="TOP_LEFT" />
-                  <Button fx:id="pen" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPenClick" prefHeight="57.0" prefWidth="74.0" style="-fx-background-color: transparent;" StackPane.alignment="TOP_RIGHT" />
+                  <Rectangle arcHeight="60.0" arcWidth="60.0" fill="#365d35" height="58.0" stroke="#365d35" strokeType="INSIDE" width="152.0" StackPane.alignment="TOP_LEFT">
+                     <StackPane.margin>
+                        <Insets top="10.0" />
+                     </StackPane.margin></Rectangle>
+                  <Circle fx:id="toggleCircle" fill="WHITE" radius="39.0" stroke="WHITE" strokeType="INSIDE" StackPane.alignment="TOP_LEFT">
+                     <StackPane.margin>
+                        <Insets />
+                     </StackPane.margin>
+                  </Circle>
+                  <Button fx:id="eraser" mnemonicParsing="false" onAction="#onEraserClick" prefHeight="57.0" prefWidth="77.0" style="-fx-background-color: transparent;" StackPane.alignment="TOP_LEFT">
+                     <StackPane.margin>
+                        <Insets top="10.0" />
+                     </StackPane.margin>
+                     <graphic>
+                        <ImageView fx:id="eraserImage" fitHeight="44.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@eraser.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button fx:id="pen" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPenClick" prefHeight="57.0" prefWidth="74.0" style="-fx-background-color: transparent;" StackPane.alignment="TOP_RIGHT">
+                     <StackPane.margin>
+                        <Insets top="10.0" />
+                     </StackPane.margin>
+                     <graphic>
+                        <ImageView fx:id="penImage" fitHeight="48.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@pen.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                </children>
                <BorderPane.margin>
                   <Insets left="50.0" />
-               </BorderPane.margin></StackPane>
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding></StackPane>
          </left></BorderPane>
    </bottom>
 </BorderPane>
