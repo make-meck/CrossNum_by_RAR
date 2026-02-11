@@ -16,6 +16,10 @@ public class StartingPageController {
     @FXML private StackPane level_pane;
     @FXML private Button help_button;
     @FXML private Button backbutton;
+    @FXML private StackPane mechanics_pane;
+    @FXML private Button mechanics_easybutton;
+    @FXML private Button mechanics_mediumbutton;
+    @FXML private Button mechanics_hardbutton;
 
     @FXML
     private void playClick() throws IOException {
@@ -70,4 +74,29 @@ public class StartingPageController {
         Parent root = backbuttonLoader.load();
         stage.getScene().setRoot(root);
     }
+
+    @FXML
+    private void easyMechanics() throws IOException {
+        FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("mechanics_page.fxml"));
+        Stage stage = (Stage) mechanics_easybutton.getScene().getWindow();
+        Parent root = backbuttonLoader.load();
+        stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void mediumMechanics() throws IOException {
+        FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("mechanics_medium.fxml"));
+        Stage stage = (Stage) mechanics_mediumbutton.getScene().getWindow();
+        Parent root = backbuttonLoader.load();
+        stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void hardMechanics() throws IOException {
+        FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("mechanics_hard.fxml"));
+        Stage stage = (Stage) mechanics_hardbutton.getScene().getWindow();
+        Parent root = backbuttonLoader.load();
+        stage.getScene().setRoot(root);
+    }
+
 }

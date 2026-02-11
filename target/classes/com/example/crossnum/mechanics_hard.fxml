@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="mechanics_hard" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #ecffec;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPageController">
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="30.0">
+            <padding>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                    <children>
+                        <Button fx:id="backbutton" mnemonicParsing="false" onAction="#backButton" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                            <graphic>
+                                <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@backbutton.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Label text="HOW TO PLAY" textFill="#354b34">
+                            <font>
+                                <Font name="Arial Bold" size="44.0" />
+                            </font>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 30; -fx-padding: 5;">
+                            <children>
+                                <Button fx:id="mechanics_easybutton" mnemonicParsing="false" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: transparent;" onAction="#easyMechanics" text="EASY" textFill="#354b34">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Button>
+                                <Button fx:id="mechanics_mediumbutton" mnemonicParsing="false" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: transparent;" onAction="#mediumMechanics" text="MEDIUM" textFill="#354b34">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Button>
+                                <Button fx:id="mechanics_hardbutton" mnemonicParsing="false" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: #6f966e; -fx-background-radius: 25;" styleClass="mechanics_hardbutton" onAction="#hardMechanics" text="HARD" textFill="WHITE">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+
+                <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER" maxHeight="420.0" maxWidth="880.0" spacing="20.0" style="-fx-background-color: #6f966e; -fx-background-radius: 35;">
+                            <padding>
+                                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                            </padding>
+                            <children>
+
+                                <VBox alignment="TOP_CENTER" prefWidth="260.0" spacing="15.0">
+                                    <children>
+                                        <Label lineSpacing="2.0" text="Each row and column has a target number shown on the top and left. Your goal is to enter numbers into the grid so that the total of each row and column matches its target." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                                            <font>
+                                                <Font name="Arial" size="15.0" />
+                                            </font>
+                                        </Label>
+                                        <ImageView fitHeight="155.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@hard1.png" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </VBox>
+
+                                <VBox alignment="BOTTOM_CENTER" prefWidth="260.0" spacing="15.0">
+                                    <children>
+                                        <ImageView fitHeight="155.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@hard2.png" />
+                                            </image>
+                                        </ImageView>
+                                        <Label lineSpacing="2.0" text="Every number affects both its row and column. If a number causes a total to go over the target, it doesn’t belong there. Try different combinations and adjust as needed." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                                            <font>
+                                                <Font name="Arial" size="15.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                                <VBox alignment="TOP_CENTER" prefWidth="260.0" spacing="15.0">
+                                    <children>
+                                        <Label lineSpacing="2.0" text="You must solve the puzzle before the time runs out, so think carefully but move fast. The puzzle is complete when all rows and columns add up exactly to their target numbers." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                                            <font>
+                                                <Font name="Arial" size="15.0" />
+                                            </font>
+                                        </Label>
+                                        <ImageView fitHeight="155.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@hard3.png" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </VBox>
+
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</StackPane>
