@@ -24,6 +24,10 @@ public class HelloController {
     ImageView penImage;
     @FXML
     ImageView eraserImage;
+    @FXML
+    Button back;
+    @FXML
+    Button restart;
     private boolean penMode = true;
 
     private final Image blackEraser =
