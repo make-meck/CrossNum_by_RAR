@@ -11,11 +11,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #ecffec;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPageController">
+<StackPane fx:id="mechanics_pane" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #ecffec;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.StartingPageController">
    <children>
       <VBox alignment="TOP_CENTER" spacing="30.0">
          <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            <Insets bottom="80.0" left="40.0" right="40.0" top="70.0" />
          </padding>
          <children>
             <HBox alignment="CENTER_LEFT" spacing="15.0">
@@ -37,17 +37,17 @@
                   <Region HBox.hgrow="ALWAYS" />
                   <HBox alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 30; -fx-padding: 5;">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: #6f966e; -fx-background-radius: 25;" text="EASY" textFill="WHITE">
+                        <Button fx:id="mechanics_easybutton" mnemonicParsing="false" onAction="#easyMechanics" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: #6f966e; -fx-background-radius: 25;" text="EASY" textFill="WHITE">
                            <font>
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Button>
-                        <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: transparent;" text="MEDIUM" textFill="#354b34">
+                        <Button fx:id="mechanics_mediumbutton" mnemonicParsing="false" onAction="#mediumMechanics" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: transparent;" text="MEDIUM" textFill="#354b34">
                            <font>
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Button>
-                        <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: transparent;" text="HARD" textFill="#354b34">
+                        <Button fx:id="mechanics_hardbutton" mnemonicParsing="false" onAction="#hardMechanics" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: transparent;" text="HARD" textFill="#354b34">
                            <font>
                               <Font name="Arial Bold" size="13.0" />
                            </font>
@@ -59,20 +59,20 @@
 
             <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
                <children>
-                  <HBox alignment="CENTER" maxHeight="420.0" maxWidth="880.0" spacing="20.0" style="-fx-background-color: #6f966e; -fx-background-radius: 35;">
+                  <HBox alignment="CENTER" maxWidth="Infinity" spacing="50.0" style="-fx-background-color: #6f966e; -fx-background-radius: 35;" HBox.hgrow="ALWAYS">
                      <padding>
-                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
                      </padding>
                      <children>
 
-                        <VBox alignment="TOP_CENTER" prefWidth="260.0" spacing="15.0">
+                        <VBox alignment="CENTER" maxWidth="Infinity" spacing="20.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label lineSpacing="2.0" text="Remove numbers from the grid so that the remaining numbers in each row and column add up exactly to the target numbers shown at the top and left. Use the Erase mode." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                              <Label text="Remove numbers from the grid so that the remaining numbers in each row and column add up exactly to the target numbers shown at the top and left. Use the Erase mode." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
                                  <font>
-                                    <Font name="Arial" size="15.0" />
+                                    <Font name="Arial" size="18.0" />
                                  </font>
                               </Label>
-                              <ImageView fitHeight="155.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@easy1.png" />
                                  </image>
@@ -80,29 +80,29 @@
                            </children>
                         </VBox>
 
-                        <VBox alignment="BOTTOM_CENTER" prefWidth="260.0" spacing="15.0">
+                        <VBox alignment="CENTER" maxWidth="Infinity" spacing="20.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ImageView fitHeight="155.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@easy2.png" />
                                  </image>
                               </ImageView>
-                              <Label lineSpacing="2.0" text="When you are certain a number is required to reach the correct sum, switch to Confirm mode to circle it. If multiple combinations are still possible, leave them for later." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                              <Label text="When you are certain a number is required to reach the correct sum, switch to Confirm mode to circle it. If multiple combinations are still possible, leave them for later." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
                                  <font>
-                                    <Font name="Arial" size="15.0" />
+                                    <Font name="Arial" size="18.0" />
                                  </font>
                               </Label>
                            </children>
                         </VBox>
 
-                        <VBox alignment="TOP_CENTER" prefWidth="260.0" spacing="15.0">
+                        <VBox alignment="CENTER" maxWidth="Infinity" spacing="20.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label lineSpacing="2.0" text="The puzzle is complete when every number on the grid has been either erased or confirmed. Think carefully—there is always a logical solution and you never need to guess." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                              <Label text="The puzzle is complete when every number on the grid has been either erased or confirmed. Think carefully—there is always a logical solution and you never need to guess." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
                                  <font>
-                                    <Font name="Arial" size="15.0" />
+                                    <Font name="Arial" size="18.0" />
                                  </font>
                               </Label>
-                              <ImageView fitHeight="155.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@easy3.png" />
                                  </image>
