@@ -51,7 +51,7 @@ public class StartingPageController {
 
     @FXML
     private void mediumLevel() throws IOException {
-        handleLevel("easy_page.fxml");
+        handleLevel("medium_page.fxml");
     }
 
     @FXML

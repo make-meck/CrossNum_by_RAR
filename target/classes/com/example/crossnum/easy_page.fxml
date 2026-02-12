@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6f966e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.HelloController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6f966e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
     <center>
         <StackPane prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
             <children>
@@ -76,7 +76,7 @@
     <top>
         <BorderPane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <Button fx:id="back" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #365d35; -fx-background-radius: 40;" BorderPane.alignment="CENTER">
+            <Button fx:id="backbuttonEasy" mnemonicParsing="false" onAction="#backbutton" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #365d35; -fx-background-radius: 40;" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="50.0" right="50.0" />
                </BorderPane.margin>

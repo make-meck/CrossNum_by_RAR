@@ -1,15 +1,21 @@
 package com.example.crossnum;
 
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class HelloController {
+import java.io.IOException;
+
+public class EasyPageController {
     @FXML
     private Label welcomeText;
     @FXML
@@ -29,6 +35,19 @@ public class HelloController {
     @FXML
     Button restart;
     private boolean penMode = true;
+    @FXML private Button backbuttonEasy;
+
+    @FXML
+    private void backbutton(ActionEvent event) {
+        try {
+            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
+            Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
+            Parent root = backbuttonLoader.load();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private final Image blackEraser =
             new Image(getClass().getResource("eraser.png").toExternalForm());
@@ -40,10 +59,6 @@ public class HelloController {
             new Image(getClass().getResource("pen.png").toExternalForm());
 
 
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
 
     @FXML
     protected void onHintClick(){
