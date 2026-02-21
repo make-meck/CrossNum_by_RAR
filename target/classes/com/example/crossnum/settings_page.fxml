@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="settings_pane" style="-fx-background-color: rgba(0, 0, 0, 0.55);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.SettingsController">
+    <children>
+        <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="500.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 30;">
+         <children>
+            <Label text="CROSSNUM" textFill="#354b34">
+               <font>
+                  <Font name="Arial Bold" size="40.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets top="30.0" />
+               </padding>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="265.0">
+               <children>
+                  <Label text="Music" textFill="#354b34">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <ToggleButton id="music_button" fx:id="music_button" mnemonicParsing="false" onAction="#musicToggle" styleClass="music_button">
+                     <graphic>
+                        <Circle fill="WHITE" radius="13.0" />
+                     </graphic>
+                  </ToggleButton>
+               </children>
+               <VBox.margin>
+                  <Insets left="30.0" right="30.0" />
+               </VBox.margin>
+            </HBox>
+            <Slider id="musicVolume" fx:id="musicVolume" styleClass="musicVolume">
+               <VBox.margin>
+                  <Insets left="30.0" right="30.0" />
+               </VBox.margin></Slider>
+            <HBox spacing="198.0">
+               <children>
+                  <Label text="Sound Effects" textFill="#354b34">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <ToggleButton id="sound_button" fx:id="sound_button" mnemonicParsing="false" styleClass="sound_button">
+                     <graphic>
+                        <Circle fill="WHITE" radius="13.0" />
+                     </graphic></ToggleButton>
+               </children>
+               <VBox.margin>
+                  <Insets left="30.0" right="30.0" />
+               </VBox.margin>
+            </HBox>
+            <Slider id="soundVolume" fx:id="soundVolume" styleClass="soundVolume">
+               <padding>
+                  <Insets bottom="50.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets left="30.0" right="30.0" />
+               </VBox.margin></Slider>
+         </children>
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+        </VBox>
+    </children>
+</StackPane>

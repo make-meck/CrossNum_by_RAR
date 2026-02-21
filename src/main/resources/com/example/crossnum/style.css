@@ -17,6 +17,12 @@
     -fx-background-radius: 10;
 }
 
+.settings_button {
+    -fx-background-color: #6f966e;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
 .level_container {
     -fx-background-color: white;
     -fx-background-radius: 25;
@@ -41,3 +47,70 @@
     -fx-background-radius: 15;
 }
 
+.music_button {
+    -fx-background-color: #e5e5ea;
+    -fx-background-radius: 30;
+
+    -fx-min-width: 60;
+    -fx-min-height: 32;
+    -fx-max-width: 60;
+    -fx-max-height: 32;
+
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-padding: 3;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+}
+
+.music_button:selected {
+    -fx-background-color: #354b34;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.sound_button {
+    -fx-background-color: #e5e5ea;
+    -fx-background-radius: 30;
+
+    -fx-min-width: 60;
+    -fx-min-height: 32;
+    -fx-max-width: 60;
+    -fx-max-height: 32;
+
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-padding: 3;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+}
+
+.sound_button:selected {
+    -fx-background-color: #354b34;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.musicVolume .track {
+    -fx-background-color: #e5e5ea;
+    -fx-background-radius: 10;
+    -fx-pref-height: 8;
+}
+
+.musicVolume .thumb {
+    -fx-background-color: #c5c6d0;
+    -fx-background-radius: 50;
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+    -fx-cursor: hand;
+}
+
+.soundVolume .track {
+    -fx-background-color: #e5e5ea;
+    -fx-background-radius: 10;
+    -fx-pref-height: 8;
+}
+
+.soundVolume .thumb {
+    -fx-background-color: #c5c6d0;
+    -fx-background-radius: 50;
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+    -fx-cursor: hand;
+}

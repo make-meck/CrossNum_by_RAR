@@ -17,6 +17,8 @@ public class HelloApplication extends Application {
                 getClass().getResource("style.css").toExternalForm()
         );
 
+        SettingsController.initMusic();
+
         stage.setTitle("CROSSNUM");
         stage.setScene(scene);
         stage.show();

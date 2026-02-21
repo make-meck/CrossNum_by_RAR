@@ -14,6 +14,7 @@ public class StartingPageController {
 
     @FXML private StackPane main_stack;
     @FXML private StackPane level_pane;
+    @FXML private StackPane settings_pane;
     @FXML private Button help_button;
     @FXML private Button backbutton;
     @FXML private StackPane mechanics_pane;
@@ -34,6 +35,21 @@ public class StartingPageController {
 
         main_stack.getChildren().add(overlay);
         StackPane.setAlignment(overlay, Pos.BOTTOM_CENTER);
+    }
+
+    @FXML
+    private void settingsClick() throws IOException {
+        FXMLLoader playLoader = new FXMLLoader(getClass().getResource("settings_page.fxml"));
+        Parent overlay = playLoader.load();
+
+        overlay.setOnMouseClicked(event -> {
+            if (event.getTarget() == overlay) {
+                main_stack.getChildren().remove(overlay);
+            }
+        });
+
+        main_stack.getChildren().add(overlay);
+        StackPane.setAlignment(overlay, Pos.CENTER);
     }
 
     @FXML
