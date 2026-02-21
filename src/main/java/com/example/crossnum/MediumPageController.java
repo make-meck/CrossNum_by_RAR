@@ -42,6 +42,7 @@ public class MediumPageController {
             Stage stage = (Stage) backbuttonMedium.getScene().getWindow();
             Parent root = backbuttonLoader.load();
             stage.getScene().setRoot(root);
+            SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
             e.printStackTrace();
         }

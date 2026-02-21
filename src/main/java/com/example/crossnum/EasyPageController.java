@@ -44,6 +44,7 @@ public class EasyPageController {
             Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
             Parent root = backbuttonLoader.load();
             stage.getScene().setRoot(root);
+            SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
             e.printStackTrace();
         }

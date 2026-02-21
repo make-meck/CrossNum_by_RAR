@@ -18,6 +18,7 @@ public class HelloApplication extends Application {
         );
 
         SettingsController.initMusic();
+        SettingsController.setupGlobalClickSounds(scene);
 
         stage.setTitle("CROSSNUM");
         stage.setScene(scene);

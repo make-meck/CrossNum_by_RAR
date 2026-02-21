@@ -21,6 +21,7 @@ public class HardPageController {
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             Parent root = backbuttonLoader.load();
             stage.getScene().setRoot(root);
+            SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
             e.printStackTrace();
         }
