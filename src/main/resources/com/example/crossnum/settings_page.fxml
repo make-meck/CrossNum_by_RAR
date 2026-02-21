@@ -53,7 +53,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <ToggleButton id="sound_button" fx:id="sound_button" mnemonicParsing="false" styleClass="sound_button">
+                  <ToggleButton id="sound_button" fx:id="sound_button" mnemonicParsing="false" onAction="#soundToggle" styleClass="sound_button">
                      <graphic>
                         <Circle fill="WHITE" radius="13.0" />
                      </graphic></ToggleButton>
