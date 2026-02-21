@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6f966e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
     <center>
         <StackPane prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
             <children>
@@ -121,17 +121,17 @@
                   </StackPane>
                   <StackPane maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                      <children>
-                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" />
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                      </children>
                   </StackPane>
                   <StackPane layoutX="210.0" layoutY="10.0" maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                      <children>
-                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" />
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                      </children>
                   </StackPane>
                   <StackPane layoutX="295.0" layoutY="10.0" maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                      <children>
-                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" />
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                      </children>
                   </StackPane>
                </children>
@@ -147,7 +147,7 @@
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" style="-fx-background-color: #6f966e;" StackPane.alignment="TOP_RIGHT" />
+                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" style="-fx-background-color: #d0e8d0;" StackPane.alignment="TOP_RIGHT" />
                   <Circle fill="#365d35" mouseTransparent="true" radius="33.0" stroke="#365d35" strokeType="INSIDE" StackPane.alignment="TOP_RIGHT" />
                   <ImageView fitHeight="53.0" fitWidth="44.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
                      <image>
