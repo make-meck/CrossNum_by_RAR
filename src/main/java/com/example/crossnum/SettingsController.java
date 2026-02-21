@@ -112,6 +112,8 @@ public class SettingsController implements Initializable {
                 AudioInputStream sfxStream = AudioSystem.getAudioInputStream(sfxUrl);
                 sfxsoundClip = AudioSystem.getClip();
                 sfxsoundClip.open(sfxStream);
+
+                adjustClipVolume(soundSavedVolume, sfxsoundClip);
             } catch (Exception e) {
                 System.out.println("SFX Error: " + e.getMessage());
             }

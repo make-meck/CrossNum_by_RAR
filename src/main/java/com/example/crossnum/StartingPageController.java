@@ -14,10 +14,8 @@ public class StartingPageController {
 
     @FXML private StackPane main_stack;
     @FXML private StackPane level_pane;
-    @FXML private StackPane settings_pane;
     @FXML private Button help_button;
     @FXML private Button backbutton;
-    @FXML private StackPane mechanics_pane;
     @FXML private Button mechanics_easybutton;
     @FXML private Button mechanics_mediumbutton;
     @FXML private Button mechanics_hardbutton;
@@ -58,7 +56,6 @@ public class StartingPageController {
         Stage stage = (Stage) level_pane.getScene().getWindow();
         Parent root = levelLoader.load();
         stage.getScene().setRoot(root);
-        SettingsController.setupGlobalClickSounds(stage.getScene());
     }
 
     @FXML
@@ -82,7 +79,6 @@ public class StartingPageController {
         Stage stage = (Stage) help_button.getScene().getWindow();
         Parent root = helpLoader.load();
         stage.getScene().setRoot(root);
-        SettingsController.setupGlobalClickSounds(stage.getScene());
     }
 
     @FXML
@@ -91,7 +87,6 @@ public class StartingPageController {
         Stage stage = (Stage) backbutton.getScene().getWindow();
         Parent root = backbuttonLoader.load();
         stage.getScene().setRoot(root);
-        SettingsController.setupGlobalClickSounds(stage.getScene());
     }
 
     @FXML
@@ -100,7 +95,6 @@ public class StartingPageController {
         Stage stage = (Stage) mechanics_easybutton.getScene().getWindow();
         Parent root = backbuttonLoader.load();
         stage.getScene().setRoot(root);
-        SettingsController.setupGlobalClickSounds(stage.getScene());
     }
 
     @FXML
@@ -109,7 +103,6 @@ public class StartingPageController {
         Stage stage = (Stage) mechanics_mediumbutton.getScene().getWindow();
         Parent root = backbuttonLoader.load();
         stage.getScene().setRoot(root);
-        SettingsController.setupGlobalClickSounds(stage.getScene());
     }
 
     @FXML
@@ -118,7 +111,6 @@ public class StartingPageController {
         Stage stage = (Stage) mechanics_hardbutton.getScene().getWindow();
         Parent root = backbuttonLoader.load();
         stage.getScene().setRoot(root);
-        SettingsController.setupGlobalClickSounds(stage.getScene());
     }
 
 }
