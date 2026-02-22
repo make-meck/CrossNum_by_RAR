@@ -39,7 +39,7 @@ public class EasyPageController {
     private int lives = 3;
     private int cellsResolved = 0; // level success determinant
 
-    // The puzzle grid (array) that holds the random generated numbers
+    // The puzzle grid (array) that holds the random generated logical data
     private Cell[][] gridData = new Cell[5][5];
 
     private final Image blackEraser = new Image(getClass().getResource("eraser.png").toExternalForm());
@@ -48,6 +48,7 @@ public class EasyPageController {
     private final Image blackPen = new Image(getClass().getResource("pen.png").toExternalForm());
 
     // Inner class that holds the logical state of each grid/box
+    // for puzzle numbers, boolean masking values, or puzzle state (if already solved or not)
     private class Cell {
         int value;
         boolean isSolution;
