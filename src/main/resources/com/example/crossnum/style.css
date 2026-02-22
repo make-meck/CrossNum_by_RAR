@@ -114,3 +114,28 @@
     -fx-pref-height: 20;
     -fx-cursor: hand;
 }
+
+#hint {
+    -fx-background-color: #365d35;
+    -fx-background-radius: 40;
+    -fx-opacity: 1;
+}
+
+#hint:hover {
+    -fx-opacity: 0.7;
+}
+
+#backbuttonEasy {
+    -fx-opacity: 1;
+}
+
+#backbuttonEasy:hover {
+    -fx-opacity: 0.7;
+}
+#restart {
+    -fx-opacity: 1;
+}
+
+#restart:hover {
+    -fx-opacity: 0.7;
+}

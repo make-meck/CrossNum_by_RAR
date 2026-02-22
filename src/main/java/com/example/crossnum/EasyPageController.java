@@ -1,5 +1,8 @@
 package com.example.crossnum;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,10 +37,12 @@ public class EasyPageController {
     @FXML private SVGPath heart1;
     @FXML private SVGPath heart2;
     @FXML private SVGPath heart3;
+    @FXML private Label totalHints;
 
     private boolean penMode = true;
     private int lives = 3;
     private int cellsResolved = 0; // level success determinant
+    private int hints = 3;
 
     // The puzzle grid (array) that holds the random generated logical data
     private Cell[][] gridData = new Cell[5][5];
@@ -195,7 +200,21 @@ public class EasyPageController {
         circle.setFill(Color.TRANSPARENT);
         circle.setStroke(Color.web("#365d35"));
         circle.setStrokeWidth(4);
+
+        circle.setOpacity(0);
+        circle.setScaleX(0.5);
+        circle.setScaleY(0.5);
+
         pane.getChildren().add(circle);
+        FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
+        fade.setToValue(1);
+
+        ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
+        scale.setToX(1);
+        scale.setToY(1);
+
+        ParallelTransition animation = new ParallelTransition(fade, scale);
+        animation.play();
     }
 
     // Handles the UI of hearts that will serve as lives per round
@@ -252,14 +271,65 @@ public class EasyPageController {
             eraserImage.setImage(blackEraser);
             penImage.setImage(whitePen);
         }
-        TranslateTransition tt = new TranslateTransition(Duration.millis(500), toggleCircle);
-        tt.setToX(penMode ? 75 : 0);
-        tt.play();
+
     }
 
     @FXML
     protected void onHintClick() {
-        // Optional: Add hint logic here later
+        // Checks lives. If there's no hint left, return. Otherwise, decrement by one.
+        if (hints <= 0) return;
+        hints--;
+        totalHints.setText(String.valueOf(hints)); // Displays the updated number of hints
+
+        // Gathers all the unresolved cells.
+        java.util.List<int[]> unresolvedCells = new java.util.ArrayList<>();
+        for (int r = 1; r <= 4; r++) {
+            for (int c = 1; c <= 4; c++) {
+                if (!gridData[r][c].isResolved) {
+                    unresolvedCells.add(new int[]{r, c}); // Creates an array holding two values --> the indices of the unresolved cell
+                }
+            }
+        }
+
+        // Exit if all cells are already resolved
+        if (unresolvedCells.isEmpty()) return;
+
+        // Chooses a random cell from the unresolvedCells list
+        Random rand = new Random();
+        int[] chosen = unresolvedCells.get(rand.nextInt(unresolvedCells.size()));
+        int row = chosen[0], col = chosen[1];
+        Cell cell = gridData[row][col];
+
+        // Loops over the grid cells and find the cell pane that matches the random hint cell's indices
+        for (Node node : puzzleGrid.getChildren()) {
+            if (node instanceof StackPane pane) {
+                Integer r = GridPane.getRowIndex(pane);
+                Integer c = GridPane.getColumnIndex(pane);
+                int paneRow = (r == null) ? 0 : r;
+                int paneCol = (c == null) ? 0 : c;
+
+                if (paneRow == row && paneCol == col) {
+                    Label label = null;
+                    for (Node child : pane.getChildren()) {
+                        if (child instanceof Label) {
+                            label = (Label) child;
+                            break;
+                        }
+                    }
+
+                    if (cell.isSolution) {
+                        drawCircle(pane);
+                    } else {
+                        if (label != null) label.setText("");
+                    }
+
+                    cell.isResolved = true;
+                    cellsResolved++;
+                    checkWinCondition();
+                    break;
+                }
+            }
+        }
     }
 
     @FXML

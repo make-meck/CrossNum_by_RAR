@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
     <center>
         <StackPane prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
             <children>
@@ -81,7 +81,7 @@
                   <Insets left="50.0" right="50.0" />
                </BorderPane.margin>
                <graphic>
-                  <ImageView fitHeight="45.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="45.0" fitWidth="30.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@back_icon.png" />
                      </image>
@@ -95,7 +95,7 @@
                   <Insets right="50.0" />
                </BorderPane.margin>
                <graphic>
-                  <ImageView fitHeight="44.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="44.0" fitWidth="43.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@restart_icon.png" />
                      </image>
@@ -147,17 +147,28 @@
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" style="-fx-background-color: #d0e8d0;" StackPane.alignment="TOP_RIGHT" />
-                  <Circle fill="#365d35" mouseTransparent="true" radius="33.0" stroke="#365d35" strokeType="INSIDE" StackPane.alignment="TOP_RIGHT" />
-                  <ImageView fitHeight="53.0" fitWidth="44.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
+                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" StackPane.alignment="TOP_RIGHT" />
+                  <ImageView fitHeight="52.0" fitWidth="46.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
                      <image>
-                        <Image url="@hint_icon.png" />
+                        <Image url="@hintIcon.png" />
                      </image>
                      <StackPane.margin>
                         <Insets right="10.0" top="10.0" />
                      </StackPane.margin>
                   </ImageView>
-                  <Circle fill="WHITE" radius="10.0" stroke="WHITE" strokeType="INSIDE" StackPane.alignment="TOP_RIGHT" />
+                  <StackPane alignment="TOP_RIGHT" mouseTransparent="true" prefHeight="88.0" prefWidth="57.0">
+                     <children>
+                        <Circle fill="WHITE" radius="11.0" stroke="WHITE" strokeType="INSIDE" />
+                        <Label fx:id="totalHints" text="3" textFill="#2d532c">
+                           <StackPane.margin>
+                              <Insets right="6.5" top="2.5" />
+                           </StackPane.margin>
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </StackPane>
                </children>
                <BorderPane.margin>
                   <Insets right="50.0" />
