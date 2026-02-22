@@ -29,4 +29,5 @@ public class HardPageController {
     @FXML
     protected void onHintClick(){
     }
+
 }
