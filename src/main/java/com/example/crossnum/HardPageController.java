@@ -1,18 +1,19 @@
 package com.example.crossnum;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
-
 public class HardPageController {
-    @FXML private Button backbuttonHard;
-    @FXML private Button hint;
+
+    @FXML
+    private Button backbuttonHard;
+    @FXML
+    private Button hint;
+
 
     @FXML
     private void backbutton(ActionEvent event) {
@@ -26,8 +27,10 @@ public class HardPageController {
             e.printStackTrace();
         }
     }
-    @FXML
-    protected void onHintClick(){
-    }
 
+
+    @FXML
+    protected void onHintClick() {
+
+    }
 }

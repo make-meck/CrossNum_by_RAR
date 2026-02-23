@@ -22,7 +22,7 @@
 
 <BorderPane fx:id="hardlevelpage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.HardPageController">
     <center>
-        <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+        <StackPane fx:id="paneHardLevel" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
             <children>
                 <GridPane hgap="7.0" maxHeight="500.0" maxWidth="500.0" prefHeight="400.0" prefWidth="400.0" vgap="7.0">
                     <columnConstraints>
@@ -46,23 +46,23 @@
                     <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c1r1" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c2r1" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="3" GridPane.rowIndex="1">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c3r1" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="4" GridPane.rowIndex="1">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c4r1" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.rowIndex="3">
                      <children>
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c3r0_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -71,17 +71,17 @@
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c1r3" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="2" GridPane.rowIndex="3">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c2r3" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="4" GridPane.rowIndex="3">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c4r3_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -90,7 +90,7 @@
                         <StackPane prefHeight="50.0" prefWidth="46.0" style="-fx-background-color: #2d532c;" GridPane.rowIndex="4">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c4r0_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -98,12 +98,12 @@
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c1r4" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="3" GridPane.rowIndex="4">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c3r4_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -112,7 +112,7 @@
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="4" GridPane.rowIndex="4">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c4r4_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -121,7 +121,7 @@
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.rowIndex="5">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c5r0_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -129,25 +129,25 @@
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c1r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="2" GridPane.rowIndex="5">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c2r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="3" GridPane.rowIndex="5">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c3r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="4" GridPane.rowIndex="5">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c4r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="6" />
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="1" GridPane.rowIndex="6">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c6r1_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -155,27 +155,27 @@
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="2" GridPane.rowIndex="6">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c2r6" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="3" GridPane.rowIndex="6">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c3r6" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="4" GridPane.rowIndex="6">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c4r6" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.columnIndex="2" GridPane.rowIndex="4">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c2r4" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #fff;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c1r2" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.rowIndex="2">
                      <children>
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c2r0_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -185,11 +185,11 @@
                   </StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c2r2" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.rowIndex="1">
                      <children>
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c1r0_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -199,11 +199,11 @@
                   </StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="3" GridPane.rowIndex="2">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c3r2" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="4" GridPane.rowIndex="2">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c4r2" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="1">
                      <children>
@@ -212,7 +212,7 @@
                               <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
                            </children>
                         </StackPane>
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c0r1_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -222,7 +222,7 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="2">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c0r2_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -232,7 +232,7 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="3">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c0r3_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -242,7 +242,7 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="4">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c0r4_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -252,7 +252,7 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="5">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c0r5_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -262,32 +262,33 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="6" />
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="1">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c5r1" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="2">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c5r2" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="3">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c5r3" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="4">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c5r4" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="5">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c5r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="6">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c5r6" style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c6r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="6" GridPane.rowIndex="1">
                      <children>
                         <Line endX="-49.50712585449219" endY="45.692909240722656" startX="-100.0" stroke="WHITE" />
-                        <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
+                        <Label fx:id="lbl_c1r6_across" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
@@ -297,19 +298,23 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="6" GridPane.rowIndex="2">
                      <children>
                         <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c6r2" style="-fx-background-color: #fff;" />
                      </children></StackPane>
-                  <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                  <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="6" GridPane.rowIndex="3">
+                     <children>
+                        <TextField fx:id="tf_c6r3" style="-fx-background-color: #fff;" />
+                     </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="6" GridPane.rowIndex="4">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c6r4" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="6" GridPane.rowIndex="5">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c6r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="6" GridPane.rowIndex="6">
                      <children>
-                        <TextField style="-fx-background-color: #fff;" />
+                        <TextField fx:id="tf_c6r6" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane layoutX="449.0" layoutY="123.0" prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #d0e8d0;" />
                     </children>
@@ -324,7 +329,7 @@
         <VBox prefHeight="200.0" prefWidth="20.0" BorderPane.alignment="CENTER" />
     </right>
     <top>
-        <BorderPane prefHeight="100.0" prefWidth="200.0" visible="false" BorderPane.alignment="CENTER">
+        <BorderPane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
             <StackPane BorderPane.alignment="CENTER">
                <BorderPane.margin>
@@ -379,7 +384,7 @@
                   </StackPane>
                   <StackPane layoutX="210.0" layoutY="10.0" maxWidth="229.0" minWidth="50.0" prefHeight="100.0" prefWidth="229.0">
                      <children>
-                        <Label text="15:00" textFill="#365d35">
+                        <Label fx:id="timerLabel" text="15:00" textFill="#365d35">
                            <font>
                               <Font name="Arial" size="27.0" />
                            </font>
@@ -395,7 +400,7 @@
         </BorderPane>
     </top>
    <bottom>
-      <BorderPane prefHeight="119.0" prefWidth="600.0" visible="false" BorderPane.alignment="CENTER">
+      <BorderPane prefHeight="119.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
@@ -415,6 +420,9 @@
                   <Insets right="50.0" />
                </BorderPane.margin>
             </StackPane>
-         </right></BorderPane>
+         </right>
+         <center>
+            <Label fx:id="statusLabel" prefHeight="18.0" prefWidth="78.0" text="Label" BorderPane.alignment="CENTER" />
+         </center></BorderPane>
    </bottom>
 </BorderPane>
