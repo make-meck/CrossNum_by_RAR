@@ -283,7 +283,6 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: fff;" GridPane.columnIndex="5" GridPane.rowIndex="6">
                      <children>
                         <TextField fx:id="tf_c5r6" style="-fx-background-color: #fff;" />
-                        <TextField fx:id="tf_c6r5" style="-fx-background-color: #fff;" />
                      </children></StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c;" GridPane.columnIndex="6" GridPane.rowIndex="1">
                      <children>
@@ -400,7 +399,7 @@
         </BorderPane>
     </top>
    <bottom>
-      <BorderPane prefHeight="119.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <BorderPane prefHeight="119.0" prefWidth="600.0" visible="false" BorderPane.alignment="CENTER">
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
@@ -420,9 +419,6 @@
                   <Insets right="50.0" />
                </BorderPane.margin>
             </StackPane>
-         </right>
-         <center>
-            <Label fx:id="statusLabel" prefHeight="18.0" prefWidth="78.0" text="Label" BorderPane.alignment="CENTER" />
-         </center></BorderPane>
+         </right></BorderPane>
    </bottom>
 </BorderPane>
