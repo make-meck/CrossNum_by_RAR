@@ -128,8 +128,10 @@ public class HardPageController {
                 hint.setDisable(true);
                 hint.setOpacity(0.4);
             }
+            }
 
-       @FXML private void onRestartClick() {
+       @FXML
+           protected void onRestartClick() {
             // Generates a new solution
             solution.clear();
             generateSolution();
@@ -157,7 +159,8 @@ public class HardPageController {
             hint.setOpacity(1.0);
         }
 
-    }
+
+
     // this method is used to make the timer works
     private void startTimer(){
         timer = new Timeline(

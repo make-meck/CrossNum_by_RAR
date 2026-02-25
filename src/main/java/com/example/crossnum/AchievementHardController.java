@@ -23,8 +23,8 @@ public class AchievementHardController {
     public void setStats(int secondsLeft, int timeTaken) {
 
         int stars;
-        if (secondsLeft > 10 * 60) stars = 3;
-        else if (secondsLeft > 5 * 60) stars = 2;
+        if (secondsLeft > 8 * 60) stars = 3;
+        else if (secondsLeft > 4 * 60) stars = 2;
         else stars = 1;
 
         // Dim stars that weren't earned
