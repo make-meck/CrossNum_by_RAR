@@ -90,7 +90,7 @@
             </Button>
          </left>
          <right>
-            <Button fx:id="restart" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #365d35; -fx-background-radius: 40;" BorderPane.alignment="CENTER">
+            <Button fx:id="restart" mnemonicParsing="false" onAction="#onRestartClick" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: #365d35; -fx-background-radius: 40;" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets right="50.0" />
                </BorderPane.margin>

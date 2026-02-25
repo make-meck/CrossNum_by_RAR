@@ -52,9 +52,9 @@ public class EasyPageController {
     private final Image whitePen = new Image(getClass().getResource("white_pen.png").toExternalForm());
     private final Image blackPen = new Image(getClass().getResource("pen.png").toExternalForm());
 
-    // Inner class that holds the logical state of each grid/box
+    // inner class that holds the logical state of each grid/box
     // for puzzle numbers, boolean masking values, or puzzle state (if already solved or not)
-    private class Cell {
+    public class Cell {
         int value;
         boolean isSolution;
         boolean isResolved = false;
@@ -68,56 +68,103 @@ public class EasyPageController {
         eraserImage.setImage(whiteEraser);
 
         //Once the player has opened the easy mode, the saved game state will display in the screen
-
-        GameState state= GameState.getInstance();
+        GameState state = GameState.getInstance();
         if(state.hasEasySavedState) {
-            //Restores the saved state, such as the lives and hints
-            lives = state.easyLives; //The saved lives will be restored
-            hints = state.easyHints; // the number of hints available will be restored
-            cellsResolved = state.easyCellsResolved; //this will determine how many cells have been restored
-            totalHints.setText(String.valueOf(hints));
 
-            //First, it will intialize all the cells first
-            for(int r = 0; r<=4; r++){
-                for (int c= 0; c<=4; c++){
-                    gridData[r][c] = new Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
+            if (state.retryMode) {
+                for(int r = 0; r<=4; r++){
+                    for (int c= 0; c<=4; c++){
+                        gridData[r][c] = new Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
+                    }
                 }
+
+                // After intializing the cells, it will restore the cells data from saved state
+                for(int r =1; r<= 4; r++){  //loops rows 1 to 4 and skips row 0, since it is used for getting the sums
+                    for(int c= 1; c<=4 ; c++){  //same as the previous line
+                        gridData[r][c].value = state.easyCellValues[r][c]; //restores the number
+                        gridData[r][c].isSolution = state.easyCellIsSolution[r][c]; //restore if it is part fo the solution
+                    }
+                }
+
+                //Recalculates the sum of the rows
+                for (int r = 1; r <= 4; r++) { //it loops each row
+                    int rowSum = 0;
+                    for (int c = 1; c <= 4; c++) { //loop each colum in this row
+                        if (gridData[r][c].isSolution) //if the cell is a solution
+                            rowSum += gridData[r][c].value; //the value of the cell will be added to the row sum
+                    }
+                    gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
+                    gridData[r][0].value = rowSum; //it stores the calculated sum in the box
+                }
+                //recalculates the sum of the columns
+                for (int c = 1; c <= 4; c++) { //loop each column
+                    int colSum = 0;
+                    for (int r = 1; r <= 4; r++) { //loop each row in this column
+                        if (gridData[r][c].isSolution) colSum += gridData[r][c].value; //if the cell is a part of the solution and add its value col sum
+                    }
+                    gridData[0][c] = new Cell(); //creates a new cells at row 0
+                    gridData[0][c].value = colSum; //store the calculated sum in the cell
+
+                }
+
+                //this will return the hearts
+                if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
+                if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
+                if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
+
             }
 
-            // After intializing the cells, it will restore the cells data from saved state
-            for(int r =1; r<= 4; r++){  //loops rows 1 to 4 and skips row 0, since it is used for getting the sums
-                for(int c= 1; c<=4 ; c++){  //same as the previous line
-                    gridData[r][c].value = state.easyCellValues[r][c]; //restores the number
-                    gridData[r][c].isSolution = state.easyCellIsSolution[r][c]; //restore if it is part fo the solution
-                    gridData[r][c].isResolved = state.easyCellIsResolved[r][c]; //restores if player has already solved it
+            else {
+                //Restores the saved state, such as the lives and hints
+                lives = state.easyLives; //The saved lives will be restored
+                hints = state.easyHints; // the number of hints available will be restored
+                cellsResolved = state.easyCellsResolved; //this will determine how many cells have been restored
+                totalHints.setText(String.valueOf(hints));
+
+                //First, it will intialize all the cells first
+                for (int r = 0; r <= 4; r++) {
+                    for (int c = 0; c <= 4; c++) {
+                        gridData[r][c] = new Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
+                    }
                 }
+
+                // After intializing the cells, it will restore the cells data from saved state
+                for (int r = 1; r <= 4; r++) {  //loops rows 1 to 4 and skips row 0, since it is used for getting the sums
+                    for (int c = 1; c <= 4; c++) {  //same as the previous line
+                        gridData[r][c].value = state.easyCellValues[r][c]; //restores the number
+                        gridData[r][c].isSolution = state.easyCellIsSolution[r][c]; //restore if it is part fo the solution
+                        gridData[r][c].isResolved = state.easyCellIsResolved[r][c]; //restores if player has already solved it
+                    }
+                }
+
+                //Recalculates the sum of the rows
+                for (int r = 1; r <= 4; r++) { //it loops each row
+                    int rowSum = 0;
+                    for (int c = 1; c <= 4; c++) { //loop each colum in this row
+                        if (gridData[r][c].isSolution) //if the cell is a solution
+                            rowSum += gridData[r][c].value; //the value of the cell will be added to the row sum
+                    }
+                    gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
+                    gridData[r][0].value = rowSum; //it stores the calculated sum in the box
+                }
+                //recalculates the sum of the columns
+                for (int c = 1; c <= 4; c++) { //loop each column
+                    int colSum = 0;
+                    for (int r = 1; r <= 4; r++) { //loop each row in this column
+                        if (gridData[r][c].isSolution)
+                            colSum += gridData[r][c].value; //if the cell is a part of the solution and add its value col sum
+                    }
+                    gridData[0][c] = new Cell(); //creates a new cells at row 0
+                    gridData[0][c].value = colSum; //store the calculated sum in the cell
+
+                }
+
+                //this will return the hearts
+                if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
+                if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
+                if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
             }
 
-            //Recalculates the sum of the rows
-            for (int r = 1; r <= 4; r++) { //it loops each row
-                int rowSum = 0;
-                for (int c = 1; c <= 4; c++) { //loop each colum in this row
-                    if (gridData[r][c].isSolution) //if the cell is a solution
-                        rowSum += gridData[r][c].value; //the value of the cell will be added to the row sum
-                }
-                gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
-                gridData[r][0].value = rowSum; //it stores the calculated sum in the box
-            }
-            //recalculates the sum of the columns
-            for (int c = 1; c <= 4; c++) { //loop each column
-                int colSum = 0;
-                for (int r = 1; r <= 4; r++) { //loop each row in this column
-                    if (gridData[r][c].isSolution) colSum += gridData[r][c].value; //if the cell is a part of the solution and add its value col sum
-                }
-                gridData[0][c] = new Cell(); //creates a new cells at row 0
-                gridData[0][c].value = colSum; //store the calculated sum in the cell
-
-            }
-
-            //this will return the hearts
-            if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
-            if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
-            if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
         }
         else{
             generatePuzzle();
@@ -298,6 +345,16 @@ public class EasyPageController {
         }
 
         if (lives <= 0) {
+            saveGameToState();
+            try {
+                FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_failed.fxml"));
+                Stage stage = (Stage) puzzleGrid.getScene().getWindow();
+                Parent root = levelSuccessLoader.load();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.out.println("Game Over!");
         }
     }
@@ -305,6 +362,7 @@ public class EasyPageController {
     // Will check if all numbers with true value are encircled and all numbers with false value are erased
     private void checkWinCondition() {
         if (cellsResolved == 16) {
+            saveGameToState();
             try {
                 FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
                 Stage stage = (Stage) puzzleGrid.getScene().getWindow();
@@ -401,6 +459,41 @@ public class EasyPageController {
     }
 
     @FXML
+    private void onRestartClick() {
+        // Lives will also be reset
+        lives = 3;
+        cellsResolved = 0;
+
+        heart1.setStyle("-fx-fill: #c82121;");
+        heart2.setStyle("-fx-fill: #c82121;");
+        heart3.setStyle("-fx-fill: #c82121;");
+
+        // Resets boxes' logic
+        for (Node node : puzzleGrid.getChildren()) {
+            if (node instanceof StackPane) {
+                StackPane pane = (StackPane) node;
+                Integer r = GridPane.getRowIndex(pane);
+                Integer c = GridPane.getColumnIndex(pane);
+                int row = (r == null) ? 0 : r;
+                int col = (c == null) ? 0 : c;
+
+                // lop-left empty
+                if (row == 0 && col == 0) continue;
+
+                // reset white boxes' logical data
+                if (row > 0 && col > 0) {
+                    gridData[row][col].isResolved = false;
+                }
+
+                // erases everything contained in the grid
+                pane.getChildren().clear();
+            }
+        }
+
+        populateGridUI();
+    }
+
+    @FXML
     private void backbutton(ActionEvent event) {
         //This will save the state of the game
         GameState state = GameState.getInstance();
@@ -408,6 +501,7 @@ public class EasyPageController {
         state.easyHints = hints;
         state.easyCellsResolved = cellsResolved;
         state.hasEasySavedState= true;
+        state.retryMode = false;
 
         //This will save the data in the grid
 
@@ -426,6 +520,21 @@ public class EasyPageController {
             // SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Helper method to save the current logical data of the round
+    private void saveGameToState() {
+        GameState state = GameState.getInstance();
+        state.hasEasySavedState = true;
+        state.retryMode = true;
+
+        for (int r = 1; r <= 4; r++) {
+            for (int c = 1; c <= 4; c++) {
+                state.easyCellValues[r][c] = gridData[r][c].value;
+                state.easyCellIsSolution[r][c] = gridData[r][c].isSolution;
+                state.easyCellIsResolved[r][c] = gridData[r][c].isResolved;
+            }
         }
     }
 }

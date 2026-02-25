@@ -27,10 +27,10 @@ public class SettingsController implements Initializable {
     @FXML private Slider soundVolume;
 
     private static Clip audioClip;
-    private static Clip sfxsoundClip;
-    private static boolean isMusicOn = false;
+    private static Clip soundClip;
+    private static boolean isMusicOn = true;
     private static boolean isSoundOn = true;
-    private static double musicSavedVolume = 0.0;
+    private static double musicSavedVolume = 100.0;
     private static double soundSavedVolume = 100.0;
 
     @Override
@@ -77,7 +77,7 @@ public class SettingsController implements Initializable {
                 soundVolume.valueProperty().addListener((obs, oldVal, newVal) -> {
                     applySliderFill(soundVolume);
                     soundSavedVolume = newVal.doubleValue();
-                    adjustClipVolume(soundSavedVolume, sfxsoundClip);
+                    adjustClipVolume(soundSavedVolume, soundClip);
 
                     if (soundSavedVolume > 0 && !sound_button.isSelected()) {
                         sound_button.setSelected(true);
@@ -100,20 +100,23 @@ public class SettingsController implements Initializable {
                 audioClip.open(audioStream);
 
                 adjustClipVolume(musicSavedVolume, audioClip);
-                adjustClipVolume(soundSavedVolume, sfxsoundClip);
+
+                if (isMusicOn) {
+                    audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
             } catch (Exception e) {
                 System.out.println("Audio Error: " + e.getMessage());
             }
         }
 
-        if (sfxsoundClip == null) {
+        if (soundClip == null) {
             try {
                 URL sfxUrl = SettingsController.class.getResource("/audio/button_click.wav");
                 AudioInputStream sfxStream = AudioSystem.getAudioInputStream(sfxUrl);
-                sfxsoundClip = AudioSystem.getClip();
-                sfxsoundClip.open(sfxStream);
+                soundClip = AudioSystem.getClip();
+                soundClip.open(sfxStream);
 
-                adjustClipVolume(soundSavedVolume, sfxsoundClip);
+                adjustClipVolume(soundSavedVolume, soundClip);
             } catch (Exception e) {
                 System.out.println("SFX Error: " + e.getMessage());
             }
@@ -143,18 +146,18 @@ public class SettingsController implements Initializable {
 
     @FXML
     public void soundToggle() {
-        if (sfxsoundClip == null) return;
+        if (soundClip == null) return;
         isSoundOn = sound_button.isSelected();
         SettingsController.playClickSound();
 
         if (sound_button.isSelected()) {
             soundSavedVolume = 100.0;
             soundVolume.setValue(soundSavedVolume);
-            adjustClipVolume(soundSavedVolume, sfxsoundClip);
+            adjustClipVolume(soundSavedVolume, soundClip);
         } else {
             soundSavedVolume = 0.0;
             soundVolume.setValue(soundSavedVolume);
-            adjustClipVolume(soundSavedVolume, sfxsoundClip);
+            adjustClipVolume(soundSavedVolume, soundClip);
         }
     }
 
@@ -175,9 +178,9 @@ public class SettingsController implements Initializable {
     }
 
     public static void playClickSound() {
-        if (isSoundOn && sfxsoundClip != null) {
-            sfxsoundClip.setFramePosition(0);
-            sfxsoundClip.start();
+        if (isSoundOn && soundClip != null) {
+            soundClip.setFramePosition(0);
+            soundClip.start();
         }
     }
 
