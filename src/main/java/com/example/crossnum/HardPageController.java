@@ -15,6 +15,13 @@ import java.util.*;
 import java.util.Arrays;
 import java.util.Collections;
 
+/*
+    The hard mode of the game uses a Backtracking Algorithm with Constraints Propagation
+    1. Backtracking - The algorithm recursively test different values and undoes them when it encounters a dead end.
+    2. Checks Validity - It happens before placing a digit, it scans all the cells. If the digit has similar in the row or column
+        its rejected. If there is no conflict the digit is placed.
+    3. Randomizes the digit order each time, making every puzzle unique
+ */
 public class HardPageController {
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
     private final Map<String, Integer> solution = new HashMap<>();
@@ -43,9 +50,11 @@ public class HardPageController {
 
     private Timeline timer;
     private int secondsLeft = 15 * 60;
+    private int hintsLeft =3;
 
     @FXML private Button backbuttonHard;
     @FXML private Button hint;
+    @FXML private Button restartButton;
     @FXML private Label timerLabel;
     @FXML private TextField tf_r1c1, tf_r1c2, tf_r1c3, tf_r1c4, tf_r1c5; //All textfields in row1
     @FXML private TextField tf_r2c1, tf_r2c2, tf_r2c3, tf_r2c4, tf_r2c5, tf_r2c6; //All textfields in row 2
@@ -86,8 +95,67 @@ public class HardPageController {
     }
 
 
-    @FXML
-    protected void onHintClick() {
+
+        @FXML
+        protected void onHintClick() {
+            if (hintsLeft <= 0) return;
+
+            // Collect all unfilled or wrong cells
+            List<Map.Entry<String, TextField>> emptyCells = new ArrayList<>();
+            for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
+                String input = entry.getValue().getText().trim();
+                if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
+                    emptyCells.add(entry);
+                }
+            }
+
+            if (emptyCells.isEmpty()) return;
+
+            // Pick a random unfilled cell and reveal it
+            Collections.shuffle(emptyCells);
+            Map.Entry<String, TextField> chosen = emptyCells.get(0);
+            TextField tf = chosen.getValue();
+            tf.setText(String.valueOf(solution.get(chosen.getKey())));
+            tf.setStyle("-fx-background-color: #c8f7c5;"); // green
+            tf.setEditable(false);
+
+            hintsLeft--;
+            updateHintButton();
+            checkIfAllCorrect();
+        }
+        private void updateHintButton() {
+            if (hintsLeft <= 0) {
+                hint.setDisable(true);
+                hint.setOpacity(0.4);
+            }
+
+       @FXML private void onRestartClick() {
+            // Generates a new solution
+            solution.clear();
+            generateSolution();
+
+            // Recalculate sums
+            displaySums();
+
+            //  Reset all fields
+            for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
+                TextField tf = entry.getValue();
+                tf.setEditable(true);
+                tf.clear();
+                tf.setStyle("-fx-background-color: #fff;");
+            }
+
+            //  Reset timer
+            timer.stop();
+            secondsLeft = 15 * 60;
+            timerLabel.setText("15:00");
+            startTimer();
+
+            // Reset hints
+            hintsLeft = 3;
+            hint.setDisable(false);
+            hint.setOpacity(1.0);
+        }
 
     }
     // this method is used to make the timer works
@@ -198,7 +266,7 @@ public class HardPageController {
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             String input = entry.getValue().getText().trim();
             if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
-                return; 
+                return;
             }
         }
 
@@ -255,4 +323,6 @@ public class HardPageController {
         }
         return true;
     }
+
+
 }

@@ -46,12 +46,12 @@
 
                       <HBox alignment="CENTER" spacing="50.0">
                     <children>
-                        <Button fx:id="mainMenuButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="202.0" style="-fx-background-color: #2d532c; -fx-background-radius: 50;" text="MAIN MENU" textFill="WHITE">
+                        <Button fx:id="mainMenuButton" mnemonicParsing="false" onAction="#onMainMenu" prefHeight="40.0" prefWidth="202.0" style="-fx-background-color: #2d532c; -fx-background-radius: 50;" text="MAIN MENU" textFill="WHITE">
                             <font>
                                 <Font name="Arial" size="21.0" />
                             </font>
                         </Button>
-                        <Button fx:id="nextButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="202.0" style="-fx-background-radius: 50; -fx-background-color: #fff;" text="NEXT">
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#onNext" prefHeight="40.0" prefWidth="202.0" style="-fx-background-radius: 50; -fx-background-color: #fff;" text="NEXT">
                             <font>
                                 <Font name="Arial" size="21.0" />
                             </font>
