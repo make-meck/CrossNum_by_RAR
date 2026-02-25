@@ -56,6 +56,7 @@ public class HardPageController {
     @FXML private Button hint;
     @FXML private Button restartButton;
     @FXML private Label timerLabel;
+    @FXML private Label hintLabel;
     @FXML private TextField tf_r1c1, tf_r1c2, tf_r1c3, tf_r1c4, tf_r1c5; //All textfields in row1
     @FXML private TextField tf_r2c1, tf_r2c2, tf_r2c3, tf_r2c4, tf_r2c5, tf_r2c6; //All textfields in row 2
     @FXML private TextField tf_r3c1, tf_r3c2, tf_r3c5, tf_r3c6; //All Textfields in row3
@@ -76,23 +77,40 @@ public class HardPageController {
     @FXML
     private void initialize() {
         buildFieldMap();
-        generateSolution();
-        displaySums();
-        clearFieldsForPlayer();
-        startTimer();
-    }
-    @FXML
-    private void backbutton(ActionEvent event) {
-        try {
-            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
-            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
-            Parent root = backbuttonLoader.load();
-            stage.getScene().setRoot(root);
-            SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        GameState state= GameState.getInstance();
+        //Restore saved state
+        if (state.hasSavedState) {
+            solution.putAll(state.solution);
+            secondsLeft = state.secondsLeft;
+            hintsLeft = state.hintsLeft;
+
+            displaySums();
+            clearFieldsForPlayer();
+
+            //Restore the field values and styles
+            for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
+                String key = entry.getKey();
+                TextField tf = entry.getValue();
+                tf.setText(state.fieldValues.getOrDefault(key, ""));
+                tf.setStyle(state.fieldStyles.getOrDefault(key, ""));
+            }
+
+            //This will update the timeLabel as the state of the game is saved
+            int minutes = secondsLeft /60;
+            int seconds = secondsLeft %60;
+            timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
         }
-    }
+        else {
+            //If the condition is not satisfied it will generate a new game
+                generateSolution();
+                displaySums();
+                clearFieldsForPlayer();
+            }
+        startTimer();
+        updateHintButton();
+        }
+
 
 
 
@@ -125,7 +143,8 @@ public class HardPageController {
             checkIfAllCorrect();
         }
         private void updateHintButton() {
-            if (hintsLeft <= 0) {
+        hintLabel.setText(String.valueOf(hintsLeft));
+            if (hintsLeft < 0) {
                 hint.setDisable(true);
                 hint.setOpacity(0.4);
             }
@@ -145,7 +164,7 @@ public class HardPageController {
                 TextField tf = entry.getValue();
                 tf.setEditable(true);
                 tf.clear();
-                tf.setStyle("-fx-background-color: #fff;");
+                tf.setStyle(" ");
             }
 
             //  Reset timer
@@ -158,6 +177,8 @@ public class HardPageController {
             hintsLeft = 3;
             hint.setDisable(false);
             hint.setOpacity(1.0);
+
+            updateHintButton();
         }
 
 
@@ -308,7 +329,7 @@ public class HardPageController {
         if (index == cells.size()) return true;
 
         String key = cells.get(index);
-        List<Integer> digits = Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12);
+        List<Integer> digits = Arrays.asList(1,2,3,4,5,6,7,8,9);
         Collections.shuffle(digits); // random order each time
 
         for (int digit : digits) {
@@ -331,6 +352,31 @@ public class HardPageController {
         }
         return true;
     }
+    @FXML
+    private void backbutton(ActionEvent event) {
 
+        //This section will save the current state of the game
+        GameState state= GameState.getInstance();
+        state.solution = new HashMap<>(solution);
+        state.secondsLeft= secondsLeft;
+        state.hintsLeft=hintsLeft;
+        state.hasSavedState=true;
+
+        //this will save the fields' value and style
+        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()){
+            state.fieldValues.put(entry.getKey(), entry.getValue().getText());
+            state.fieldStyles.put(entry.getKey(), entry.getValue().getStyle());
+        }
+        timer.stop();
+        try {
+            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
+            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
+            Parent root = backbuttonLoader.load();
+            stage.getScene().setRoot(root);
+            SettingsController.setupGlobalClickSounds(stage.getScene());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
