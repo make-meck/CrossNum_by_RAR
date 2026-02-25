@@ -116,7 +116,8 @@ public class HardPageController {
             Map.Entry<String, TextField> chosen = emptyCells.get(0);
             TextField tf = chosen.getValue();
             tf.setText(String.valueOf(solution.get(chosen.getKey())));
-            tf.setStyle("-fx-background-color: #c8f7c5;"); // green
+            tf.setStyle("-fx-font-size:25px;"+
+                    "-fx-text-fill: #f1dd2b;"); // yellow
             tf.setEditable(false);
 
             hintsLeft--;
@@ -199,7 +200,9 @@ public class HardPageController {
             fieldMap.put("2,6", tf_r6c2); fieldMap.put("3,6", tf_r6c3);
             fieldMap.put("4,6", tf_r6c4); fieldMap.put("5,6", tf_r6c5);
             fieldMap.put("6,6", tf_r6c6);
+
         }
+
 
         private void displaySums() {
             Map<List<String>, Label> runLabelMap = new LinkedHashMap<>();
@@ -223,7 +226,6 @@ public class HardPageController {
             runLabelMap.put(Arrays.asList("4,5","4,6"),                            lbl_r4c4_down);
             runLabelMap.put(Arrays.asList("5,1","5,2","5,3","5,4","5,5","5,6"),   lbl_r0c5_down);
            runLabelMap.put(Arrays.asList("6,2","6,3", "6,4", "6,5", "6,6"),         lbl_r1c6_down);
-           //runLabelMap.put(Arrays.asList("6,4","6,5","6,6"),                      lbl_r4c6_down);
 
             for (Map.Entry<List<String>, Label> entry : runLabelMap.entrySet()) {
                 int sum = 0;
@@ -256,10 +258,13 @@ public class HardPageController {
                 if (newVal.isEmpty()) {
                     tf.setStyle("-fx-background-color: #fff;");
                 } else if (Integer.parseInt(newVal) == solution.get(key)) {
-                    tf.setStyle("-fx-background-color: #c8f7c5;"); // green
+                    tf.setStyle("-fx-text-fill: #00bf63;"+
+                            "-fx-background-color:#fff;"+
+                            "-fx-border-radius:0px;"+
+                            "-fx-border-color:transparent;"); // green
                     checkIfAllCorrect();
                 } else {
-                    tf.setStyle("-fx-background-color: #f7c5c5;"); // red
+                    tf.setStyle("-fx-text-fill: #c82121;"); // red
                 }
             });
         }
@@ -303,7 +308,7 @@ public class HardPageController {
         if (index == cells.size()) return true;
 
         String key = cells.get(index);
-        List<Integer> digits = Arrays.asList(1,2,3,4,5,6,7,8,9);
+        List<Integer> digits = Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12);
         Collections.shuffle(digits); // random order each time
 
         for (int digit : digits) {

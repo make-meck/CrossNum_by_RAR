@@ -139,3 +139,21 @@
 #restart:hover {
     -fx-opacity: 0.7;
 }
+.text-field{
+    -fx-background-color:white;
+    -fx-border-color:transparent;
+    -fx-background-insets:0;
+    -fx-padding: 4;
+    -fx-alignment: center;
+    -fx-background-radius:10;
+}
+.text-field:focused{
+    -fx-background-color:white;
+    -fx-border-color:transparent;
+    -fx-background-insets:0;
+    -fx-background-radius:10;
+}
+.cell-box{
+    -fx-background-color:white;
+    -fx-background-radius: 10;
+}
