@@ -81,7 +81,7 @@ public class HardPageController {
         GameState state= GameState.getInstance();
         //Restore saved state
         if (state.hasSavedState) {
-            solution.putAll(state.solution);
+            solution.putAll(state.hardSolution);
             secondsLeft = state.secondsLeft;
             hintsLeft = state.hintsLeft;
 
@@ -92,8 +92,8 @@ public class HardPageController {
             for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
                 String key = entry.getKey();
                 TextField tf = entry.getValue();
-                tf.setText(state.fieldValues.getOrDefault(key, ""));
-                tf.setStyle(state.fieldStyles.getOrDefault(key, ""));
+                tf.setText(state.hardFieldValues.getOrDefault(key, ""));
+                tf.setStyle(state.hardFieldStyles.getOrDefault(key, ""));
             }
 
             //This will update the timeLabel as the state of the game is saved
@@ -179,6 +179,7 @@ public class HardPageController {
             hint.setOpacity(1.0);
 
             updateHintButton();
+            GameState.getInstance().hasSavedState=false;
         }
 
 
@@ -357,15 +358,15 @@ public class HardPageController {
 
         //This section will save the current state of the game
         GameState state= GameState.getInstance();
-        state.solution = new HashMap<>(solution);
+        state.hardSolution = new HashMap<>(solution);
         state.secondsLeft= secondsLeft;
         state.hintsLeft=hintsLeft;
         state.hasSavedState=true;
 
         //this will save the fields' value and style
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()){
-            state.fieldValues.put(entry.getKey(), entry.getValue().getText());
-            state.fieldStyles.put(entry.getKey(), entry.getValue().getStyle());
+            state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
+            state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
         }
         timer.stop();
         try {

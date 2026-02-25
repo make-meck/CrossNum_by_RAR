@@ -67,7 +67,60 @@ public class EasyPageController {
         penImage.setImage(blackPen);
         eraserImage.setImage(whiteEraser);
 
-        generatePuzzle();
+        //Once the player has opened the easy mode, the saved game state will display in the screen
+
+        GameState state= GameState.getInstance();
+        if(state.hasEasySavedState) {
+            //Restores the saved state, such as the lives and hints
+            lives = state.easyLives;
+            hints = state.easyHints;
+            cellsResolved = state.easyCellsResolved;
+            totalHints.setText(String.valueOf(hints));
+
+            //First, it will intialize all the cells first
+            for(int r = 0; r<=4; r++){
+                for (int c= 0; c<=4; c++){
+                    gridData[r][c] = new Cell();
+                }
+            }
+
+            // After intializing the cells, it will restore the cells data from saved stae
+            for(int r =1; r<= 4; r++){
+                for(int c= 1; c<=4 ; c++){
+                    gridData[r][c].value = state.easyCellValues[r][c];
+                    gridData[r][c].isSolution = state.easyCellIsSolution[r][c];
+                    gridData[r][c].isResolved = state.easyCellIsResolved[r][c];
+                }
+            }
+
+            //Recalculates the sums
+            for (int r = 1; r <= 4; r++) {
+                int rowSum = 0;
+                for (int c = 1; c <= 4; c++) {
+                    if (gridData[r][c].isSolution) rowSum += gridData[r][c].value;
+                }
+                gridData[r][0] = new Cell();
+                gridData[r][0].value = rowSum;
+            }
+            for (int c = 1; c <= 4; c++) {
+                int colSum = 0;
+                for (int r = 1; r <= 4; r++) {
+                    if (gridData[r][c].isSolution) colSum += gridData[r][c].value;
+                }
+                gridData[0][c] = new Cell();
+                gridData[0][c].value = colSum;
+
+            }
+
+            //this will return the hearts
+            if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
+            if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
+            if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
+        }
+        else{
+            generatePuzzle();
+        }
+
         populateGridUI();
     }
 
@@ -136,6 +189,9 @@ public class EasyPageController {
                 // No UI and data for the top-left corner
                 if (row == 0 && col == 0) continue; // [0,0]
 
+                //This clear the existing children before adding new ones, this is important in restoring data
+                pane.getChildren().clear();
+
                 // style for displaying numbers
                 Label label = new Label(String.valueOf(gridData[row][col].value));
                 label.setFont(Font.font("Arial", FontWeight.BOLD, 25));
@@ -150,6 +206,16 @@ public class EasyPageController {
                     label.setTextFill(Color.BLACK);
                     pane.getChildren().add(label);
 
+
+                    //restores visual state if cell was already resolved
+                    if(gridData[row][col].isResolved){
+                        if(gridData[row][col].isSolution){
+                            drawCircle(pane);
+                        }
+                        else{
+                            label.setText("");
+                        }
+                    }
                     // passes arguments every box clicked for pen and eraser gameplay
                     int finalRow = row;
                     int finalCol = col;
@@ -334,6 +400,22 @@ public class EasyPageController {
 
     @FXML
     private void backbutton(ActionEvent event) {
+        //This will save the state of the game
+        GameState state = GameState.getInstance();
+        state.easyLives= lives;
+        state.easyHints = hints;
+        state.easyCellsResolved = cellsResolved;
+        state.hasEasySavedState= true;
+
+        //This will save the data in the grid
+
+        for(int r = 1; r<=4; r++){
+            for(int c = 1; c<=4; c++){
+                state.easyCellValues[r][c] = gridData[r][c].value;
+                state.easyCellIsSolution[r][c]= gridData[r][c].isSolution;
+                state.easyCellIsResolved[r][c] = gridData[r][c].isResolved;
+            }
+        }
         try {
             FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
             Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
