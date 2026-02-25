@@ -25,7 +25,8 @@ public class AchievementHardController {
         int stars;
         if (secondsLeft > 8 * 60) stars = 3;
         else if (secondsLeft > 4 * 60) stars = 2;
-        else stars = 1;
+        else if( secondsLeft >= 1 *60) stars= 1;
+        else stars = 0;
 
         // Dim stars that weren't earned
         List<Group> allStars = List.of(star1, star2, star3);
@@ -51,6 +52,7 @@ public class AchievementHardController {
     @FXML
     private void onNext(ActionEvent event) {
         try {
+            GameState.getInstance().hasSavedState= false;
             FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("hard_page.fxml"));
             Stage stage = (Stage) nextButton.getScene().getWindow();
             Parent root = backbuttonLoader.load();

@@ -319,7 +319,7 @@ public class HardPageController {
     //This method allows to go to another fxml, where it shows the performance of the player for the previous game.
     private void levelAchievement() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
             Parent root = loader.load();
 
             AchievementHardController ac = loader.getController();
