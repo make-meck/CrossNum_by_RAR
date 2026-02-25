@@ -72,43 +72,45 @@ public class EasyPageController {
         GameState state= GameState.getInstance();
         if(state.hasEasySavedState) {
             //Restores the saved state, such as the lives and hints
-            lives = state.easyLives;
-            hints = state.easyHints;
-            cellsResolved = state.easyCellsResolved;
+            lives = state.easyLives; //The saved lives will be restored
+            hints = state.easyHints; // the number of hints available will be restored
+            cellsResolved = state.easyCellsResolved; //this will determine how many cells have been restored
             totalHints.setText(String.valueOf(hints));
 
             //First, it will intialize all the cells first
             for(int r = 0; r<=4; r++){
                 for (int c= 0; c<=4; c++){
-                    gridData[r][c] = new Cell();
+                    gridData[r][c] = new Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
                 }
             }
 
-            // After intializing the cells, it will restore the cells data from saved stae
-            for(int r =1; r<= 4; r++){
-                for(int c= 1; c<=4 ; c++){
-                    gridData[r][c].value = state.easyCellValues[r][c];
-                    gridData[r][c].isSolution = state.easyCellIsSolution[r][c];
-                    gridData[r][c].isResolved = state.easyCellIsResolved[r][c];
+            // After intializing the cells, it will restore the cells data from saved state
+            for(int r =1; r<= 4; r++){  //loops rows 1 to 4 and skips row 0, since it is used for getting the sums
+                for(int c= 1; c<=4 ; c++){  //same as the previous line
+                    gridData[r][c].value = state.easyCellValues[r][c]; //restores the number
+                    gridData[r][c].isSolution = state.easyCellIsSolution[r][c]; //restore if it is part fo the solution
+                    gridData[r][c].isResolved = state.easyCellIsResolved[r][c]; //restores if player has already solved it
                 }
             }
 
-            //Recalculates the sums
-            for (int r = 1; r <= 4; r++) {
+            //Recalculates the sum of the rows
+            for (int r = 1; r <= 4; r++) { //it loops each row
                 int rowSum = 0;
-                for (int c = 1; c <= 4; c++) {
-                    if (gridData[r][c].isSolution) rowSum += gridData[r][c].value;
+                for (int c = 1; c <= 4; c++) { //loop each colum in this row
+                    if (gridData[r][c].isSolution) //if the cell is a solution
+                        rowSum += gridData[r][c].value; //the value of the cell will be added to the row sum
                 }
-                gridData[r][0] = new Cell();
-                gridData[r][0].value = rowSum;
+                gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
+                gridData[r][0].value = rowSum; //it stores the calculated sum in the box
             }
-            for (int c = 1; c <= 4; c++) {
+            //recalculates the sum of the columns
+            for (int c = 1; c <= 4; c++) { //loop each column
                 int colSum = 0;
-                for (int r = 1; r <= 4; r++) {
-                    if (gridData[r][c].isSolution) colSum += gridData[r][c].value;
+                for (int r = 1; r <= 4; r++) { //loop each row in this column
+                    if (gridData[r][c].isSolution) colSum += gridData[r][c].value; //if the cell is a part of the solution and add its value col sum
                 }
-                gridData[0][c] = new Cell();
-                gridData[0][c].value = colSum;
+                gridData[0][c] = new Cell(); //creates a new cells at row 0
+                gridData[0][c].value = colSum; //store the calculated sum in the cell
 
             }
 

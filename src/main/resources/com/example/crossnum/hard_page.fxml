@@ -274,7 +274,7 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #2d532c; -fx-background-radius: 10;" GridPane.columnIndex="1">
                      <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-radius: 10;" />
-                        <Label fx:id="lbl_r0c1_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" text="25" textFill="WHITE" translateX="-20.0" translateY="13.0">
+                        <Label fx:id="lbl_r0c1_down" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="36.0" prefWidth="39.0" textFill="WHITE" translateX="-20.0" translateY="13.0">
                            <font>
                               <Font name="Arial Bold" size="25.0" />
                            </font>
