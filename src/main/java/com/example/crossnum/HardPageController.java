@@ -26,6 +26,8 @@ public class HardPageController {
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
     private final Map<String, Integer> solution = new HashMap<>();
 
+    //This defines which cells belongs together in a row or column grouo, so the group can have unique digits and display its sum
+
     private static final List<List<String>> RUNS = Arrays.asList(
             // ACROSS
             Arrays.asList("1,1","2,1","3,1","4,1","5,1"),
@@ -198,7 +200,10 @@ public class HardPageController {
         timer.play();
     }
 
-
+        /*This method servers as the map who coordinates to the corresponsing textfield.
+        e.g., "1,3" is for the textfield found in row 1 column 3
+        for the coordinates of the cell it follows the format column by row.
+        */
         private void buildFieldMap() {
             // row 1
             fieldMap.put("1,1", tf_r1c1); fieldMap.put("2,1", tf_r1c2);
@@ -225,7 +230,7 @@ public class HardPageController {
 
         }
 
-
+        //This method happens once the solution is generated, and it calculated the sum of each run and displays it on the corresponding label
         private void displaySums() {
             Map<List<String>, Label> runLabelMap = new LinkedHashMap<>();
 
@@ -259,18 +264,24 @@ public class HardPageController {
                 }
             }
         }
+
+        //This method as the listener for the player's input. It restricts inputs to a single digit 1-9,
+        //the digit will turn green if correct, red if wrong
+    //triggers a win check after every correct entry
     private void clearFieldsForPlayer() {
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             String key = entry.getKey();
             TextField tf = entry.getValue();
             tf.clear();
 
+            //This sets up a listener that fires every time the text in the field changes
             tf.textProperty().addListener((obs, oldVal, newVal) -> {
                 // Only allow single digit 1–9
                 if (!newVal.matches("[1-9]?")) {
                     tf.setText(oldVal);
                     return;
                 }
+                //This acts as the second checkpoint to only allows single digits
                 if (newVal.length() > 1) {
                     tf.setText(newVal.substring(newVal.length() - 1));
                     return;
@@ -291,19 +302,21 @@ public class HardPageController {
             });
         }
     }
-
+    //This method checks whether the player has correctly filled in the entire puzzle
     private void checkIfAllCorrect() {
-        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
-            String input = entry.getValue().getText().trim();
-            if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
+        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) { //It goes through evey cell
+            String input = entry.getValue().getText().trim(); //As it goes to every cell, it grabs the players input and checks it the field is empty or not a solution.
+            if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) { //If either is true for even one cell the method immediately return- meaning the puzzle is not complete yet.
                 return;
             }
         }
-
+        //If all cells are correntm the timer will stop and call the levelachievement() method
         timer.stop();
         levelAchievement();
 
     }
+
+    //This method allows to go to another fxml, where it shows the performance of the player for the previous game.
     private void levelAchievement() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
@@ -320,19 +333,31 @@ public class HardPageController {
             e.printStackTrace();
         }
     }
+
+    //This method prepares the list of cells, to support the process of backtrack
     private void generateSolution() {
-        solution.clear();
-        List<String> cells = new ArrayList<>(fieldMap.keySet());
-        backtrack(cells, 0);
+        solution.clear(); //It clears all the previous stored solution
+        List<String> cells = new ArrayList<>(fieldMap.keySet());//Gets all the cells keys from the fieldMap and puts them into a list.
+        backtrack(cells, 0); //it begins with the first cell in the list. Backtrack will recursively fill in each cell with a valid digit until the entire puzzle is solved
     }
 
     private boolean backtrack(List<String> cells, int index) {
-        if (index == cells.size()) return true;
+        if (index == cells.size()) return true; //If index has reached the end of the cell list, it means every cell has been successfully filled. It return true to signal that the puzzle is complete
 
-        String key = cells.get(index);
-        List<Integer> digits = Arrays.asList(1,2,3,4,5,6,7,8,9);
+        String key = cells.get(index); //it grabs the currect cell to woek on for example ("1,1", or "2,3"
+        List<Integer> digits = Arrays.asList(1,2,3,4,5,6,7,8,9); //the algorithm tries digits in a different order each time
         Collections.shuffle(digits); // random order each time
 
+        /*
+        This is the core loop. For each digit it:
+
+        1. Checks if the digit is valid for this cell (no conflict in its row/column group)
+        2. If valid, places it in the solution
+        3. Recursively moves to the next cell (index + 1)
+        4. If the recursive call eventually returns true, the whole thing succeeds and bubbles true back up
+        5.  If it returns false (dead end), it removes the digit and tries the next one — this is the "backtracking" part
+        6. If all 9 digits fail, it returns false, telling the previous call to backtrack as well
+         */
         for (int digit : digits) {
             if (isValid(key, digit)) {
                 solution.put(key, digit);
@@ -342,17 +367,19 @@ public class HardPageController {
         }
         return false;
     }
-
+    //This method make sure that there is no duplicate within the same row or column group
     private boolean isValid(String key, int digit) {
-        for (List<String> run : RUNS) {
-            if (!run.contains(key)) continue;
+        for (List<String> run : RUNS) { //Goes through every run.
+            if (!run.contains(key)) continue; //if the current cell doesn't belong to that run, it will be skipped and moves to the next one
             for (String other : run) {
                 if (!other.equals(key) && solution.getOrDefault(other, -1) == digit)
-                    return false;
+                    return false; //If a matching digit is found in the same run, it returns false- the number is not a part of the solution
             }
         }
         return true;
     }
+
+    //This method is responsible for saving the game state and the action of the back button
     @FXML
     private void backbutton(ActionEvent event) {
 
