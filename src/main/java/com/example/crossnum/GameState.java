@@ -15,7 +15,7 @@ public class GameState {
     public boolean hasSavedState= false;
 
     //This is for the saving the state of the easy mode
-    public int[] [] easyCellValues = new int[5][5];
+    public int[][] easyCellValues = new int[5][5];
     public boolean[][] easyCellIsSolution = new boolean[5][5];
     public boolean[][] easyCellIsResolved = new boolean[5][5];
     public int[] easyRowsSums = new int[5];
@@ -23,7 +23,8 @@ public class GameState {
     public int easyLives= 3;
     public int easyHints= 3;
     public int easyCellsResolved = 0;
-    public boolean hasEasySavedState= false;
+    public boolean hasEasySavedState = false;
+    public boolean retryMode = false;
 
     public static GameState getInstance(){
         if(instance==null){

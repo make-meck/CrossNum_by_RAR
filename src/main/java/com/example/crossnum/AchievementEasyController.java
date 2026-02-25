@@ -18,6 +18,7 @@ import java.util.List;
         @FXML private Group star3;
         @FXML private Button mainMenuButton;
         @FXML private Button nextButton;
+        @FXML private Button retryButton;
 
 
         //it determines the number of stars the player can have
@@ -49,12 +50,30 @@ import java.util.List;
                 e.printStackTrace();
             }
         }
+
         @FXML
         private void onNext(ActionEvent event) {
             try {
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
                 Stage stage = (Stage) nextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @FXML
+        private void onRetry (ActionEvent event) {
+            GameState state = GameState.getInstance();
+            // indicates that the user failed and still has the saved puzzle
+            state.hasEasySavedState = true;
+
+            try {
+                FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
+                Stage stage = (Stage) retryButton.getScene().getWindow();
+                Parent root = retryLoader.load();
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
             } catch (IOException e) {
