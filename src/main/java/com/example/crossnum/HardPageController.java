@@ -52,7 +52,7 @@ public class HardPageController {
     );
 
     private Timeline timer;
-    private int secondsLeft = 15 * 60;
+    private int secondsLeft = 8 * 60;
     private int hintsLeft = 3;
 
     @FXML
@@ -342,9 +342,13 @@ public class HardPageController {
 
     //This method checks whether the player has correctly filled in the entire puzzle
     private void checkIfAllCorrect() {
-        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) { //It goes through evey cell
-            String input = entry.getValue().getText().trim(); //As it goes to every cell, it grabs the players input and checks it the field is empty or not a solution.
-            if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) { //If either is true for even one cell the method immediately return- meaning the puzzle is not complete yet.
+        //It goes through evey cell
+        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
+            //As it goes to every cell, it grabs the players input and checks it the field is empty or not a solution.
+            String input = entry.getValue().getText().trim();
+
+            //If either is true for even one cell the method immediately returns- meaning the puzzle is not complete yet.
+            if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
                 return;
             }
         }
@@ -374,17 +378,29 @@ public class HardPageController {
 
     //This method prepares the list of cells, to support the process of backtrack
     private void generateSolution() {
-        solution.clear(); //It clears all the previous stored solution
-        List<String> cells = new ArrayList<>(fieldMap.keySet());//Gets all the cells keys from the fieldMap and puts them into a list.
-        backtrack(cells, 0); //it begins with the first cell in the list. Backtrack will recursively fill in each cell with a valid digit until the entire puzzle is solved
+        //It clears all the previous stored solution
+        solution.clear();
+
+        //Gets all the cells keys from the fieldMap and puts them into a list.
+        List<String> cells = new ArrayList<>(fieldMap.keySet());
+
+        //it begins with the first cell in the list.
+        // Backtrack will recursively fill in each cell with a valid digit until the entire puzzle is solved
+        backtrack(cells, 0);
     }
 
     private boolean backtrack(List<String> cells, int index) {
+        //If index has reached the end of the cell list, it means every cell has been successfully filled.
+        // It return true to signal that the puzzle is complete
         if (index == cells.size())
-            return true; //If index has reached the end of the cell list, it means every cell has been successfully filled. It return true to signal that the puzzle is complete
+            return true;
 
-        String key = cells.get(index); //it grabs the currect cell to woek on for example ("1,1", or "2,3"
-        List<Integer> digits = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9); //the algorithm tries digits in a different order each time
+        //it grabs the currect cell to woek on for example ("1,1", or "2,3").
+        String key = cells.get(index);
+
+        //the algorithm tries digits in a different order each time
+        List<Integer> digits = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+
         Collections.shuffle(digits); // random order each time
 
         /*
@@ -409,12 +425,15 @@ public class HardPageController {
 
     //This method make sure that there is no duplicate within the same row or column group
     private boolean isValid(String key, int digit) {
-        for (List<String> run : RUNS) { //Goes through every run.
+        //Goes through every run.
+        for (List<String> run : RUNS) {
+            //if the current cell doesn't belong to that run, it will be skipped and moves to the next one
             if (!run.contains(key))
-                continue; //if the current cell doesn't belong to that run, it will be skipped and moves to the next one
+                continue;
+            //If a matching digit is found in the same run, it returns false- the number is not a part of the solution
             for (String other : run) {
                 if (!other.equals(key) && solution.getOrDefault(other, -1) == digit)
-                    return false; //If a matching digit is found in the same run, it returns false- the number is not a part of the solution
+                    return false;
             }
         }
         return true;

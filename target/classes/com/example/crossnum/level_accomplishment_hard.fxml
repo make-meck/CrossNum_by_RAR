@@ -24,7 +24,7 @@
                     </effect>
                 </Label>
 
-                <HBox alignment="CENTER" spacing="10.0">
+                <HBox fx:id="starBox" alignment="CENTER" spacing="10.0">
                     <children>
                         <Group fx:id="star1">
                             <children>
