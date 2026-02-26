@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +18,8 @@ public class AchievementHardController {
     @FXML private Group star3;
     @FXML private Button mainMenuButton;
     @FXML private Button nextButton;
+    @FXML private Button hardRetryButton;
+
 
 
     //it determines the number of stars the player can have
@@ -56,6 +59,23 @@ public class AchievementHardController {
             FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("hard_page.fxml"));
             Stage stage = (Stage) nextButton.getScene().getWindow();
             Parent root = backbuttonLoader.load();
+            stage.getScene().setRoot(root);
+            SettingsController.setupGlobalClickSounds(stage.getScene());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onHardRetry (ActionEvent event) {
+        GameState state = GameState.getInstance();
+        // indicates that the user failed and still has the saved puzzle
+        state.hasSavedState = true;
+
+        try {
+            FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("hard_page.fxml"));
+            Stage stage = (Stage) hardRetryButton.getScene().getWindow();
+            Parent root = retryLoader.load();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {

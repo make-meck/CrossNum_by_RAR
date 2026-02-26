@@ -15,7 +15,7 @@
     <children>
         <VBox alignment="CENTER" maxHeight="400" maxWidth="600" spacing="40.0">
             <children>
-                <Label text="EXCELLENT!" textFill="WHITE">
+                <Label fx:id="remarkLabel" text="EXCELLENT!" textFill="WHITE">
                     <font>
                         <Font name="Arial" size="60.0" />
                     </font>

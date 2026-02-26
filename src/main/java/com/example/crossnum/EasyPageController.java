@@ -71,7 +71,7 @@ public class EasyPageController {
         GameState state = GameState.getInstance();
         if(state.hasEasySavedState) {
 
-            if (state.retryMode) {
+            if (state.easyRetryMode) {
                 for(int r = 0; r<=4; r++){
                     for (int c= 0; c<=4; c++){
                         gridData[r][c] = new Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
@@ -501,7 +501,7 @@ public class EasyPageController {
         state.easyHints = hints;
         state.easyCellsResolved = cellsResolved;
         state.hasEasySavedState= true;
-        state.retryMode = false;
+        state.easyRetryMode = false;
 
         //This will save the data in the grid
 
@@ -527,7 +527,7 @@ public class EasyPageController {
     private void saveGameToState() {
         GameState state = GameState.getInstance();
         state.hasEasySavedState = true;
-        state.retryMode = true;
+        state.easyRetryMode = true;
 
         for (int r = 1; r <= 4; r++) {
             for (int c = 1; c <= 4; c++) {

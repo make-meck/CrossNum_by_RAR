@@ -18,7 +18,9 @@ import java.util.List;
         @FXML private Group star3;
         @FXML private Button mainMenuButton;
         @FXML private Button nextButton;
+        @FXML private Button mediumNextButton;
         @FXML private Button retryButton;
+        @FXML private Button mediumRetryButton;
 
 
         //it determines the number of stars the player can have
@@ -65,6 +67,19 @@ import java.util.List;
         }
 
         @FXML
+        private void onMediumNext(ActionEvent event) {
+            try {
+                FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
+                Stage stage = (Stage) mediumNextButton.getScene().getWindow();
+                Parent root = backbuttonLoader.load();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @FXML
         private void onRetry (ActionEvent event) {
             GameState state = GameState.getInstance();
             // indicates that the user failed and still has the saved puzzle
@@ -73,6 +88,23 @@ import java.util.List;
             try {
                 FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
                 Stage stage = (Stage) retryButton.getScene().getWindow();
+                Parent root = retryLoader.load();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @FXML
+        private void onMediumRetry (ActionEvent event) {
+            GameState state = GameState.getInstance();
+            // indicates that the user failed and still has the saved puzzle
+            state.hasMediumSavedState = true;
+
+            try {
+                FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
+                Stage stage = (Stage) mediumRetryButton.getScene().getWindow();
                 Parent root = retryLoader.load();
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
