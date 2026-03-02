@@ -52,7 +52,7 @@ public class HardPageController {
     );
 
     private Timeline timer;
-    private int secondsLeft = 8 * 60;
+    private int secondsLeft = 1 * 60;
     private int hintsLeft = 3;
 
     @FXML
@@ -129,10 +129,7 @@ public class HardPageController {
         }
         startTimer();
         updateHintButton();
-
-
     }
-
 
     @FXML
     protected void onHintClick() {
@@ -212,13 +209,15 @@ public class HardPageController {
                     int minutes = secondsLeft / 60;
                     int seconds = secondsLeft % 60;
                     timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+
+                    if(secondsLeft<=0){
+                        timer.stop();
+                        gameFailed();
+                    }
                 })
         );
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
-
-
-
 
 
     }
@@ -269,6 +268,11 @@ public class HardPageController {
 
     //This method happens once the solution is generated, and it calculated the sum of each run and displays it on the corresponding label
     private void displaySums() {
+        for (String cell : fieldMap.keySet()) {
+            if (!solution.containsKey(cell)) {
+                System.out.println("Missing cell: " + cell);
+            }
+        }
         Map<List<String>, Label> runLabelMap = new LinkedHashMap<>();
 
 
@@ -386,7 +390,12 @@ public class HardPageController {
 
         //it begins with the first cell in the list.
         // Backtrack will recursively fill in each cell with a valid digit until the entire puzzle is solved
-        backtrack(cells, 0);
+      boolean solved=  backtrack(cells, 0);
+
+        if(!solved){
+            System.out.println("Backtracking failed, retrying...");
+            generateSolution();
+        }
     }
 
     private boolean backtrack(List<String> cells, int index) {
@@ -440,14 +449,23 @@ public class HardPageController {
     }
 
 
-   /* private void gameFailed() {
-        saveGameToState();
+    private void gameFailed() {
+        // Save the current puzzle state before leaving
+        GameState state = GameState.getInstance();
+        state.hardSolution = new HashMap<>(solution);
+        state.secondsLeft = 15 * 60; // reset timer for retry
+        state.hintsLeft = hintsLeft;
+        state.hasSavedState = true;
+
+        // Save field values and styles
+        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
+            state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
+            state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_level_failed.fxml"));
             Parent root = loader.load();
-
-            AchievementHardController ac = loader.getController();
-
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
@@ -455,7 +473,7 @@ public class HardPageController {
             e.printStackTrace();
         }
     }
-*/
+
     //This method is responsible for saving the game state and the action of the back button
     @FXML
     private void backbutton(ActionEvent event) {
