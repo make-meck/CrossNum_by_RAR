@@ -283,6 +283,7 @@ public class EasyPageController {
             // Using pen
             // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
+                label.setTextFill(Color.web("#00bf63"));
                 drawCircle(pane);
                 cell.isResolved = true;
                 cellsResolved++;
@@ -290,6 +291,7 @@ public class EasyPageController {
             }
             // The lives will decrease if the wrong box is clicked
             else {
+                label.setTextFill(Color.web("#c82121"));
                 deductLife();
             }
         }
@@ -304,6 +306,7 @@ public class EasyPageController {
             }
             // The lives will decrease if the wrong box is clicked
             else {
+                label.setTextFill(Color.web("#c82121"));
                 deductLife();
             }
         }
@@ -313,7 +316,7 @@ public class EasyPageController {
     private void drawCircle(StackPane pane) {
         Circle circle = new Circle(25);
         circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.web("#365d35"));
+        circle.setStroke(Color.web("#00bf63"));
         circle.setStrokeWidth(4);
 
         circle.setOpacity(0);

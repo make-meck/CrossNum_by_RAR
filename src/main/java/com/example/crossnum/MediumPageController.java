@@ -302,7 +302,7 @@ public class MediumPageController {
 
                 // style for displaying numbers
                 Label label = new Label(gridData[row][col].value.toString());
-                label.setFont(Font.font("Arial", FontWeight.BOLD, 25));
+                label.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
                 // Populate the green boxes with the row sums and column sums from gridData array
                 if (row == 0 || col == 0) {
@@ -342,6 +342,7 @@ public class MediumPageController {
             // Using pen
             // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
+                label.setTextFill(Color.web("#00bf63"));
                 drawCircle(pane);
                 cell.isResolved = true;
                 cellsResolved++;
@@ -349,6 +350,7 @@ public class MediumPageController {
             }
             // The lives will decrease if the wrong box is clicked
             else {
+                label.setTextFill(Color.web("#c82121"));
                 deductLife();
             }
         }
@@ -363,6 +365,7 @@ public class MediumPageController {
             }
             // The lives will decrease if the wrong box is clicked
             else {
+                label.setTextFill(Color.web("#c82121"));
                 deductLife();
             }
         }
@@ -372,7 +375,7 @@ public class MediumPageController {
     private void drawCircle(StackPane pane) {
         Circle circle = new Circle(25);
         circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.web("#365d35"));
+        circle.setStroke(Color.web("#00bf63"));
         circle.setStrokeWidth(6);
 
         circle.setOpacity(0);
