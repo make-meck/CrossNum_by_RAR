@@ -24,11 +24,11 @@ import java.util.List;
 
 
         //it determines the number of stars the player can have
-        public void setStats(int secondsLeft, int timeTaken) {
+        public void setStars(int lives) {
 
             int stars;
-            if (secondsLeft > 8 * 60) stars = 3;
-            else if (secondsLeft > 4 * 60) stars = 2;
+            if (lives == 3) stars = 3;
+            else if (lives == 2 ) stars = 2;
             else stars = 1;
 
             // Dim stars that weren't earned
