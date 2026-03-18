@@ -17,7 +17,7 @@ import java.util.List;
         @FXML private Group star2;
         @FXML private Group star3;
         @FXML private Button mainMenuButton;
-        @FXML private Button nextButton;
+        @FXML private Button easyNextButton;
         @FXML private Button mediumNextButton;
         @FXML private Button retryButton;
         @FXML private Button mediumRetryButton;
@@ -54,10 +54,11 @@ import java.util.List;
         }
 
         @FXML
-        private void onNext(ActionEvent event) {
+        private void onEasyNext(ActionEvent event) {
             try {
+                GameState.getInstance().hasEasySavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
-                Stage stage = (Stage) nextButton.getScene().getWindow();
+                Stage stage = (Stage) easyNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
@@ -69,6 +70,7 @@ import java.util.List;
         @FXML
         private void onMediumNext(ActionEvent event) {
             try {
+                GameState.getInstance().hasMediumSavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
                 Stage stage = (Stage) mediumNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();

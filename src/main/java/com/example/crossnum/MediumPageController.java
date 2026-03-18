@@ -443,8 +443,7 @@ public class MediumPageController {
                 Parent root = levelSuccessLoader.load();
 
                 AchievementEasyController stats = levelSuccessLoader.getController();
-                int heartsLeft = lives;
-                stats.setStats(heartsLeft);
+                stats.setStars(lives);
 
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
