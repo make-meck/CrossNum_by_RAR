@@ -444,7 +444,7 @@ public class MediumPageController {
 
                 AchievementEasyController stats = levelSuccessLoader.getController();
                 int heartsLeft = lives;
-                stats.setStats(heartsLeft);
+                stats.setStars(heartsLeft);
 
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());

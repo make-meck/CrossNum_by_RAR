@@ -365,22 +365,8 @@ public class EasyPageController {
     // Will check if all numbers with true value are encircled and all numbers with false value are erased
     private void checkWinCondition() {
         if (cellsResolved == 16) {
-            levelAchievement();
             saveGameToState();
-            try {
-                FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
-                Stage stage = (Stage) puzzleGrid.getScene().getWindow();
-                Parent root = levelSuccessLoader.load();
-
-                AchievementEasyController stats = levelSuccessLoader.getController();
-                int heartsLeft = lives;
-                stats.setStats(heartsLeft);
-
-                stage.getScene().setRoot(root);
-                SettingsController.setupGlobalClickSounds(stage.getScene());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            levelAchievement();
         }
     }
 
@@ -553,7 +539,6 @@ public class EasyPageController {
             Parent root = loader.load();
 
             AchievementEasyController ac = loader.getController();
-            System.out.println(lives);
             ac.setStars(lives);
 
             Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
