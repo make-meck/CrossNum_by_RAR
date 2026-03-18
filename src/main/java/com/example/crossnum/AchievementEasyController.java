@@ -17,19 +17,20 @@ import java.util.List;
         @FXML private Group star2;
         @FXML private Group star3;
         @FXML private Button mainMenuButton;
-        @FXML private Button nextButton;
+        @FXML private Button easyNextButton;
         @FXML private Button mediumNextButton;
         @FXML private Button retryButton;
         @FXML private Button mediumRetryButton;
 
 
         //it determines the number of stars the player can have
-        public void setStats(int secondsLeft, int timeTaken) {
+        public void setStats(int heartsLeft) {
 
             int stars;
-            if (secondsLeft > 8 * 60) stars = 3;
-            else if (secondsLeft > 4 * 60) stars = 2;
-            else stars = 1;
+            if (heartsLeft == 3) stars = 3;
+            else if (heartsLeft == 2) stars = 2;
+            else if(heartsLeft == 1) stars= 1;
+            else stars = 0;
 
             // Dim stars that weren't earned
             List<Group> allStars = List.of(star1, star2, star3);
@@ -54,10 +55,11 @@ import java.util.List;
         }
 
         @FXML
-        private void onNext(ActionEvent event) {
+        private void onEasyNext(ActionEvent event) {
             try {
+                GameState.getInstance().hasEasySavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
-                Stage stage = (Stage) nextButton.getScene().getWindow();
+                Stage stage = (Stage) easyNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
@@ -69,9 +71,16 @@ import java.util.List;
         @FXML
         private void onMediumNext(ActionEvent event) {
             try {
-                FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
+<<<<<<< HEAD
+                GameState.getInstance().hasMediumSavedState = false;
+                FXMLLoader mediumLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
+                Parent root = mediumLoader.load();
+                Stage stage = (Stage) ((Button)event.getSource()).getScene().getWindow();
+=======
+                FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
                 Stage stage = (Stage) mediumNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
+>>>>>>> 5a976796f977075f6d3f579af0ba20223366da68
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
             } catch (IOException e) {

@@ -65,7 +65,6 @@ class Fraction {
 
 public class MediumPageController {
     @FXML private GridPane puzzleGrid;
-    @FXML private Button hint, eraser, pen, back, restart;
     @FXML private Circle toggleCircle;
     @FXML private ImageView penImage, eraserImage;
     @FXML private Button backbuttonMedium;
@@ -183,7 +182,13 @@ public class MediumPageController {
                     Fraction rowSum = new Fraction(0,1);
                     for(int c = 1; c <= 6; c++){
                         if(gridData[r][c].isSolution){
-                            rowSum = rowSum.add(gridData[r][c].value);
+                            Fraction temp = rowSum.add(gridData[r][c].value);
+
+                            if(temp.numerator <= 99){
+                                rowSum = temp;
+                            } else {
+                                gridData[r][c].isSolution = false; // skip this cell
+                            }
                         }
                     }
                     gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
@@ -192,9 +197,16 @@ public class MediumPageController {
                 //recalculates the sum of the columns
                 for (int c = 1; c <= 6; c++) { //loop each column
                     Fraction colSum = new Fraction(0,1);
-                    for (int r = 1; r <= 6; r++) { //loop each row in this column
-                        if (gridData[r][c].isSolution)
-                            colSum = colSum.add(gridData[r][c].value); //if the cell is a part of the solution and add its value col sum
+                    for (int r = 1; r <= 6; r++) {
+                        if (gridData[r][c].isSolution) {
+                            Fraction temp = colSum.add(gridData[r][c].value);
+
+                            if (temp.numerator <= 99) {
+                                colSum = temp;
+                            } else {
+                                gridData[r][c].isSolution = false;
+                            }
+                        }
                     }
                     gridData[0][c] = new MediumPageController.Cell(); //creates a new cells at row 0
                     gridData[0][c].value = colSum; //store the calculated sum in the cell
@@ -302,7 +314,7 @@ public class MediumPageController {
 
                 // style for displaying numbers
                 Label label = new Label(gridData[row][col].value.toString());
-                label.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+                label.setFont(Font.font("Arial", FontWeight.BOLD, 15));
 
                 // Populate the green boxes with the row sums and column sums from gridData array
                 if (row == 0 || col == 0) {
@@ -426,9 +438,14 @@ public class MediumPageController {
         if (cellsResolved ==36) {
             saveGameToState();
             try {
-                FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
+                FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment_medium.fxml"));
                 Stage stage = (Stage) puzzleGrid.getScene().getWindow();
                 Parent root = levelSuccessLoader.load();
+
+                AchievementEasyController stats = levelSuccessLoader.getController();
+                int heartsLeft = lives;
+                stats.setStats(heartsLeft);
+
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
             } catch (IOException e) {
