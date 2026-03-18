@@ -17,20 +17,19 @@ import java.util.List;
         @FXML private Group star2;
         @FXML private Group star3;
         @FXML private Button mainMenuButton;
-        @FXML private Button easyNextButton;
+        @FXML private Button nextButton;
         @FXML private Button mediumNextButton;
         @FXML private Button retryButton;
         @FXML private Button mediumRetryButton;
 
 
         //it determines the number of stars the player can have
-        public void setStats(int heartsLeft) {
+        public void setStars(int lives) {
 
             int stars;
-            if (heartsLeft == 3) stars = 3;
-            else if (heartsLeft == 2) stars = 2;
-            else if (heartsLeft == 1) stars = 1;
-            else stars = 0;
+            if (lives == 3) stars = 3;
+            else if (lives == 2 ) stars = 2;
+            else stars = 1;
 
             // Dim stars that weren't earned
             List<Group> allStars = List.of(star1, star2, star3);
@@ -55,11 +54,10 @@ import java.util.List;
         }
 
         @FXML
-        private void onEasyNext(ActionEvent event) {
+        private void onNext(ActionEvent event) {
             try {
-                GameState.getInstance().hasEasySavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
-                Stage stage = (Stage) easyNextButton.getScene().getWindow();
+                Stage stage = (Stage) nextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
@@ -71,7 +69,6 @@ import java.util.List;
         @FXML
         private void onMediumNext(ActionEvent event) {
             try {
-                GameState.getInstance().hasMediumSavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
                 Stage stage = (Stage) mediumNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
