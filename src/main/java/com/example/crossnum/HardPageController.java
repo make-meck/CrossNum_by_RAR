@@ -1,4 +1,5 @@
 package com.example.crossnum;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.animation.KeyFrame;
@@ -52,7 +54,7 @@ public class HardPageController {
     );
 
     private Timeline timer;
-    private int secondsLeft = 1 * 60;
+    private int secondsLeft = 15 * 60;
     private int hintsLeft = 3;
 
     @FXML
@@ -93,6 +95,8 @@ public class HardPageController {
     private Label lbl_r4c4_across, lbl_r4c4_down;
     @FXML
     private Label lbl_r1c6_down;
+    @FXML
+    private GridPane hardPagePane;
 
 
     @FXML
@@ -351,14 +355,21 @@ public class HardPageController {
             //As it goes to every cell, it grabs the players input and checks it the field is empty or not a solution.
             String input = entry.getValue().getText().trim();
 
-            //If either is true for even one cell the method immediately returns- meaning the puzzle is not complete yet.
+            //If either is true for even one cell the method immediately returns-> meaning the puzzle is not complete yet.
             if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
                 return;
             }
         }
         //If all cells are correntm the timer will stop and call the levelachievement() method
         timer.stop();
-        levelAchievement();
+
+        //Disable all fields so the player can't edit during the delay
+        for (TextField tf: fieldMap.values()){
+            tf.setEditable(false);
+        }
+        PauseTransition delay = new PauseTransition(Duration.seconds(2));
+        delay.setOnFinished(e -> levelAchievement());
+        delay.play();
 
     }
 
@@ -466,7 +477,7 @@ public class HardPageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_level_failed.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
+            Stage stage = (Stage) hardPagePane.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
