@@ -69,7 +69,7 @@ import java.util.List;
         @FXML
         private void onMediumNext(ActionEvent event) {
             try {
-                FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
+                FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
                 Stage stage = (Stage) mediumNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
                 stage.getScene().setRoot(root);
