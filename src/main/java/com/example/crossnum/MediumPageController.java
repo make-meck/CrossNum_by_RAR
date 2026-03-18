@@ -26,9 +26,45 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.Random;
 
+class Fraction {
+    int numerator;
+    int denominator;
+
+    Fraction(int numerator, int denominator){
+        this.numerator = numerator;
+        this.denominator = denominator;
+        simplify();
+    }
+
+    // Add another fraction
+    public Fraction add(Fraction other){
+        int newNum = this.numerator * other.denominator + other.numerator * this.denominator;
+        int newDen = this.denominator * other.denominator;
+        return new Fraction(newNum, newDen);
+    }
+
+    // Simplify fraction
+    private void simplify(){
+        int gcd = gcd(numerator, denominator);
+        numerator /= gcd;
+        denominator /= gcd;
+    }
+
+    // GCD helper
+    private int gcd(int a, int b){
+        if(b == 0) return Math.abs(a);
+        return gcd(b, a % b);
+    }
+
+    @Override
+    public String toString(){
+        if(denominator == 1) return Integer.toString(numerator);
+        return numerator + "/" + denominator;
+    }
+}
+
 public class MediumPageController {
     @FXML private GridPane puzzleGrid;
-    @FXML private Label welcomeText;
     @FXML private Button hint, eraser, pen, back, restart;
     @FXML private Circle toggleCircle;
     @FXML private ImageView penImage, eraserImage;
@@ -54,7 +90,7 @@ public class MediumPageController {
     // inner class that holds the logical state of each grid/box
     // for puzzle numbers, boolean masking values, or puzzle state (if already solved or not)
     public class Cell {
-        int value;
+        Fraction value;
         boolean isSolution;
         boolean isResolved = false;
     }
@@ -80,26 +116,29 @@ public class MediumPageController {
                 // After intializing the cells, it will restore the cells data from saved state
                 for(int r =1; r<= 6; r++){  //loops rows 1 to 6 and skips row 0, since it is used for getting the sums
                     for(int c= 1; c<=6 ; c++){  //same as the previous line
-                        gridData[r][c].value = state.mediumCellValues[r][c]; //restores the number
+                        gridData[r][c].value = new Fraction(
+                                state.mediumCellValuesNumerator[r][c],
+                                state.mediumCellValuesDenominator[r][c]
+                        ); //restores the number
                         gridData[r][c].isSolution = state.mediumCellIsSolution[r][c]; //restore if it is part fo the solution
                     }
                 }
 
                 //Recalculates the sum of the rows
                 for (int r = 1; r <= 6; r++) { //it loops each row
-                    int rowSum = 0;
+                    Fraction rowSum = new Fraction(0,1);
                     for (int c = 1; c <= 6; c++) { //loop each colum in this row
                         if (gridData[r][c].isSolution) //if the cell is a solution
-                            rowSum += gridData[r][c].value; //the value of the cell will be added to the row sum
+                            rowSum = rowSum.add(gridData[r][c].value); //the value of the cell will be added to the row sum
                     }
                     gridData[r][0] = new MediumPageController.Cell(); //creates a new cells at column 0 (the green sum box)
                     gridData[r][0].value = rowSum; //it stores the calculated sum in the box
                 }
                 //recalculates the sum of the columns
                 for (int c = 1; c <= 6; c++) { //loop each column
-                    int colSum = 0;
+                    Fraction colSum = new Fraction(0,1);
                     for (int r = 1; r <= 6; r++) { //loop each row in this column
-                        if (gridData[r][c].isSolution) colSum += gridData[r][c].value; //if the cell is a part of the solution and add its value col sum
+                        if (gridData[r][c].isSolution) colSum = colSum.add(gridData[r][c].value); //if the cell is a part of the solution and add its value col sum
                     }
                     gridData[0][c] = new MediumPageController.Cell(); //creates a new cells at row 0
                     gridData[0][c].value = colSum; //store the calculated sum in the cell
@@ -130,7 +169,10 @@ public class MediumPageController {
                 // After intializing the cells, it will restore the cells data from saved state
                 for (int r = 1; r <= 6; r++) {  //loops rows 1 to 6 and skips row 0, since it is used for getting the sums
                     for (int c = 1; c <= 6; c++) {  //same as the previous line
-                        gridData[r][c].value = state.mediumCellValues[r][c]; //restores the number
+                        gridData[r][c].value = new Fraction(
+                                state.mediumCellValuesNumerator[r][c],
+                                state.mediumCellValuesDenominator[r][c]
+                        ); //restores the number
                         gridData[r][c].isSolution = state.mediumCellIsSolution[r][c]; //restore if it is part fo the solution
                         gridData[r][c].isResolved = state.mediumCellIsResolved[r][c]; //restores if player has already solved it
                     }
@@ -138,20 +180,21 @@ public class MediumPageController {
 
                 //Recalculates the sum of the rows
                 for (int r = 1; r <= 6; r++) { //it loops each row
-                    int rowSum = 0;
-                    for (int c = 1; c <= 6; c++) { //loop each colum in this row
-                        if (gridData[r][c].isSolution) //if the cell is a solution
-                            rowSum += gridData[r][c].value; //the value of the cell will be added to the row sum
+                    Fraction rowSum = new Fraction(0,1);
+                    for(int c = 1; c <= 6; c++){
+                        if(gridData[r][c].isSolution){
+                            rowSum = rowSum.add(gridData[r][c].value);
+                        }
                     }
-                    gridData[r][0] = new MediumPageController.Cell(); //creates a new cells at column 0 (the green sum box)
+                    gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
                     gridData[r][0].value = rowSum; //it stores the calculated sum in the box
                 }
                 //recalculates the sum of the columns
                 for (int c = 1; c <= 6; c++) { //loop each column
-                    int colSum = 0;
+                    Fraction colSum = new Fraction(0,1);
                     for (int r = 1; r <= 6; r++) { //loop each row in this column
                         if (gridData[r][c].isSolution)
-                            colSum += gridData[r][c].value; //if the cell is a part of the solution and add its value col sum
+                            colSum = colSum.add(gridData[r][c].value); //if the cell is a part of the solution and add its value col sum
                     }
                     gridData[0][c] = new MediumPageController.Cell(); //creates a new cells at row 0
                     gridData[0][c].value = colSum; //store the calculated sum in the cell
@@ -194,7 +237,20 @@ public class MediumPageController {
         for (int r = 1; r <= 6; r++) {
             for (int c = 1; c <= 6; c++) {
                 gridData[r][c] = new MediumPageController.Cell(); // Constructor
-                gridData[r][c].value = rand.nextInt(9) + 1; // random numbers from 1 to 9
+                boolean isFraction = rand.nextInt(4) == 0; // 25% chance fraction
+
+                if(isFraction){
+                    int denom;
+                    int choice = rand.nextInt(3);
+
+                    if (choice == 0) denom = 2;
+                    else if (choice == 1) denom = 4;
+                    else denom = 3;
+                    int numer = 1 + rand.nextInt(denom - 1);
+                    gridData[r][c].value = new Fraction(numer, denom);
+                }else{
+                    gridData[r][c].value = new Fraction(1 + rand.nextInt(9), 1); // whole number
+                }
                 gridData[r][c].isSolution = rand.nextBoolean(); // random boolean values (true/false)
             }
         }
@@ -202,22 +258,26 @@ public class MediumPageController {
         // (3) Loop that will calculate the row sums based on boolean mask
         // true will add, false will not add
         for (int r = 1; r <= 6; r++) {
-            int rowSum = 0;
-            for (int c = 1; c <= 6; c++) {
-                if (gridData[r][c].isSolution) rowSum += gridData[r][c].value;
+            Fraction rowSum = new Fraction(0,1);
+            for(int c = 1; c <= 6; c++){
+                if(gridData[r][c].isSolution){
+                    rowSum = rowSum.add(gridData[r][c].value);
+                }
             }
-            gridData[r][0] = new MediumPageController.Cell(); // The zero on second index indicates the green box above
+            gridData[r][0] = new Cell();
             gridData[r][0].value = rowSum;
         }
 
         // (3) Loop that will calculate the column sums based on boolean mask
         // true will add, false will not add
         for (int c = 1; c <= 6; c++) {
-            int colSum = 0;
+            Fraction colSum = new Fraction(0, 1);
             for (int r = 1; r <= 6; r++) {
-                if (gridData[r][c].isSolution) colSum += gridData[r][c].value;
+                if (gridData[r][c].isSolution) {
+                    colSum = colSum.add(gridData[r][c].value);
+                }
             }
-            gridData[0][c] = new MediumPageController.Cell(); // The zero on first index indicates the leftmost green box
+            gridData[0][c] = new Cell();
             gridData[0][c].value = colSum;
         }
     }
@@ -241,7 +301,7 @@ public class MediumPageController {
                 pane.getChildren().clear();
 
                 // style for displaying numbers
-                Label label = new Label(String.valueOf(gridData[row][col].value));
+                Label label = new Label(gridData[row][col].value.toString());
                 label.setFont(Font.font("Arial", FontWeight.BOLD, 25));
 
                 // Populate the green boxes with the row sums and column sums from gridData array
@@ -511,7 +571,8 @@ public class MediumPageController {
 
         for(int r = 1; r<=6; r++){
             for(int c = 1; c<=6; c++){
-                state.mediumCellValues[r][c] = gridData[r][c].value;
+                state.mediumCellValuesNumerator[r][c] = gridData[r][c].value.numerator;
+                state.mediumCellValuesDenominator[r][c] = gridData[r][c].value.denominator;
                 state.mediumCellIsSolution[r][c]= gridData[r][c].isSolution;
                 state.mediumCellIsResolved[r][c] = gridData[r][c].isResolved;
             }
@@ -535,7 +596,8 @@ public class MediumPageController {
 
         for (int r = 1; r <= 6; r++) {
             for (int c = 1; c <= 6; c++) {
-                state.mediumCellValues[r][c] = gridData[r][c].value;
+                state.mediumCellValuesNumerator[r][c] = gridData[r][c].value.numerator;
+                state.mediumCellValuesDenominator[r][c] = gridData[r][c].value.denominator;
                 state.mediumCellIsSolution[r][c] = gridData[r][c].isSolution;
                 state.mediumCellIsResolved[r][c] = gridData[r][c].isResolved;
             }

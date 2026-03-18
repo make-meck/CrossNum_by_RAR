@@ -30,6 +30,9 @@ public class GameState {
     public boolean hasMediumSavedState = false;
     public boolean mediumRetryMode = false;
 
+    public int[][] mediumCellValuesNumerator = new int[7][7];
+    public int[][] mediumCellValuesDenominator = new int[7][7];
+
     //This is for saving the state of the hard mode
     public Map<String, Integer> hardSolution = new HashMap<>();
     public Map<String, String> hardFieldValues = new HashMap<>();
