@@ -51,7 +51,7 @@
                                 <Font name="Arial" size="21.0" />
                             </font>
                         </Button>
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#onNext" prefHeight="40.0" prefWidth="202.0" style="-fx-background-radius: 50; -fx-background-color: #fff;" text="NEXT">
+                        <Button fx:id="easyNextButton" mnemonicParsing="false" onAction="#onEasyNext" prefHeight="40.0" prefWidth="202.0" style="-fx-background-radius: 50; -fx-background-color: #fff;" text="NEXT">
                             <font>
                                 <Font name="Arial" size="21.0" />
                             </font>

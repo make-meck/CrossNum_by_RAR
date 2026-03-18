@@ -371,6 +371,11 @@ public class EasyPageController {
                 FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
                 Stage stage = (Stage) puzzleGrid.getScene().getWindow();
                 Parent root = levelSuccessLoader.load();
+
+                AchievementEasyController stats = levelSuccessLoader.getController();
+                int heartsLeft = lives;
+                stats.setStats(heartsLeft);
+
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
             } catch (IOException e) {

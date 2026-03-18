@@ -314,7 +314,7 @@ public class MediumPageController {
 
                 // style for displaying numbers
                 Label label = new Label(gridData[row][col].value.toString());
-                label.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+                label.setFont(Font.font("Arial", FontWeight.BOLD, 15));
 
                 // Populate the green boxes with the row sums and column sums from gridData array
                 if (row == 0 || col == 0) {
@@ -441,6 +441,11 @@ public class MediumPageController {
                 FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment_medium.fxml"));
                 Stage stage = (Stage) puzzleGrid.getScene().getWindow();
                 Parent root = levelSuccessLoader.load();
+
+                AchievementEasyController stats = levelSuccessLoader.getController();
+                int heartsLeft = lives;
+                stats.setStats(heartsLeft);
+
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
             } catch (IOException e) {
