@@ -56,6 +56,7 @@ import java.util.List;
         @FXML
         private void onEasyNext(ActionEvent event) {
             try {
+                GameState.getInstance().hasEasySavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
                 Stage stage = (Stage) easyNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
@@ -69,6 +70,7 @@ import java.util.List;
         @FXML
         private void onMediumNext(ActionEvent event) {
             try {
+                GameState.getInstance().hasMediumSavedState= false;
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
                 Stage stage = (Stage) mediumNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();

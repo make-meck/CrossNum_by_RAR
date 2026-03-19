@@ -366,7 +366,19 @@ public class EasyPageController {
     private void checkWinCondition() {
         if (cellsResolved == 16) {
             saveGameToState();
-            levelAchievement();
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
+                Parent root = loader.load();
+
+                AchievementEasyController ac = loader.getController();
+                ac.setStars(lives);
+
+                Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -533,19 +545,4 @@ public class EasyPageController {
         }
     }
 
-    private void levelAchievement() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
-            Parent root = loader.load();
-
-            AchievementEasyController ac = loader.getController();
-            ac.setStars(lives);
-
-            Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
