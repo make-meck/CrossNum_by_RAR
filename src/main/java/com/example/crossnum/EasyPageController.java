@@ -397,7 +397,7 @@ public class EasyPageController {
 
     @FXML
     protected void onHintClick() {
-        // Checks lives. If there's no hint left, return. Otherwise, decrement by one.
+        // Checks number of hints. If there's no hint left, return. Otherwise, decrement by one.
         if (hints <= 0) return;
         hints--;
         totalHints.setText(String.valueOf(hints)); // Displays the updated number of hints
