@@ -330,7 +330,7 @@ public class MediumPageController {
                     //restores visual state if cell was already resolved
                     if(gridData[row][col].isResolved){
                         if(gridData[row][col].isSolution){
-                            drawCircle(pane);
+                            drawCircle(pane, "Normal");
                         }
                         else{
                             label.setText("");
@@ -355,7 +355,7 @@ public class MediumPageController {
             // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
                 label.setTextFill(Color.web("#00bf63"));
-                drawCircle(pane);
+                drawCircle(pane, "Normal");
                 cell.isResolved = true;
                 cellsResolved++;
                 checkWinCondition();
@@ -384,11 +384,15 @@ public class MediumPageController {
     }
 
     // The method that adds circle when using pen mode
-    private void drawCircle(StackPane pane) {
+    private void drawCircle(StackPane pane, String mode) {
+
         Circle circle = new Circle(25);
         circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.web("#00bf63"));
-        circle.setStrokeWidth(6);
+
+        if (mode == "Hint") circle.setStroke(Color.web("#f1dd2b"));
+        else circle.setStroke(Color.web("#00bf63"));
+
+        circle.setStrokeWidth(4);
 
         circle.setOpacity(0);
         circle.setScaleX(0.5);
@@ -404,6 +408,7 @@ public class MediumPageController {
 
         ParallelTransition animation = new ParallelTransition(fade, scale);
         animation.play();
+
     }
 
     // Handles the UI of hearts that will serve as lives per round
@@ -499,7 +504,7 @@ public class MediumPageController {
                     }
 
                     if (cell.isSolution) {
-                        drawCircle(pane);
+                        drawCircle(pane, "Hint");
                     } else {
                         if (label != null) label.setText("");
                     }
