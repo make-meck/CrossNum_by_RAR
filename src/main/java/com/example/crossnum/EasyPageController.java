@@ -315,49 +315,28 @@ public class EasyPageController {
     // The method that adds circle when using pen mode
     private void drawCircle(StackPane pane, String mode) {
 
-        if (mode == "Hint") {
-            Circle circle = new Circle(25);
-            circle.setFill(Color.TRANSPARENT);
-            circle.setStroke(Color.web("#f1dd2b"));
-            circle.setStrokeWidth(4);
+        Circle circle = new Circle(25);
+        circle.setFill(Color.TRANSPARENT);
 
-            circle.setOpacity(0);
-            circle.setScaleX(0.5);
-            circle.setScaleY(0.5);
+        if (mode == "Hint") circle.setStroke(Color.web("#f1dd2b"));
+        else circle.setStroke(Color.web("#00bf63"));
 
-            pane.getChildren().add(circle);
-            FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
-            fade.setToValue(1);
+        circle.setStrokeWidth(4);
 
-            ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
-            scale.setToX(1);
-            scale.setToY(1);
+        circle.setOpacity(0);
+        circle.setScaleX(0.5);
+        circle.setScaleY(0.5);
 
-            ParallelTransition animation = new ParallelTransition(fade, scale);
-            animation.play();
-        }
+        pane.getChildren().add(circle);
+        FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
+        fade.setToValue(1);
 
-        else {
-            Circle circle = new Circle(25);
-            circle.setFill(Color.TRANSPARENT);
-            circle.setStroke(Color.web("#00bf63"));
-            circle.setStrokeWidth(4);
+        ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
+        scale.setToX(1);
+        scale.setToY(1);
 
-            circle.setOpacity(0);
-            circle.setScaleX(0.5);
-            circle.setScaleY(0.5);
-
-            pane.getChildren().add(circle);
-            FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
-            fade.setToValue(1);
-
-            ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
-            scale.setToX(1);
-            scale.setToY(1);
-
-            ParallelTransition animation = new ParallelTransition(fade, scale);
-            animation.play();
-        }
+        ParallelTransition animation = new ParallelTransition(fade, scale);
+        animation.play();
 
     }
 
