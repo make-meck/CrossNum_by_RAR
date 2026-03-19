@@ -330,7 +330,7 @@ public class MediumPageController {
                     //restores visual state if cell was already resolved
                     if(gridData[row][col].isResolved){
                         if(gridData[row][col].isSolution){
-                            drawCircle(pane);
+                            drawCircle(pane, "Normal");
                         }
                         else{
                             label.setText("");
@@ -355,7 +355,7 @@ public class MediumPageController {
             // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
                 label.setTextFill(Color.web("#00bf63"));
-                drawCircle(pane);
+                drawCircle(pane, "Normal");
                 cell.isResolved = true;
                 cellsResolved++;
                 checkWinCondition();
@@ -384,26 +384,52 @@ public class MediumPageController {
     }
 
     // The method that adds circle when using pen mode
-    private void drawCircle(StackPane pane) {
-        Circle circle = new Circle(25);
-        circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.web("#00bf63"));
-        circle.setStrokeWidth(6);
+    private void drawCircle(StackPane pane, String mode) {
 
-        circle.setOpacity(0);
-        circle.setScaleX(0.5);
-        circle.setScaleY(0.5);
+        if (mode == "Hint") {
+            Circle circle = new Circle(25);
+            circle.setFill(Color.TRANSPARENT);
+            circle.setStroke(Color.web("#f1dd2b"));
+            circle.setStrokeWidth(4);
 
-        pane.getChildren().add(circle);
-        FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
-        fade.setToValue(1);
+            circle.setOpacity(0);
+            circle.setScaleX(0.5);
+            circle.setScaleY(0.5);
 
-        ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
-        scale.setToX(1);
-        scale.setToY(1);
+            pane.getChildren().add(circle);
+            FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
+            fade.setToValue(1);
 
-        ParallelTransition animation = new ParallelTransition(fade, scale);
-        animation.play();
+            ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
+            scale.setToX(1);
+            scale.setToY(1);
+
+            ParallelTransition animation = new ParallelTransition(fade, scale);
+            animation.play();
+        }
+
+        else {
+            Circle circle = new Circle(25);
+            circle.setFill(Color.TRANSPARENT);
+            circle.setStroke(Color.web("#00bf63"));
+            circle.setStrokeWidth(4);
+
+            circle.setOpacity(0);
+            circle.setScaleX(0.5);
+            circle.setScaleY(0.5);
+
+            pane.getChildren().add(circle);
+            FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
+            fade.setToValue(1);
+
+            ScaleTransition scale = new ScaleTransition(Duration.millis(150), circle);
+            scale.setToX(1);
+            scale.setToY(1);
+
+            ParallelTransition animation = new ParallelTransition(fade, scale);
+            animation.play();
+        }
+
     }
 
     // Handles the UI of hearts that will serve as lives per round
@@ -499,7 +525,7 @@ public class MediumPageController {
                     }
 
                     if (cell.isSolution) {
-                        drawCircle(pane);
+                        drawCircle(pane, "Hint");
                     } else {
                         if (label != null) label.setText("");
                     }
