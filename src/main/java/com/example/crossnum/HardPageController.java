@@ -367,7 +367,7 @@ public class HardPageController {
         for (TextField tf: fieldMap.values()){
             tf.setEditable(false);
         }
-        PauseTransition delay = new PauseTransition(Duration.seconds(2));
+        PauseTransition delay = new PauseTransition(Duration.seconds(1));
         delay.setOnFinished(e -> levelAchievement());
         delay.play();
 
@@ -477,7 +477,7 @@ public class HardPageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_level_failed.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) hardPagePane.getScene().getWindow();
+            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
