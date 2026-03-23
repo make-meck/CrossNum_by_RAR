@@ -70,7 +70,7 @@ public class StartingPageController {
 
     @FXML
     private void hardLevel() throws IOException {
-        handleLevel("hard_page.fxml");
+        handleLevel("hard_page_Improved.fxml");
     }
 
     @FXML

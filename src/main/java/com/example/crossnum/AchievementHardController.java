@@ -56,7 +56,7 @@ public class AchievementHardController {
     private void onNext(ActionEvent event) {
         try {
             GameState.getInstance().hasSavedState= false;
-            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("hard_page.fxml"));
+            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("hard_page_Improved.fxml"));
             Stage stage = (Stage) nextButton.getScene().getWindow();
             Parent root = backbuttonLoader.load();
             stage.getScene().setRoot(root);
@@ -73,7 +73,7 @@ public class AchievementHardController {
         state.hasSavedState = true;
 
         try {
-            FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("hard_page.fxml"));
+            FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("hard_page_Improved.fxml"));
             Stage stage = (Stage) hardRetryButton.getScene().getWindow();
             Parent root = retryLoader.load();
             stage.getScene().setRoot(root);

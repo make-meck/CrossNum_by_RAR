@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Ellipse?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="hardlevelpage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.HardPageController">
+    <center>
+        <StackPane fx:id="paneHardLevel" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+            <children>
+                <GridPane fx:id="hardPagePane" hgap="7.0" maxHeight="500.0" maxWidth="500.0" prefHeight="400.0" prefWidth="400.0" vgap="7.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                </GridPane>
+            </children>
+        </StackPane>
+    </center>
+    <left>
+        <VBox prefHeight="200.0" prefWidth="20.0" BorderPane.alignment="CENTER" />
+    </left>
+    <right>
+        <VBox prefHeight="200.0" prefWidth="20.0" BorderPane.alignment="CENTER" />
+    </right>
+    <top>
+        <BorderPane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <left>
+            <StackPane BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="50.0" right="50.0" />
+               </BorderPane.margin>
+               <children>
+                  <Button fx:id="backbuttonHard" mnemonicParsing="false" onAction="#backbutton" prefHeight="78.0" prefWidth="68.0" style="-fx-background-color: #d0e8d0;" textFill="#d0e8d0" />
+                  <StackPane focusTraversable="true" mouseTransparent="true" prefHeight="66.0" prefWidth="41.0" style="-fx-background-color: #d0e8d0;">
+                     <children>
+                        <Circle fill="#365d35" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                        <Group StackPane.alignment="CENTER">
+                           <children>
+                              <SVGPath content="M247.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L179.2 256 41.9 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" fill="WHITE" rotate="180.0" scaleX="0.1" scaleY="0.1" />
+                           </children>
+                        </Group>
+                     </children>
+                  </StackPane>
+               </children>
+            </StackPane>
+         </left>
+         <right>
+            <StackPane BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="50.0" />
+               </BorderPane.margin>
+               <children>
+                  <Button fx:id="restartButton" mnemonicParsing="false" onAction="#onRestartClick" prefHeight="91.0" prefWidth="81.0" style="-fx-background-color: #d0e8d0;" />
+                  <StackPane mouseTransparent="true">
+                     <children>
+                        <Circle fill="#365d35" mouseTransparent="true" radius="32.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                        <Group mouseTransparent="true" scaleX="0.9" scaleY="0.9">
+                           <children>
+                              <SVGPath content="M436.7 74.7L448 85.4 448 32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 128c0 17.7-14.3 32-32 32l-128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l47.9 0-7.6-7.2c-.2-.2-.4-.4-.6-.6-75-75-196.5-75-271.5 0s-75 196.5 0 271.5 196.5 75 271.5 0c8.2-8.2 15.5-16.9 21.9-26.1 10.1-14.5 30.1-18 44.6-7.9s18 30.1 7.9 44.6c-8.5 12.2-18.2 23.8-29.1 34.7-100 100-262.1 100-362 0S-25 175 75 75c99.9-99.9 261.7-100 361.7-.3z" fill="WHITE" rotate="180.0" scaleX="0.1" scaleY="0.1" />
+                           </children>
+                        </Group>
+                     </children>
+                  </StackPane>
+               </children>
+            </StackPane>
+         </right>
+         <center>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER_RIGHT">
+               <children>
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <Ellipse fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
+                        <Label text="HARD" textFill="WHITE">
+                           <font>
+                              <Font name="Arial" size="31.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </StackPane>
+                  <StackPane layoutX="210.0" layoutY="10.0" maxWidth="229.0" minWidth="50.0" prefHeight="100.0" prefWidth="229.0">
+                     <children>
+                        <Label fx:id="timerLabel" textFill="#365d35">
+                           <font>
+                              <Font name="Arial" size="27.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </StackPane>
+               </children>
+               <BorderPane.margin>
+                  <Insets left="130.0" />
+               </BorderPane.margin>
+            </HBox>
+         </center>
+        </BorderPane>
+    </top>
+   <bottom>
+      <BorderPane prefHeight="119.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <right>
+            <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" style="-fx-background-color: #d0e8d0;" StackPane.alignment="TOP_RIGHT" />
+                  <Circle fill="#365d35" mouseTransparent="true" radius="33.0" stroke="#365d35" strokeType="INSIDE" StackPane.alignment="TOP_RIGHT" />
+                  <ImageView fitHeight="53.0" fitWidth="44.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
+                     <image>
+                        <Image url="@hint_icon.png" />
+                     </image>
+                     <StackPane.margin>
+                        <Insets right="10.0" top="10.0" />
+                     </StackPane.margin>
+                  </ImageView>
+                  <Group StackPane.alignment="TOP_RIGHT">
+                     <children>
+                        <Circle fill="WHITE" radius="10.0" stroke="WHITE" strokeType="INSIDE" />
+                        <Label fx:id="hintLabel" prefHeight="6.0" prefWidth="11.0" text="1" translateX="-5.0" translateY="-9.0">
+                           <font>
+                              <Font name="Arial Bold" size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Group>
+               </children>
+               <BorderPane.margin>
+                  <Insets right="50.0" />
+               </BorderPane.margin>
+            </StackPane>
+         </right></BorderPane>
+   </bottom>
+</BorderPane>

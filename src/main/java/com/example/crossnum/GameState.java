@@ -41,6 +41,7 @@ public class GameState {
     public int hintsLeft = 3;
     public boolean hasSavedState= false;
     public boolean hardRetryMode = false;
+    public String savedLayoutName= null;
 
 
     public static GameState getInstance(){

@@ -1,438 +1,480 @@
 package com.example.crossnum;
+
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import java.io.IOException;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.util.Duration;
+
+import java.io.IOException;
 import java.util.*;
-import java.util.Arrays;
-import java.util.Collections;
 
 /*
     The hard mode of the game uses a Backtracking Algorithm with Constraints Propagation
-    1. Backtracking - The algorithm recursively test different values and undoes them when it encounters a dead end.
-    2. Checks Validity - It happens before placing a digit, it scans all the cells. If the digit has similar in the row or column
-        its rejected. If there is no conflict the digit is placed.
+    1. Backtracking - The algorithm recursively tests different values and undoes them when it encounters a dead end.
+    2. Checks Validity - It happens before placing a digit, it scans all the cells. If the digit has a similar in the row or column
+       it's rejected. If there is no conflict the digit is placed.
     3. Randomizes the digit order each time, making every puzzle unique
- */
+    4. Randomizes the layout each new game, giving a different puzzle shape every time
+*/
 public class HardPageController {
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  LAYOUT DEFINITION
+    //  A pure data class — describes one puzzle shape.
+    //  No JavaFX nodes here, just lists of cell keys and run groups.
+    //
+    //  Cell key format: "col,row"  e.g. "1,1" = column 1, row 1
+    //  activeCells — the white playable cells the player fills in
+    //  acrossRuns  — horizontal groups (left→right), each must have unique digits
+    //  downRuns    — vertical groups (top→bottom), each must have unique digits
+    //  runs        — combined list of both, used by the backtracking solver
+    // ══════════════════════════════════════════════════════════════════════
+
+    static class LayoutDefinition {
+        final String name;
+        final Set<String> activeCells;
+        final List<List<String>> acrossRuns;
+        final List<List<String>> downRuns;
+        final List<List<String>> runs;
+
+        LayoutDefinition(String name,
+                         Set<String> activeCells,
+                         List<List<String>> acrossRuns,
+                         List<List<String>> downRuns) {
+            this.name        = name;
+            this.activeCells = activeCells;
+            this.acrossRuns  = acrossRuns;
+            this.downRuns    = downRuns;
+            this.runs        = new ArrayList<>();
+            this.runs.addAll(acrossRuns);
+            this.runs.addAll(downRuns);
+        }
+    }
+
+
+    //  HELPER BUILDERS — make the LAYOUTS list easier to read
+
+    private static Set<String> cells(String... keys) {
+        return new LinkedHashSet<>(Arrays.asList(keys));
+    }
+
+    @SafeVarargs
+    private static List<List<String>> runs(List<String>... runArrays) {
+        return new ArrayList<>(Arrays.asList(runArrays));
+    }
+
+    private static List<String> run(String... keys) {
+        return Arrays.asList(keys);
+    }
+
+
+    //  LAYOUTS — pool of puzzle shapes picked randomly each new game
+
+
+    private static final List<LayoutDefinition> LAYOUTS = new ArrayList<>();
+
+    static {
+
+        // LAYOUT 1 — Original ───────────────────────────────────────────
+        LAYOUTS.add(new LayoutDefinition(
+                "Layout1",
+                cells("1,1","2,1","3,1","4,1","5,1",
+                        "1,2","2,2","3,2","4,2","5,2","6,2",
+                        "1,3","2,3",
+                        "5,3","6,3",
+                        "1,4","2,4",
+                        "5,4","6,4",
+                        "1,5","2,5","3,5","4,5","5,5","6,5",
+                        "2,6","3,6","4,6","5,6","6,6"),
+                runs(
+                        run("1,1","2,1","3,1","4,1","5,1"),
+                        run("1,2","2,2","3,2","4,2","5,2","6,2"),
+                        run("1,3","2,3"),
+                        run("5,3","6,3"),
+                        run("1,4","2,4"),
+                        run("5,4","6,4"),
+                        run("1,5","2,5","3,5","4,5","5,5","6,5"),
+                        run("2,6","3,6","4,6","5,6","6,6")
+                ),
+                runs(
+                        run("1,1","1,2","1,3","1,4","1,5"),
+                        run("2,1","2,2","2,3","2,4","2,5","2,6"),
+                        run("3,1","3,2"),
+                        run("3,5","3,6"),
+                        run("4,1","4,2"),
+                        run("4,5","4,6"),
+                        run("5,1","5,2","5,3","5,4","5,5","5,6"),
+                        run("6,2","6,3","6,4","6,5","6,6")
+                )
+        ));
+
+        // LAYOUT 2 — Staircase
+        LAYOUTS.add(new LayoutDefinition(
+                "Layout2",
+                cells("1,1","2,1","3,1",
+                        "1,2","2,2","3,2","4,2",
+                        "2,3","3,3","4,3","5,3",
+                        "3,4","4,4","5,4","6,4",
+                        "4,5","5,5","6,5",
+                        "5,6","6,6"),
+                runs(
+                        run("1,1","2,1","3,1"),
+                        run("1,2","2,2","3,2","4,2"),
+                        run("2,3","3,3","4,3","5,3"),
+                        run("3,4","4,4","5,4","6,4"),
+                        run("4,5","5,5","6,5"),
+                        run("5,6","6,6")
+                ),
+                runs(
+                        run("1,1","1,2"),
+                        run("2,1","2,2","2,3"),
+                        run("3,1","3,2","3,3","3,4"),
+                        run("4,2","4,3","4,4","4,5"),
+                        run("5,3","5,4","5,5","5,6"),
+                        run("6,4","6,5","6,6")
+                )
+        ));
+
+        // LAYOUT 3 — Windows
+        LAYOUTS.add(new LayoutDefinition(
+                "Layout3",
+                cells("1,1","2,1","3,1",
+                        "1,2","2,2","3,2",
+                        "1,3","2,3","3,3",
+                        "4,4","5,4","6,4",
+                        "4,5","5,5","6,5",
+                        "4,6","5,6","6,6"),
+                runs(
+                        run("1,1","2,1","3,1"),
+                        run("1,2","2,2","3,2"),
+                        run("1,3","2,3","3,3"),
+                        run("4,4","5,4","6,4"),
+                        run("4,5","5,5","6,5"),
+                        run("4,6","5,6","6,6")
+                ),
+                runs(
+                        run("1,1","1,2","1,3"),
+                        run("2,1","2,2","2,3"),
+                        run("3,1","3,2","3,3"),
+                        run("4,4","4,5","4,6"),
+                        run("5,4","5,5","5,6"),
+                        run("6,4","6,5","6,6")
+                )
+        ));
+    }
+
+
+    //  INSTANCE FIELDS
+
+
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
-    private final Map<String, Integer> solution = new HashMap<>();
+    private final Map<String, Integer>   solution  = new HashMap<>();
 
-    //This defines which cells belongs together in a row or column grouo, so the group can have unique digits and display its sum
-
-    private static final List<List<String>> RUNS = Arrays.asList(
-            // ACROSS
-            Arrays.asList("1,1", "2,1", "3,1", "4,1", "5,1"),
-            Arrays.asList("1,2", "2,2", "3,2", "4,2", "5,2", "6,2"),
-            Arrays.asList("1,3", "2,3"),
-            Arrays.asList("5,3", "6,3"),
-            Arrays.asList("1,4", "2,4"),
-            Arrays.asList("5,4", "6,4"),
-            Arrays.asList("1,5", "2,5", "3,5", "4,5", "5,5", "6,5"),
-            Arrays.asList("2,6", "3,6", "4,6", "5,6", "6,6"),
-            // DOWN
-            Arrays.asList("1,1", "1,2", "1,3", "1,4", "1,5"),
-            Arrays.asList("2,1", "2,2", "2,3", "2,4", "2,5", "2,6"),
-            Arrays.asList("3,1", "3,2"),
-            Arrays.asList("3,5", "3,6"),
-            Arrays.asList("4,1", "4,2"),
-            Arrays.asList("4,5", "4,6"),
-            Arrays.asList("5,1", "5,2", "5,3", "5,4", "5,5", "5,6"),
-            Arrays.asList("6,2", "6,3"),
-            Arrays.asList("6,4", "6,5", "6,6")
-    );
+    // The currently active layout — set in initialize() and onRestartClick()
+    private LayoutDefinition currentLayout;
 
     private Timeline timer;
     private int secondsLeft = 15 * 60;
-    private int hintsLeft = 3;
+    private int hintsLeft   = 3;
 
-    @FXML
-    private Button backbuttonHard;
-    @FXML
-    private Button hint;
-    @FXML
-    private Button restartButton;
-    @FXML
-    private Label timerLabel;
-    @FXML
-    private Label hintLabel;
-    @FXML
-    private TextField tf_r1c1, tf_r1c2, tf_r1c3, tf_r1c4, tf_r1c5; //All textfields in row1
-    @FXML
-    private TextField tf_r2c1, tf_r2c2, tf_r2c3, tf_r2c4, tf_r2c5, tf_r2c6; //All textfields in row 2
-    @FXML
-    private TextField tf_r3c1, tf_r3c2, tf_r3c5, tf_r3c6; //All Textfields in row3
-    @FXML
-    private TextField tf_r4c1, tf_r4c2, tf_r4c5, tf_r4c6; //All textfields in row4
-    @FXML
-    private TextField tf_r5c1, tf_r5c2, tf_r5c3, tf_r5c4, tf_r5c5, tf_r5c6;  //All textfields in row5
-    @FXML
-    private TextField tf_r6c2, tf_r6c3, tf_r6c4, tf_r6c5, tf_r6c6; //All textfields in row6
+    // ── FXML injections — only structural elements remain ─────────────────
+    // (TextFields and sum Labels are now created in Java by buildGrid())
+    @FXML private Button    backbuttonHard;
+    @FXML private Button    hint;
+    @FXML private Button    restartButton;
+    @FXML private Label     timerLabel;
+    @FXML private Label     hintLabel;
+    @FXML private GridPane  hardPagePane;
 
-    //Labels for displaying the sum
-    @FXML
-    private Label lbl_r1c0_across, lbl_r2c0_across, lbl_r3c0_across, lbl_r4c0_across, lbl_r5c0_across; //All label in column 0
-    @FXML
-    private Label lbl_r0c1_down, lbl_r0c2_down, lbl_r0c3_down, lbl_r0c4_down, lbl_r0c5_down; //All labels in row 0
-    @FXML
-    private Label lbl_r6c1_across; //Label for row 1 column 6
-    @FXML
-    private Label lbl_r3c4_across; //Label for row 4, column 4
-    @FXML
-    private Label lbl_r4c3_down, lbl_c4r4_down; //Label for row 4
-    @FXML
-    private Label lbl_r4c4_across, lbl_r4c4_down;
-    @FXML
-    private Label lbl_r1c6_down;
-    @FXML
-    private GridPane hardPagePane;
 
+    //  INITIALIZE
 
     @FXML
     private void initialize() {
-        buildFieldMap();
+        currentLayout = randomLayout();
+        generateSolution(); // fills solution FIRST
+        buildGrid();        // builds grid with correct sums
+        clearFieldsForPlayer();
 
         GameState state = GameState.getInstance();
-        //Restore saved state
+
         if (state.hasSavedState) {
+            // Restore the saved layout, solution, and timer
+            currentLayout = findLayoutByName(state.savedLayoutName);
+            if (currentLayout == null) currentLayout = randomLayout();
+
             solution.putAll(state.hardSolution);
             secondsLeft = state.secondsLeft;
-            hintsLeft = state.hintsLeft;
+            hintsLeft   = state.hintsLeft;
 
-            displaySums();
+            // Build the grid first so fieldMap is populated
+            buildGrid();
             clearFieldsForPlayer();
 
-            //Restore the field values and styles
+            // Then restore what the player had typed and cell colours
             for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
                 String key = entry.getKey();
-                TextField tf = entry.getValue();
-                tf.setText(state.hardFieldValues.getOrDefault(key, ""));
-                tf.setStyle(state.hardFieldStyles.getOrDefault(key, ""));
+                entry.getValue().setText(state.hardFieldValues.getOrDefault(key, ""));
+                entry.getValue().setStyle(state.hardFieldStyles.getOrDefault(key, ""));
             }
 
-            //This will update the timeLabel as the state of the game is saved
             int minutes = secondsLeft / 60;
             int seconds = secondsLeft % 60;
             timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+
         } else {
-            //If the condition is not satisfied it will generate a new game
-            generateSolution();
-            displaySums();
+            // Fresh game — pick a layout, build the grid, then solve it
+            currentLayout = randomLayout();
+            generateSolution(); // generateSolution() reads from fieldMap
+            buildGrid();        // buildGrid() populates fieldMap
             clearFieldsForPlayer();
         }
+
         startTimer();
         updateHintButton();
     }
 
-    @FXML
-    protected void onHintClick() {
-        if (hintsLeft <= 0) return;
 
-        // Collect all unfilled or wrong cells
-        List<Map.Entry<String, TextField>> emptyCells = new ArrayList<>();
-        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
-            String input = entry.getValue().getText().trim();
-            if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
-                emptyCells.add(entry);
+    //  BUILD GRID — creates all cells dynamically from currentLayout
+
+    private void buildGrid() {
+        hardPagePane.getChildren().clear();
+        fieldMap.clear();
+
+        // Work out which black cells carry ACROSS labels (cell to the LEFT of run start)
+        // and which carry DOWN labels (cell ABOVE run start)
+        Map<String, Integer> acrossLabelMap = new LinkedHashMap<>();
+        Map<String, Integer> downLabelMap   = new LinkedHashMap<>();
+
+        for (List<String> run : currentLayout.acrossRuns) {
+            if (run.isEmpty()) continue;
+            String first = run.get(0);
+            String labelCell = (col(first) - 1) + "," + row(first);
+            int sum = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
+            acrossLabelMap.put(labelCell, sum);
+        }
+
+        for (List<String> run : currentLayout.downRuns) {
+            if (run.isEmpty()) continue;
+            String first = run.get(0);
+            String labelCell = col(first) + "," + (row(first) - 1);
+            int sum = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
+            downLabelMap.put(labelCell, sum);
+        }
+
+        // Paint every cell in the 7×7 grid
+        for (int r = 0; r <= 6; r++) {
+            for (int c = 0; c <= 6; c++) {
+                String key      = c + "," + r;
+                boolean isActive  = currentLayout.activeCells.contains(key);
+                boolean hasAcross = acrossLabelMap.containsKey(key);
+                boolean hasDown   = downLabelMap.containsKey(key);
+
+                if (isActive) {
+                    addWhiteCell(c, r, key);
+                } else if (hasAcross || hasDown) {
+                    addBlackClueCell(c, r,
+                            hasAcross ? acrossLabelMap.get(key) : null,
+                            hasDown   ? downLabelMap.get(key)   : null);
+                } else {
+                    addEmptyCell(c, r);
+                }
             }
         }
-
-        if (emptyCells.isEmpty()) return;
-
-        // Pick a random unfilled cell and reveal it
-        Collections.shuffle(emptyCells);
-        Map.Entry<String, TextField> chosen = emptyCells.get(0);
-        TextField tf = chosen.getValue();
-        tf.setText(String.valueOf(solution.get(chosen.getKey())));
-        tf.setStyle("-fx-font-size:25px;" +
-                "-fx-text-fill: #f1dd2b;"); // yellow
-        tf.setEditable(false);
-
-        hintsLeft--;
-        updateHintButton();
-        checkIfAllCorrect();
-    }
-
-    private void updateHintButton() {
-        hintLabel.setText(String.valueOf(hintsLeft));
-        if (hintsLeft < 0) {
-            hint.setDisable(true);
-            hint.setOpacity(0.4);
+        for (List<String> run : currentLayout.acrossRuns) {
+            if (run.isEmpty()) continue;
+            String first = run.get(0);
+            String labelCell = (col(first) - 1) + "," + row(first);
+            int sum = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
+            // DEBUG
+            System.out.println("Run: " + run + " labelCell: " + labelCell + " sum: " + sum);
+            acrossLabelMap.put(labelCell, sum);
         }
     }
 
-    @FXML
-    protected void onRestartClick() {
-        // Generates a new solution
-        solution.clear();
-        generateSolution();
+    // White playable TextField cell
+    private void addWhiteCell(int col, int row, String key) {
+        StackPane pane = new StackPane();
+        pane.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10;");
+        pane.setPrefSize(200, 150);
 
-        // Recalculate sums
-        displaySums();
+        TextField tf = new TextField();
+        tf.setFont(Font.font("Arial Bold", 25));
+        tf.setMaxWidth(Double.MAX_VALUE);
+        tf.setMaxHeight(Double.MAX_VALUE);
+        pane.getChildren().add(tf);
 
-        //  Reset all fields
-        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
-            TextField tf = entry.getValue();
-            tf.setEditable(true);
-            tf.clear();
-            tf.setStyle(" ");
+        fieldMap.put(key, tf);
+        placeInGrid(pane, col, row);
+    }
+
+    private void addBlackClueCell(int col, int row, Integer across, Integer down) {
+        GridPane inner = new GridPane();
+        inner.setStyle("-fx-background-color: #2d532c; -fx-background-radius: 10;");
+        inner.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // 2x2 inner grid: top-left=down label, bottom-right=across label
+        ColumnConstraints c1 = new ColumnConstraints();
+        c1.setPercentWidth(50);
+        ColumnConstraints c2 = new ColumnConstraints();
+        c2.setPercentWidth(50);
+        inner.getColumnConstraints().addAll(c1, c2);
+
+        RowConstraints r1 = new RowConstraints();
+        r1.setPercentHeight(50);
+        RowConstraints r2 = new RowConstraints();
+        r2.setPercentHeight(50);
+        inner.getRowConstraints().addAll(r1, r2);
+
+        // Down label — top-left cell of inner grid
+        if (down != null) {
+            Label lbl = new Label(String.valueOf(down));
+            lbl.setTextFill(Color.WHITE);
+            lbl.setFont(Font.font("Arial Bold", 14));
+            lbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            GridPane.setColumnIndex(lbl, 0);
+            GridPane.setRowIndex(lbl, 1);
+            GridPane.setHalignment(lbl, javafx.geometry.HPos.LEFT);
+            GridPane.setValignment(lbl, javafx.geometry.VPos.BOTTOM);
+            javafx.geometry.Insets margin = new javafx.geometry.Insets(0, 0, 3, 4);
+            GridPane.setMargin(lbl, margin);
+            inner.getChildren().add(lbl);
         }
 
-        //  Reset timer
-        timer.stop();
-        secondsLeft = 15 * 60;
-        timerLabel.setText("15:00");
-        startTimer();
-
-        // Reset hints
-        hintsLeft = 3;
-        hint.setDisable(false);
-        hint.setOpacity(1.0);
-
-        updateHintButton();
-        GameState.getInstance().hasSavedState = false;
-    }
-
-
-    // this method is used to make the timer works
-    private void startTimer() {
-        timer = new Timeline(
-                new KeyFrame(Duration.seconds(1), e -> {
-                    secondsLeft--;
-                    int minutes = secondsLeft / 60;
-                    int seconds = secondsLeft % 60;
-                    timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
-
-                    if(secondsLeft<=0){
-                        timer.stop();
-                        gameFailed();
-                    }
-                })
-        );
-        timer.setCycleCount(Timeline.INDEFINITE);
-        timer.play();
-
-
-    }
-
-    /*This method servers as the map who coordinates to the corresponsing textfield.
-    e.g., "1,3" is for the textfield found in row 1 column 3
-    for the coordinates of the cell it follows the format column by row.
-    */
-    private void buildFieldMap() {
-        // row 1
-        fieldMap.put("1,1", tf_r1c1);
-        fieldMap.put("2,1", tf_r1c2);
-        fieldMap.put("3,1", tf_r1c3);
-        fieldMap.put("4,1", tf_r1c4);
-        fieldMap.put("5,1", tf_r1c5);
-        // row 2
-        fieldMap.put("1,2", tf_r2c1);
-        fieldMap.put("2,2", tf_r2c2);
-        fieldMap.put("3,2", tf_r2c3);
-        fieldMap.put("4,2", tf_r2c4);
-        fieldMap.put("5,2", tf_r2c5);
-        fieldMap.put("6,2", tf_r2c6);
-        // row 3
-        fieldMap.put("1,3", tf_r3c1);
-        fieldMap.put("2,3", tf_r3c2);
-        fieldMap.put("5,3", tf_r3c5);
-        fieldMap.put("6,3", tf_r3c6);
-        // row 4
-        fieldMap.put("1,4", tf_r4c1);
-        fieldMap.put("2,4", tf_r4c2);
-        fieldMap.put("5,4", tf_r4c5);
-        fieldMap.put("6,4", tf_r4c6);
-        // row 5
-        fieldMap.put("1,5", tf_r5c1);
-        fieldMap.put("2,5", tf_r5c2);
-        fieldMap.put("3,5", tf_r5c3);
-        fieldMap.put("4,5", tf_r5c4);
-        fieldMap.put("5,5", tf_r5c5);
-        fieldMap.put("6,5", tf_r5c6);
-        // row 6
-        fieldMap.put("2,6", tf_r6c2);
-        fieldMap.put("3,6", tf_r6c3);
-        fieldMap.put("4,6", tf_r6c4);
-        fieldMap.put("5,6", tf_r6c5);
-        fieldMap.put("6,6", tf_r6c6);
-
-    }
-
-    //This method happens once the solution is generated, and it calculated the sum of each run and displays it on the corresponding label
-    private void displaySums() {
-        for (String cell : fieldMap.keySet()) {
-            if (!solution.containsKey(cell)) {
-                System.out.println("Missing cell: " + cell);
-            }
+        // Across label — bottom-right cell of inner grid
+        if (across != null) {
+            Label lbl = new Label(String.valueOf(across));
+            lbl.setTextFill(Color.WHITE);
+            lbl.setFont(Font.font("Arial Bold", 14));
+            lbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            GridPane.setColumnIndex(lbl, 1);
+            GridPane.setRowIndex(lbl, 0);
+            GridPane.setHalignment(lbl, javafx.geometry.HPos.RIGHT);
+            GridPane.setValignment(lbl, javafx.geometry.VPos.TOP);
+            javafx.geometry.Insets margin = new javafx.geometry.Insets(3, 4, 0, 0);
+            GridPane.setMargin(lbl, margin);
+            inner.getChildren().add(lbl);
         }
-        Map<List<String>, Label> runLabelMap = new LinkedHashMap<>();
 
+        // Diagonal line drawn on top using a Canvas that fills the cell
+        javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas();
+        // Bind canvas size to the inner GridPane size
+        canvas.widthProperty().bind(inner.widthProperty());
+        canvas.heightProperty().bind(inner.heightProperty());
+        canvas.setMouseTransparent(true);
 
-        runLabelMap.put(Arrays.asList("1,1", "2,1", "3,1", "4,1", "5,1"), lbl_r1c0_across);
-        runLabelMap.put(Arrays.asList("1,2", "2,2", "3,2", "4,2", "5,2", "6,2"), lbl_r2c0_across);
-        runLabelMap.put(Arrays.asList("1,3", "2,3"), lbl_r3c0_across);
-        runLabelMap.put(Arrays.asList("5,3", "6,3"), lbl_r3c4_across);
-        runLabelMap.put(Arrays.asList("1,4", "2,4"), lbl_r4c0_across);
-        runLabelMap.put(Arrays.asList("5,4", "6,4"), lbl_r4c4_across);
-        runLabelMap.put(Arrays.asList("1,5", "2,5", "3,5", "4,5", "5,5", "6,5"), lbl_r5c0_across);
-        runLabelMap.put(Arrays.asList("2,6", "3,6", "4,6", "5,6", "6,6"), lbl_r6c1_across);
+        // Redraw line whenever size changes
+        javafx.beans.value.ChangeListener<Number> redraw = (obs, oldVal, newVal) -> {
+            double w = canvas.getWidth();
+            double h = canvas.getHeight();
+            javafx.scene.canvas.GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, w, h);
+            gc.setStroke(javafx.scene.paint.Color.WHITE);
+            gc.setLineWidth(1.5);
+            gc.strokeLine(4, 4, w - 4, h - 4);
+        };
+        canvas.widthProperty().addListener(redraw);
+        canvas.heightProperty().addListener(redraw);
 
+        StackPane pane = new StackPane(inner, canvas);
+        pane.setStyle("-fx-background-color: #2d532c; -fx-background-radius: 10;");
 
-        runLabelMap.put(Arrays.asList("1,1", "1,2", "1,3", "1,4", "1,5"), lbl_r0c1_down);
-        runLabelMap.put(Arrays.asList("2,1", "2,2", "2,3", "2,4", "2,5", "2,6"), lbl_r0c2_down);
-        runLabelMap.put(Arrays.asList("3,1", "3,2"), lbl_r0c3_down);
-        runLabelMap.put(Arrays.asList("3,5", "3,6"), lbl_r4c3_down);
-        runLabelMap.put(Arrays.asList("4,1", "4,2"), lbl_r0c4_down);
-        runLabelMap.put(Arrays.asList("4,5", "4,6"), lbl_r4c4_down);
-        runLabelMap.put(Arrays.asList("5,1", "5,2", "5,3", "5,4", "5,5", "5,6"), lbl_r0c5_down);
-        runLabelMap.put(Arrays.asList("6,2", "6,3", "6,4", "6,5", "6,6"), lbl_r1c6_down);
-
-        for (Map.Entry<List<String>, Label> entry : runLabelMap.entrySet()) {
-            int sum = 0;
-            for (String cell : entry.getKey()) {
-                sum += solution.get(cell);
-            }
-            if (entry.getValue() != null) {
-                entry.getValue().setText(String.valueOf(sum));
-            }
-        }
+        GridPane.setColumnIndex(pane, col);
+        GridPane.setRowIndex(pane, row);
+        GridPane.setHgrow(pane, Priority.SOMETIMES);
+        GridPane.setVgrow(pane, Priority.SOMETIMES);
+        hardPagePane.getChildren().add(pane);
     }
 
-    //This method as the listener for the player's input. It restricts inputs to a single digit 1-9,
-    //the digit will turn green if correct, red if wrong
-    //triggers a win check after every correct entry
+
+    // Transparent filler for unused corners
+    private void addEmptyCell(int col, int row) {
+        StackPane pane = new StackPane();
+        pane.setStyle("-fx-background-color: transparent;");
+        placeInGrid(pane, col, row);
+    }
+
+    // Places a StackPane into the GridPane at the given column and row
+    private void placeInGrid(StackPane pane, int col, int row) {
+        GridPane.setColumnIndex(pane, col);
+        GridPane.setRowIndex(pane, row);
+        GridPane.setHgrow(pane, Priority.SOMETIMES);
+        GridPane.setVgrow(pane, Priority.SOMETIMES);
+        hardPagePane.getChildren().add(pane);
+    }
+
+
+    //  GAME LOGIC
+
+
     private void clearFieldsForPlayer() {
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             String key = entry.getKey();
             TextField tf = entry.getValue();
             tf.clear();
 
-            //This sets up a listener that fires every time the text in the field changes
             tf.textProperty().addListener((obs, oldVal, newVal) -> {
-                // Only allow single digit 1–9
-                if (!newVal.matches("[1-9]?")) {
-                    tf.setText(oldVal);
-                    return;
-                }
-                //This acts as the second checkpoint to only allows single digits
-                if (newVal.length() > 1) {
-                    tf.setText(newVal.substring(newVal.length() - 1));
-                    return;
-                }
-
+                if (!newVal.matches("[1-9]?")) { tf.setText(oldVal); return; }
+                if (newVal.length() > 1)        { tf.setText(newVal.substring(newVal.length() - 1)); return; }
 
                 if (newVal.isEmpty()) {
                     tf.setStyle("-fx-background-color: #fff;");
-                } else if (Integer.parseInt(newVal) == solution.get(key)) {
+                } else if (Integer.parseInt(newVal) == solution.getOrDefault(key, -999)) {
                     tf.setStyle("-fx-text-fill: #00bf63;" +
                             "-fx-background-color:#fff;" +
                             "-fx-border-radius:0px;" +
-                            "-fx-border-color:transparent;"); // green
+                            "-fx-border-color:transparent;");
                     checkIfAllCorrect();
                 } else {
-                    tf.setStyle("-fx-text-fill: #c82121;"); // red
+                    tf.setStyle("-fx-text-fill: #c82121;");
                 }
             });
         }
     }
 
-    //This method checks whether the player has correctly filled in the entire puzzle
     private void checkIfAllCorrect() {
-        //It goes through evey cell
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
-            //As it goes to every cell, it grabs the players input and checks it the field is empty or not a solution.
             String input = entry.getValue().getText().trim();
-
-            //If either is true for even one cell the method immediately returns-> meaning the puzzle is not complete yet.
-            if (input.isEmpty() || Integer.parseInt(input) != solution.get(entry.getKey())) {
+            if (input.isEmpty() || Integer.parseInt(input) != solution.getOrDefault(entry.getKey(), -999))
                 return;
-            }
         }
-        //If all cells are correntm the timer will stop and call the levelachievement() method
         timer.stop();
-
-        //Disable all fields so the player can't edit during the delay
-        for (TextField tf: fieldMap.values()){
-            tf.setEditable(false);
-        }
+        for (TextField tf : fieldMap.values()) tf.setEditable(false);
         PauseTransition delay = new PauseTransition(Duration.seconds(1));
         delay.setOnFinished(e -> levelAchievement());
         delay.play();
-
     }
 
-    //This method allows to go to another fxml, where it shows the performance of the player for the previous game.
-    private void levelAchievement() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
-            Parent root = loader.load();
-
-            AchievementHardController ac = loader.getController();
-            int timeTaken = (15 * 60) - secondsLeft;
-            ac.setStats(secondsLeft, timeTaken);
-
-            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
-             stage.getScene().setRoot(root);
-            SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //This method prepares the list of cells, to support the process of backtrack
     private void generateSolution() {
-        //It clears all the previous stored solution
         solution.clear();
-
-        //Gets all the cells keys from the fieldMap and puts them into a list.
-        List<String> cells = new ArrayList<>(fieldMap.keySet());
-
-        //it begins with the first cell in the list.
-        // Backtrack will recursively fill in each cell with a valid digit until the entire puzzle is solved
-      boolean solved=  backtrack(cells, 0);
-
-        if(!solved){
+        List<String> cells = new ArrayList<>(currentLayout.activeCells);
+        boolean solved = backtrack(cells, 0);
+        if (!solved) {
             System.out.println("Backtracking failed, retrying...");
             generateSolution();
         }
+        // DEBUG — remove after fixing
+        System.out.println("Solution size: " + solution.size());
+        System.out.println("Solution: " + solution);
     }
 
     private boolean backtrack(List<String> cells, int index) {
-        //If index has reached the end of the cell list, it means every cell has been successfully filled.
-        // It return true to signal that the puzzle is complete
-        if (index == cells.size())
-            return true;
-
-        //it grabs the currect cell to woek on for example ("1,1", or "2,3").
+        if (index == cells.size()) return true;
         String key = cells.get(index);
-
-        //the algorithm tries digits in a different order each time
-        List<Integer> digits = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-        Collections.shuffle(digits); // random order each time
-
-        /*
-        This is the core loop. For each digit it:
-
-        1. Checks if the digit is valid for this cell (no conflict in its row/column group)
-        2. If valid, places it in the solution
-        3. Recursively moves to the next cell (index + 1)
-        4. If the recursive call eventually returns true, the whole thing succeeds and bubbles true back up
-        5.  If it returns false (dead end), it removes the digit and tries the next one — this is the "backtracking" part
-        6. If all 9 digits fail, it returns false, telling the previous call to backtrack as well
-         */
+        List<Integer> digits = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
+        Collections.shuffle(digits);
         for (int digit : digits) {
             if (isValid(key, digit)) {
                 solution.put(key, digit);
@@ -443,14 +485,9 @@ public class HardPageController {
         return false;
     }
 
-    //This method make sure that there is no duplicate within the same row or column group
     private boolean isValid(String key, int digit) {
-        //Goes through every run.
-        for (List<String> run : RUNS) {
-            //if the current cell doesn't belong to that run, it will be skipped and moves to the next one
-            if (!run.contains(key))
-                continue;
-            //If a matching digit is found in the same run, it returns false- the number is not a part of the solution
+        for (List<String> run : currentLayout.runs) {
+            if (!run.contains(key)) continue;
             for (String other : run) {
                 if (!other.equals(key) && solution.getOrDefault(other, -1) == digit)
                     return false;
@@ -459,16 +496,98 @@ public class HardPageController {
         return true;
     }
 
+    // Hint
+
+    @FXML
+    protected void onHintClick() {
+        if (hintsLeft <= 0) return;
+
+        List<Map.Entry<String, TextField>> emptyCells = new ArrayList<>();
+        for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
+            String input = entry.getValue().getText().trim();
+            if (input.isEmpty() || Integer.parseInt(input) != solution.getOrDefault(entry.getKey(), -999))
+                emptyCells.add(entry);
+        }
+        if (emptyCells.isEmpty()) return;
+
+        Collections.shuffle(emptyCells);
+        Map.Entry<String, TextField> chosen = emptyCells.get(0);
+        TextField tf = chosen.getValue();
+        tf.setText(String.valueOf(solution.get(chosen.getKey())));
+        tf.setStyle("-fx-font-size:25px; -fx-text-fill: #f1dd2b;");
+        tf.setEditable(false);
+
+        hintsLeft--;
+        updateHintButton();
+        checkIfAllCorrect();
+    }
+
+    private void updateHintButton() {
+        hintLabel.setText(String.valueOf(hintsLeft));
+        if (hintsLeft <= 0) {
+            hint.setDisable(true);
+            hint.setOpacity(0.4);
+        }
+    }
+
+    //  Restart
+
+    @FXML
+    protected void onRestartClick() {
+        currentLayout = randomLayout();
+        generateSolution(); // fills solution FIRST
+        buildGrid();        // builds grid with correct sums
+        clearFieldsForPlayer();
+
+        timer.stop();
+        secondsLeft = 15 * 60;
+        timerLabel.setText("15:00");
+        startTimer();
+
+        hintsLeft = 3;
+        hint.setDisable(false);
+        hint.setOpacity(1.0);
+        updateHintButton();
+
+        GameState.getInstance().hasSavedState = false;
+    }
+
+    // ── Timer ─────────────────────────────────────────────────────────────
+
+    private void startTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            secondsLeft--;
+            int m = secondsLeft / 60, s = secondsLeft % 60;
+            timerLabel.setText(String.format("%02d:%02d", m, s));
+            if (secondsLeft <= 0) { timer.stop(); gameFailed(); }
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────
+
+    private void levelAchievement() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
+            Parent root = loader.load();
+            AchievementHardController ac = loader.getController();
+            int timeTaken = (15 * 60) - secondsLeft;
+            ac.setStats(secondsLeft, timeTaken);
+            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            SettingsController.setupGlobalClickSounds(stage.getScene());
+        } catch (IOException e) { e.printStackTrace(); }
+    }
 
     private void gameFailed() {
-        // Save the current puzzle state before leaving
         GameState state = GameState.getInstance();
-        state.hardSolution = new HashMap<>(solution);
-        state.secondsLeft = 15 * 60; // reset timer for retry
-        state.hintsLeft = hintsLeft;
-        state.hasSavedState = true;
+        state.hardSolution    = new HashMap<>(solution);
+        state.secondsLeft     = 15 * 60;
+        state.hintsLeft       = hintsLeft;
+        state.hasSavedState   = true;
+        state.savedLayoutName = currentLayout.name;
 
-        // Save field values and styles
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
             state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
@@ -480,57 +599,49 @@ public class HardPageController {
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    //This method is responsible for saving the game state and the action of the back button
     @FXML
     private void backbutton(ActionEvent event) {
-
-        //This section will save the current state of the game
         GameState state = GameState.getInstance();
-        state.hardSolution = new HashMap<>(solution);
-        state.secondsLeft = secondsLeft;
-        state.hintsLeft = hintsLeft;
-        state.hasSavedState = true;
+        state.hardSolution    = new HashMap<>(solution);
+        state.secondsLeft     = secondsLeft;
+        state.hintsLeft       = hintsLeft;
+        state.hasSavedState   = true;
+        state.savedLayoutName = currentLayout.name;
 
-        //this will save the fields' value and style
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
             state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
         }
         timer.stop();
+
         try {
-            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("start_page.fxml"));
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
-            Parent root = backbuttonLoader.load();
-            stage.getScene().setRoot(root);
+            stage.getScene().setRoot(loader.load());
             SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // Helper method to save the current logical data of the round
-    private void saveGameToState() {
-        GameState state = GameState.getInstance();
-        //Restore saved state
-        if (state.hasSavedState) {
-            displaySums();
-            clearFieldsForPlayer();
+    // ── Layout utilities ──────────────────────────────────────────────────
 
-            //Restore the field values and styles
-            for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
-                String key = entry.getKey();
-                TextField tf = entry.getValue();
-                tf.setText(state.hardFieldValues.getOrDefault(key, ""));
-                tf.setStyle(state.hardFieldStyles.getOrDefault(key, ""));
-            }
-        }
-
+    private LayoutDefinition randomLayout() {
+        return LAYOUTS.get(new Random().nextInt(LAYOUTS.size()));
     }
 
+    private LayoutDefinition findLayoutByName(String name) {
+        if (name == null) return null;
+        return LAYOUTS.stream()
+                .filter(l -> l.name.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
 
+    // Extracts the column number from a "col,row" key
+    private int col(String key) { return Integer.parseInt(key.split(",")[0]); }
+
+    // Extracts the row number from a "col,row" key
+    private int row(String key) { return Integer.parseInt(key.split(",")[1]); }
 }
