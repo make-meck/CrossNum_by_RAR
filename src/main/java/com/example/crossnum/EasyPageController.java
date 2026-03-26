@@ -175,6 +175,7 @@ public class EasyPageController {
 
     private void generatePuzzle() {
         Random rand = new Random();
+        boolean hasZeroSum;
 
         /*
             Forward Propagation with Boolean Masking Algorithm:
@@ -191,36 +192,53 @@ public class EasyPageController {
                be displayed in the green box.
         */
 
-        // (1)(2) Loop that will generate random numbers and boolean values (per indices) and store it in the array.
-        for (int r = 1; r <= 4; r++) {
-            for (int c = 1; c <= 4; c++) {
-                gridData[r][c] = new Cell(); // Constructor
-                gridData[r][c].value = rand.nextInt(9) + 1; // random numbers from 1 to 9
-                gridData[r][c].isSolution = rand.nextBoolean(); // random boolean values (true/false)
-            }
-        }
+        do {
+            hasZeroSum = false; // Resets the flag for each puzzle generation attempt
 
-        // (3) Loop that will calculate the row sums based on boolean mask
-        // true will add, false will not add
-        for (int r = 1; r <= 4; r++) {
-            int rowSum = 0;
-            for (int c = 1; c <= 4; c++) {
-                if (gridData[r][c].isSolution) rowSum += gridData[r][c].value;
-            }
-            gridData[r][0] = new Cell(); // The zero on second index indicates the green box above
-            gridData[r][0].value = rowSum;
-        }
-
-        // (3) Loop that will calculate the column sums based on boolean mask
-        // true will add, false will not add
-        for (int c = 1; c <= 4; c++) {
-            int colSum = 0;
+            // (1)(2) Loop that will generate random numbers and boolean values (per indices) and store it in the array.
             for (int r = 1; r <= 4; r++) {
-                if (gridData[r][c].isSolution) colSum += gridData[r][c].value;
+                for (int c = 1; c <= 4; c++) {
+                    gridData[r][c] = new Cell(); // Constructor
+                    gridData[r][c].value = rand.nextInt(9) + 1; // random numbers from 1 to 9
+                    gridData[r][c].isSolution = rand.nextBoolean(); // random boolean values (true/false)
+                }
             }
-            gridData[0][c] = new Cell(); // The zero on first index indicates the leftmost green box
-            gridData[0][c].value = colSum;
-        }
+
+            // (3) Loop that will calculate the row sums based on boolean mask
+            // true will add, false will not add
+            for (int r = 1; r <= 4; r++) {
+                int rowSum = 0;
+                for (int c = 1; c <= 4; c++) {
+                    if (gridData[r][c].isSolution) rowSum += gridData[r][c].value;
+                }
+
+                // If a row sum is 0, set hasZeroSum as true so the puzzle regenerates
+                if (rowSum == 0) {
+                    hasZeroSum = true;
+                }
+
+                gridData[r][0] = new Cell(); // The zero on second index indicates the green box above
+                gridData[r][0].value = rowSum;
+            }
+
+            // (3) Loop that will calculate the column sums based on boolean mask
+            // true will add, false will not add
+            for (int c = 1; c <= 4; c++) {
+                int colSum = 0;
+                for (int r = 1; r <= 4; r++) {
+                    if (gridData[r][c].isSolution) colSum += gridData[r][c].value;
+                }
+
+                // If a column sum is 0, set hasZeroSum as true so the puzzle regenerates
+                if (colSum == 0) {
+                    hasZeroSum = true;
+                }
+
+                gridData[0][c] = new Cell(); // The zero on first index indicates the leftmost green box
+                gridData[0][c].value = colSum;
+            }
+
+        } while (hasZeroSum); // Keep generating puzzle to prevent zero sums
     }
 
     private void populateGridUI() {

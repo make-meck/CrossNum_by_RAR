@@ -229,6 +229,7 @@ public class MediumPageController {
 
     private void generatePuzzle() {
         Random rand = new Random();
+        boolean hasZeroSum;
 
         /*
             Forward Propagation with Boolean Masking Algorithm:
@@ -245,53 +246,69 @@ public class MediumPageController {
                be displayed in the green box.
         */
 
-        // (1)(2) Loop that will generate random numbers and boolean values (per indices) and store it in the array.
-        for (int r = 1; r <= 6; r++) {
-            for (int c = 1; c <= 6; c++) {
-                gridData[r][c] = new MediumPageController.Cell(); // Constructor
-                boolean isFraction = rand.nextInt(4) == 0; // 25% chance fraction
+        do {
+            hasZeroSum = false; // Resets the flag for each puzzle generation attempt
 
-                if(isFraction){
-                    int denom;
-                    int choice = rand.nextInt(3);
-
-                    if (choice == 0) denom = 2;
-                    else if (choice == 1) denom = 4;
-                    else denom = 3;
-                    int numer = 1 + rand.nextInt(denom - 1);
-                    gridData[r][c].value = new Fraction(numer, denom);
-                }else{
-                    gridData[r][c].value = new Fraction(1 + rand.nextInt(9), 1); // whole number
-                }
-                gridData[r][c].isSolution = rand.nextBoolean(); // random boolean values (true/false)
-            }
-        }
-
-        // (3) Loop that will calculate the row sums based on boolean mask
-        // true will add, false will not add
-        for (int r = 1; r <= 6; r++) {
-            Fraction rowSum = new Fraction(0,1);
-            for(int c = 1; c <= 6; c++){
-                if(gridData[r][c].isSolution){
-                    rowSum = rowSum.add(gridData[r][c].value);
-                }
-            }
-            gridData[r][0] = new Cell();
-            gridData[r][0].value = rowSum;
-        }
-
-        // (3) Loop that will calculate the column sums based on boolean mask
-        // true will add, false will not add
-        for (int c = 1; c <= 6; c++) {
-            Fraction colSum = new Fraction(0, 1);
+            // (1)(2) Loop that will generate random numbers and boolean values (per indices) and store it in the array.
             for (int r = 1; r <= 6; r++) {
-                if (gridData[r][c].isSolution) {
-                    colSum = colSum.add(gridData[r][c].value);
+                for (int c = 1; c <= 6; c++) {
+                    gridData[r][c] = new MediumPageController.Cell(); // Constructor
+                    boolean isFraction = rand.nextInt(4) == 0; // 25% chance fraction
+
+                    if(isFraction){
+                        int denom;
+                        int choice = rand.nextInt(3);
+
+                        if (choice == 0) denom = 2;
+                        else if (choice == 1) denom = 4;
+                        else denom = 3;
+                        int numer = 1 + rand.nextInt(denom - 1);
+                        gridData[r][c].value = new Fraction(numer, denom);
+                    }else{
+                        gridData[r][c].value = new Fraction(1 + rand.nextInt(9), 1); // whole number
+                    }
+                    gridData[r][c].isSolution = rand.nextBoolean(); // random boolean values (true/false)
                 }
             }
-            gridData[0][c] = new Cell();
-            gridData[0][c].value = colSum;
-        }
+
+            // (3) Loop that will calculate the row sums based on boolean mask
+            // true will add, false will not add
+            for (int r = 1; r <= 6; r++) {
+                Fraction rowSum = new Fraction(0,1);
+                for(int c = 1; c <= 6; c++){
+                    if(gridData[r][c].isSolution){
+                        rowSum = rowSum.add(gridData[r][c].value);
+                    }
+                }
+
+                // If a row sum is 0, set hasZeroSum as true so the puzzle regenerates
+                if (rowSum.numerator == 0) {
+                    hasZeroSum = true;
+                }
+
+                gridData[r][0] = new Cell();
+                gridData[r][0].value = rowSum;
+            }
+
+            // (3) Loop that will calculate the column sums based on boolean mask
+            // true will add, false will not add
+            for (int c = 1; c <= 6; c++) {
+                Fraction colSum = new Fraction(0, 1);
+                for (int r = 1; r <= 6; r++) {
+                    if (gridData[r][c].isSolution) {
+                        colSum = colSum.add(gridData[r][c].value);
+                    }
+                }
+
+                // If a column sum is 0, set hasZeroSum as true so the puzzle regenerates
+                if (colSum.numerator == 0) {
+                    hasZeroSum = true;
+                }
+
+                gridData[0][c] = new Cell();
+                gridData[0][c].value = colSum;
+            }
+        } while (hasZeroSum);
     }
 
     private void populateGridUI() {
