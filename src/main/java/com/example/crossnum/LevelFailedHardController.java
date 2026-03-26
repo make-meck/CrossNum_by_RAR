@@ -32,7 +32,7 @@ public class LevelFailedHardController {
         state.hasSavedState = false;
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_page_Improved.fxml"));
             Stage stage = (Stage) hardRetryButton.getScene().getWindow();
             Parent root = loader.load();
             stage.getScene().setRoot(root);
