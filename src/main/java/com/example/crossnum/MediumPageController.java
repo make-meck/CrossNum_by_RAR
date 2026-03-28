@@ -7,6 +7,8 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -80,6 +82,12 @@ public class MediumPageController {
 
     // The puzzle grid (array) that holds the random generated logical data
     private MediumPageController.Cell[][] gridData = new MediumPageController.Cell[7][7];
+    // Arrays to hold the current sums per row and column during a round
+    private Label[] currentRowSums = new Label[7];
+    private Label[] currentColSums = new Label[7];
+    // Arrays to hold the target sums per row and column
+    private Label[] targetRowLabels = new Label[7];
+    private Label[] targetColLabels = new Label[7];
 
     private final Image blackEraser = new Image(getClass().getResource("eraser.png").toExternalForm());
     private final Image whiteEraser = new Image(getClass().getResource("white_eraser.png").toExternalForm());
@@ -337,6 +345,24 @@ public class MediumPageController {
                 if (row == 0 || col == 0) {
                     label.setTextFill(Color.WHITE);
                     pane.getChildren().add(label);
+
+                    // Store the label in the array
+                    if (col == 0) targetRowLabels[row] = label;
+                    if (row == 0) targetColLabels[col] = label;
+
+                    // for displaying the current sums based on the encircled numbers per row and column
+                    // style of how it'll be displayed
+                    Label currentSumLabel = new Label("0");
+                    currentSumLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+                    currentSumLabel.setTextFill(Color.web("#e0e0e0"));
+                    StackPane.setAlignment(currentSumLabel, Pos.TOP_LEFT);
+                    StackPane.setMargin(currentSumLabel, new Insets(3));
+                    // the actual population
+                    pane.getChildren().add(currentSumLabel);
+
+                    // Store references to update the sum
+                    if (col == 0) currentRowSums[row] = currentSumLabel;
+                    if (row == 0) currentColSums[col] = currentSumLabel;
                 }
                 // Populate the green boxes with the numbers stored in gridData array
                 else {
@@ -375,6 +401,7 @@ public class MediumPageController {
                 drawCircle(pane, "Normal");
                 cell.isResolved = true;
                 cellsResolved++;
+                updateRunningSums();
                 checkWinCondition();
             }
             // The lives will decrease if the wrong box is clicked
@@ -426,6 +453,59 @@ public class MediumPageController {
         ParallelTransition animation = new ParallelTransition(fade, scale);
         animation.play();
 
+    }
+
+    // This method calculates and updates the current sums per row and column
+    private void updateRunningSums() {
+        // for row current sums
+        for (int r = 1; r <= 6; r++) {
+            Fraction currentSum = new Fraction(0, 1);
+            for (int c = 1; c <= 6; c++) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution) {
+                    currentSum = currentSum.add(gridData[r][c].value);
+                }
+            }
+            if (currentRowSums[r] != null) {
+                // simplifying numerator/denominator to check if fractions are equal
+                boolean sumMatches = (currentSum.numerator == gridData[r][0].value.numerator
+                        && currentSum.denominator == gridData[r][0].value.denominator);
+                currentRowSums[r].setText(String.valueOf(currentSum));
+                // will change the color when the target sum is matched
+                if (sumMatches && currentSum.numerator != 0) {
+                    currentRowSums[r].setTextFill(Color.web("#00bf63"));
+                    targetRowLabels[r].setTextFill(Color.web("#00bf63"));
+                } else {
+                    currentRowSums[r].setText(String.valueOf(currentSum));
+                    currentRowSums[r].setTextFill(Color.web("#e0e0e0"));
+                    targetRowLabels[r].setTextFill(Color.WHITE);
+                }
+            }
+        }
+
+        // for current column sums
+        for (int c = 1; c <= 6; c++) {
+            Fraction currentSum = new Fraction(0, 1);
+            for (int r = 1; r <= 6; r++) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution) {
+                    currentSum = currentSum.add(gridData[r][c].value);
+                }
+            }
+            if (currentColSums[c] != null) {
+                // simplifying numerator/denominator to check if fractions are equal
+                boolean sumMatches = (currentSum.numerator == gridData[0][c].value.numerator
+                        && currentSum.denominator == gridData[0][c].value.denominator);
+                currentColSums[c].setText(String.valueOf(currentSum));
+                // will change the color when the target sum is matched
+                if (sumMatches && currentSum.numerator != 0) {
+                    currentColSums[c].setTextFill(Color.web("#00bf63"));
+                    targetColLabels[c].setTextFill(Color.web("#00bf63"));
+                } else {
+                    currentColSums[c].setText(String.valueOf(currentSum));
+                    currentColSums[c].setTextFill(Color.web("#e0e0e0"));
+                    targetColLabels[c].setTextFill(Color.WHITE);
+                }
+            }
+        }
     }
 
     // Handles the UI of hearts that will serve as lives per round
@@ -528,6 +608,7 @@ public class MediumPageController {
 
                     cell.isResolved = true;
                     cellsResolved++;
+                    updateRunningSums();
                     checkWinCondition();
                     break;
                 }

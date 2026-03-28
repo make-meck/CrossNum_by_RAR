@@ -22,6 +22,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 
 import java.io.IOException;
 import java.util.Random;
@@ -46,6 +48,12 @@ public class EasyPageController {
 
     // The puzzle grid (array) that holds the random generated logical data
     private Cell[][] gridData = new Cell[5][5];
+    // Arrays to hold the current sums per row and column during a round
+    private Label[] currentRowSums = new Label[5];
+    private Label[] currentColSums = new Label[5];
+    // Arrays to hold the target sums per row and column
+    private Label[] targetRowLabels = new Label[5];
+    private Label[] targetColLabels = new Label[5];
 
     private final Image blackEraser = new Image(getClass().getResource("eraser.png").toExternalForm());
     private final Image whiteEraser = new Image(getClass().getResource("white_eraser.png").toExternalForm());
@@ -256,7 +264,7 @@ public class EasyPageController {
                 // No UI and data for the top-left corner
                 if (row == 0 && col == 0) continue; // [0,0]
 
-                //This clear the existing children before adding new ones, this is important in restoring data
+                // This clear the existing children before adding new ones, this is important in restoring data
                 pane.getChildren().clear();
 
                 // style for displaying numbers
@@ -267,6 +275,24 @@ public class EasyPageController {
                 if (row == 0 || col == 0) {
                     label.setTextFill(Color.WHITE);
                     pane.getChildren().add(label);
+
+                    // Store the label in the array
+                    if (col == 0) targetRowLabels[row] = label;
+                    if (row == 0) targetColLabels[col] = label;
+
+                    // for displaying the current sums based on the encircled numbers per row and column
+                    // style of how it'll be displayed
+                    Label currentSumLabel = new Label("0");
+                    currentSumLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+                    currentSumLabel.setTextFill(Color.web("#e0e0e0"));
+                    StackPane.setAlignment(currentSumLabel, Pos.TOP_LEFT);
+                    StackPane.setMargin(currentSumLabel, new Insets(3));
+                    // the actual population
+                    pane.getChildren().add(currentSumLabel);
+
+                    // Store references to update the sum
+                    if (col == 0) currentRowSums[row] = currentSumLabel;
+                    if (row == 0) currentColSums[col] = currentSumLabel;
                 }
                 // Populate the green boxes with the numbers stored in gridData array
                 else {
@@ -305,6 +331,7 @@ public class EasyPageController {
                 drawCircle(pane, "Normal");
                 cell.isResolved = true;
                 cellsResolved++;
+                updateRunningSums();
                 checkWinCondition();
             }
             // The lives will decrease if the wrong box is clicked
@@ -356,6 +383,53 @@ public class EasyPageController {
         ParallelTransition animation = new ParallelTransition(fade, scale);
         animation.play();
 
+    }
+
+    // This method calculates and updates the current sums per row and column
+    private void updateRunningSums() {
+        // for row current sums
+        for (int r = 1; r <= 4; r++) {
+            int currentSum = 0;
+            for (int c = 1; c <= 4; c++) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution) {
+                    currentSum += gridData[r][c].value;
+                }
+            }
+            if (currentRowSums[r] != null) {
+                currentRowSums[r].setText(String.valueOf(currentSum));
+                // will change the color when the target sum is matched
+                if (currentSum == gridData[r][0].value && currentSum != 0) {
+                    currentRowSums[r].setTextFill(Color.web("#00bf63"));
+                    targetRowLabels[r].setTextFill(Color.web("#00bf63"));
+                } else {
+                    currentRowSums[r].setText(String.valueOf(currentSum));
+                    currentRowSums[r].setTextFill(Color.web("#e0e0e0"));
+                    targetRowLabels[r].setTextFill(Color.WHITE);
+                }
+            }
+        }
+
+        // for current column sums
+        for (int c = 1; c <= 4; c++) {
+            int currentSum = 0;
+            for (int r = 1; r <= 4; r++) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution) {
+                    currentSum += gridData[r][c].value;
+                }
+            }
+            if (currentColSums[c] != null) {
+                currentColSums[c].setText(String.valueOf(currentSum));
+                // will change the color when the target sum is matched
+                if (currentSum == gridData[0][c].value && currentSum != 0) {
+                    currentColSums[c].setTextFill(Color.web("#00bf63"));
+                    targetColLabels[c].setTextFill(Color.web("#00bf63"));
+                } else {
+                    currentColSums[c].setText(String.valueOf(currentSum));
+                    currentColSums[c].setTextFill(Color.web("#e0e0e0"));
+                    targetColLabels[c].setTextFill(Color.WHITE);
+                }
+            }
+        }
     }
 
     // Handles the UI of hearts that will serve as lives per round
@@ -481,6 +555,7 @@ public class EasyPageController {
 
                     cell.isResolved = true;
                     cellsResolved++;
+                    updateRunningSums();
                     checkWinCondition();
                     break;
                 }
