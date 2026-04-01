@@ -52,26 +52,30 @@
         <VBox prefHeight="200.0" prefWidth="20.0" BorderPane.alignment="CENTER" />
     </right>
     <top>
-        <BorderPane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <BorderPane prefHeight="113.0" prefWidth="735.0" BorderPane.alignment="CENTER">
          <left>
-            <StackPane BorderPane.alignment="CENTER">
+            <HBox spacing="8.0" BorderPane.alignment="CENTER_LEFT">
                <BorderPane.margin>
                   <Insets left="50.0" right="50.0" />
                </BorderPane.margin>
                <children>
-                  <Button fx:id="backbuttonHard" mnemonicParsing="false" onAction="#backbutton" prefHeight="78.0" prefWidth="68.0" style="-fx-background-color: #d0e8d0;" textFill="#d0e8d0" />
-                  <StackPane focusTraversable="true" mouseTransparent="true" prefHeight="66.0" prefWidth="41.0" style="-fx-background-color: #d0e8d0;">
+                  <StackPane>
                      <children>
-                        <Circle fill="#365d35" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-                        <Group StackPane.alignment="CENTER">
+                        <Button fx:id="backbuttonHard" mnemonicParsing="false" onAction="#backbutton" prefHeight="78.0" prefWidth="68.0" style="-fx-background-color: #d0e8d0;" textFill="#d0e8d0" />
+                        <StackPane focusTraversable="true" mouseTransparent="true" prefHeight="66.0" prefWidth="41.0" style="-fx-background-color: #d0e8d0;">
                            <children>
-                              <SVGPath content="M247.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L179.2 256 41.9 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" fill="WHITE" rotate="180.0" scaleX="0.1" scaleY="0.1" />
+                              <Circle fill="#365d35" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                              <Group StackPane.alignment="CENTER">
+                                 <children>
+                                    <SVGPath content="M247.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L179.2 256 41.9 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" fill="WHITE" rotate="180.0" scaleX="0.1" scaleY="0.1" />
+                                 </children>
+                              </Group>
                            </children>
-                        </Group>
+                        </StackPane>
                      </children>
                   </StackPane>
                </children>
-            </StackPane>
+            </HBox>
          </left>
          <right>
             <StackPane BorderPane.alignment="CENTER">
@@ -96,6 +100,22 @@
          <center>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER_RIGHT">
                <children>
+                  <StackPane prefHeight="100.0" prefWidth="114.0">
+                     <children>
+                        <Ellipse fill="#365d35" radiusX="75.0" radiusY="22.0" stroke="#365d35" strokeType="INSIDE" />
+                        <Label fx:id="scoreLabel" text="SCORE: 500" textAlignment="JUSTIFY" textFill="#fafafa">
+                           <font>
+                              <Font name="Arial Bold" size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
+                  </StackPane>
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
                         <Ellipse fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
@@ -156,6 +176,9 @@
                   <Insets right="50.0" />
                </BorderPane.margin>
             </StackPane>
-         </right></BorderPane>
+         </right>
+         <left>
+            <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </left></BorderPane>
    </bottom>
 </BorderPane>

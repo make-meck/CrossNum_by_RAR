@@ -27,6 +27,13 @@ import java.util.*;
        it's rejected. If there is no conflict the digit is placed.
     3. Randomizes the digit order each time, making every puzzle unique
     4. Randomizes the layout each new game, giving a different puzzle shape every time
+
+    HOW SCORE SYSTEM WORKS
+    Every game has a starting score of 500, if the player has typed the correct number, they will have +10 times combo points.
+    If the player has typed the wrong answer their score will be deducted and the combo points will go back to one
+
+    Note:
+    #lalagyan nalang ng label for the score sa fxml ng level achievement, and level failed
 */
 public class HardPageController {
 
@@ -175,22 +182,33 @@ public class HardPageController {
         ));
     }
 
+    // SCORE CONSTANTS
+    private static final int base_score = 500;
+    private static final int point_per_correct = 10;
+    private static final int penalty_wrong = 30;
+    private static final int score_floor = 0;
+
 
     //  INSTANCE FIELDS
 
 
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
     private final Map<String, Integer>   solution  = new HashMap<>();
+    private final Set<String>            correctCells = new HashSet<>();
+    private final Map<String, Boolean>   cellWasCorrect = new HashMap<>();
 
     // The currently active layout — set in initialize() and onRestartClick()
     private LayoutDefinition currentLayout;
-
+    //Used for the score system
+    private int currentScore = base_score;
+    private int comboCount = 1;
     private Timeline timer;
     private int secondsLeft = 15 * 60;
     private int hintsLeft   = 3;
 
     // ── FXML injections — only structural elements remain ─────────────────
     // (TextFields and sum Labels are now created in Java by buildGrid())
+    @FXML private Label scoreLabel;
     @FXML private Button    backbuttonHard;
     @FXML private Button    hint;
     @FXML private Button    restartButton;
@@ -218,6 +236,8 @@ public class HardPageController {
             solution.putAll(state.hardSolution);
             secondsLeft = state.secondsLeft;
             hintsLeft   = state.hintsLeft;
+            currentScore = state.savedScore;
+            comboCount = state.savedCombo;
 
             // Build the grid first so fieldMap is populated
             buildGrid();
@@ -226,8 +246,18 @@ public class HardPageController {
             // Then restore what the player had typed and cell colours
             for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
                 String key = entry.getKey();
+                String savedText = state.hardFieldValues.getOrDefault(key, "");
+                String savedStyle = state.hardFieldValues.getOrDefault(key, "");
                 entry.getValue().setText(state.hardFieldValues.getOrDefault(key, ""));
                 entry.getValue().setStyle(state.hardFieldStyles.getOrDefault(key, ""));
+
+                //Rebuild correctCells/cells was correct from saved values
+                if(!savedText.isEmpty()){
+                    boolean wasRight = savedText.equals(
+                            String.valueOf(solution.getOrDefault(key, -999)));
+                    cellWasCorrect.put(key,wasRight);
+                    if(wasRight) correctCells.add(key);
+                }
             }
 
             int minutes = secondsLeft / 60;
@@ -240,8 +270,11 @@ public class HardPageController {
             generateSolution(); // generateSolution() reads from fieldMap
             buildGrid();        // buildGrid() populates fieldMap
             clearFieldsForPlayer();
+            currentScore= base_score;
+            comboCount = 1;
         }
 
+        updateScoreDisplay();
         startTimer();
         updateHintButton();
     }
@@ -293,6 +326,8 @@ public class HardPageController {
                 }
             }
         }
+
+        //for debugging
         for (List<String> run : currentLayout.acrossRuns) {
             if (run.isEmpty()) continue;
             String first = run.get(0);
@@ -303,6 +338,7 @@ public class HardPageController {
             acrossLabelMap.put(labelCell, sum);
         }
     }
+    //Cell builders
 
     // White playable TextField cell
     private void addWhiteCell(int col, int row, String key) {
@@ -420,29 +456,64 @@ public class HardPageController {
 
 
     private void clearFieldsForPlayer() {
+        correctCells.clear();
+        cellWasCorrect.clear();
+
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
-            String key = entry.getKey();
-            TextField tf = entry.getValue();
+            String    key = entry.getKey();
+            TextField tf  = entry.getValue();
             tf.clear();
 
             tf.textProperty().addListener((obs, oldVal, newVal) -> {
+                // ── Input validation ──────────────────────────────────────
                 if (!newVal.matches("[1-9]?")) { tf.setText(oldVal); return; }
-                if (newVal.length() > 1)        { tf.setText(newVal.substring(newVal.length() - 1)); return; }
+                if (newVal.length() > 1)       { tf.setText(newVal.substring(newVal.length() - 1)); return; }
 
+                boolean prevCorrect = Boolean.TRUE.equals(cellWasCorrect.get(key));
+
+                // ── Cell cleared ──────────────────────────────────────────
                 if (newVal.isEmpty()) {
+                    if (prevCorrect) correctCells.remove(key);
+                    cellWasCorrect.remove(key);
                     tf.setStyle("-fx-background-color: #fff;");
-                } else if (Integer.parseInt(newVal) == solution.getOrDefault(key, -999)) {
+                    updateScoreDisplay();
+                    return;
+                }
+
+                int     entered   = Integer.parseInt(newVal);
+                int     expected  = solution.getOrDefault(key, -999);
+                boolean isCorrect = (entered == expected);
+
+                if (isCorrect) {
+                    // ── Correct answer ────────────────────────────────────
+                    if (!prevCorrect) {
+                        // Award points only when transitioning to correct
+                        int earned = point_per_correct * comboCount;
+                        currentScore += earned;
+                        comboCount++;
+                        correctCells.add(key);
+                    }
+                    cellWasCorrect.put(key, true);
                     tf.setStyle("-fx-text-fill: #00bf63;" +
                             "-fx-background-color:#fff;" +
                             "-fx-border-radius:0px;" +
                             "-fx-border-color:transparent;");
+                    updateScoreDisplay();
                     checkIfAllCorrect();
+
                 } else {
+                    // ── Wrong answer ──────────────────────────────────────
+                    if (prevCorrect) correctCells.remove(key);
+                    currentScore = Math.max(score_floor, currentScore - penalty_wrong);
+                    comboCount   = 1;
+                    cellWasCorrect.put(key, false);
                     tf.setStyle("-fx-text-fill: #c82121;");
+                    updateScoreDisplay();
                 }
             });
         }
     }
+
 
     private void checkIfAllCorrect() {
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
@@ -452,7 +523,7 @@ public class HardPageController {
         }
         timer.stop();
         for (TextField tf : fieldMap.values()) tf.setEditable(false);
-        PauseTransition delay = new PauseTransition(Duration.seconds(1));
+        PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
         delay.setOnFinished(e -> levelAchievement());
         delay.play();
     }
@@ -496,6 +567,16 @@ public class HardPageController {
         return true;
     }
 
+    // Score Display
+    private void updateScoreDisplay(){
+        if(scoreLabel == null) return;
+        if(comboCount >2) {
+            scoreLabel.setText(currentScore + "  🔥x" + comboCount);
+        }else{
+            scoreLabel.setText(String.valueOf(currentScore));
+        }
+    }
+
     // Hint
 
     @FXML
@@ -505,24 +586,31 @@ public class HardPageController {
         List<Map.Entry<String, TextField>> emptyCells = new ArrayList<>();
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             String input = entry.getValue().getText().trim();
-            if (input.isEmpty() || Integer.parseInt(input) != solution.getOrDefault(entry.getKey(), -999))
+            if (input.isEmpty() ||
+                    Integer.parseInt(input) != solution.getOrDefault(entry.getKey(), -999))
                 emptyCells.add(entry);
         }
         if (emptyCells.isEmpty()) return;
 
         Collections.shuffle(emptyCells);
         Map.Entry<String, TextField> chosen = emptyCells.get(0);
-        TextField tf = chosen.getValue();
-        tf.setText(String.valueOf(solution.get(chosen.getKey())));
+        TextField tf  = chosen.getValue();
+        String    key = chosen.getKey();
+
+        // Hints are neutral — no score change, no combo effect
+        tf.setText(String.valueOf(solution.get(key)));
         tf.setStyle("-fx-font-size:25px; -fx-text-fill: #f1dd2b;");
         tf.setEditable(false);
+
+        correctCells.add(key);
+        cellWasCorrect.put(key, true);
 
         hintsLeft--;
         updateHintButton();
         checkIfAllCorrect();
     }
 
-    private void updateHintButton() {
+    private void updateHintButton(){
         hintLabel.setText(String.valueOf(hintsLeft));
         if (hintsLeft <= 0) {
             hint.setDisable(true);
@@ -538,6 +626,10 @@ public class HardPageController {
         generateSolution(); // fills solution FIRST
         buildGrid();        // builds grid with correct sums
         clearFieldsForPlayer();
+
+        currentScore = base_score;
+        comboCount =1;
+        updateScoreDisplay();
 
         timer.stop();
         secondsLeft = 15 * 60;
@@ -559,7 +651,7 @@ public class HardPageController {
             secondsLeft--;
             int m = secondsLeft / 60, s = secondsLeft % 60;
             timerLabel.setText(String.format("%02d:%02d", m, s));
-            if (secondsLeft <= 0) { timer.stop(); gameFailed(); }
+            if (secondsLeft <= 0 || currentScore == 0) { timer.stop(); gameFailed(); }  // if the player has a score of 0 and time runn out it will be game failed
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
@@ -573,7 +665,7 @@ public class HardPageController {
             Parent root = loader.load();
             AchievementHardController ac = loader.getController();
             int timeTaken = (15 * 60) - secondsLeft;
-            ac.setStats(secondsLeft, timeTaken);
+            ac.setStats(secondsLeft, timeTaken,currentScore);
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
@@ -587,6 +679,8 @@ public class HardPageController {
         state.hintsLeft       = hintsLeft;
         state.hasSavedState   = true;
         state.savedLayoutName = currentLayout.name;
+        state.savedScore      = currentScore;
+        state.savedCombo      = comboCount;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -610,6 +704,8 @@ public class HardPageController {
         state.hintsLeft       = hintsLeft;
         state.hasSavedState   = true;
         state.savedLayoutName = currentLayout.name;
+        state.savedCombo      =comboCount;
+        state.savedScore      = currentScore;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());

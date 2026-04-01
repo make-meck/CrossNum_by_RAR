@@ -42,6 +42,8 @@ public class GameState {
     public boolean hasSavedState= false;
     public boolean hardRetryMode = false;
     public String savedLayoutName= null;
+    public int savedScore;
+    public int savedCombo;
 
 
     public static GameState getInstance(){

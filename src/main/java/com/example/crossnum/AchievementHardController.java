@@ -23,7 +23,7 @@ public class AchievementHardController {
 
 
     //it determines the number of stars the player can have
-    public void setStats(int secondsLeft, int timeTaken) {
+    public void setStats(int secondsLeft, int timeTaken, int accuScore) {
 
         int stars;
         if (secondsLeft > 8 * 60) stars = 3;
