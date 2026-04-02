@@ -35,16 +35,32 @@
     -fx-background-radius: 15;
 }
 
+.easy_button:hover {
+    -fx-background-color: #365d35;
+    -fx-text-fill: white;
+}
+
+
 .medium_button {
     -fx-background-color: #6f966e;
     -fx-text-fill: #354b34;
     -fx-background-radius: 15;
 }
 
+.medium_button:hover {
+    -fx-background-color: #365d35;
+    -fx-text-fill: white;
+}
+
 .hard_button {
     -fx-background-color: #6f966e;
     -fx-text-fill: #354b34;
     -fx-background-radius: 15;
+}
+
+.hard_button:hover {
+    -fx-background-color: #365d35;
+    -fx-text-fill: white;
 }
 
 .music_button {
