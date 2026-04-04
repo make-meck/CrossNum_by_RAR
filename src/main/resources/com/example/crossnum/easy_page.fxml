@@ -81,11 +81,7 @@
                   <Insets left="50.0" right="50.0" />
                </BorderPane.margin>
                <graphic>
-                  <ImageView fitHeight="45.0" fitWidth="30.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@back_icon.png" />
-                     </image>
-                  </ImageView>
+                   <SVGPath content="M20 10 L10 20 L20 30" fill="transparent" scaleX="2.0" scaleY="2.0" stroke="WHITE" strokeLineCap="round" strokeLineJoin="round" strokeWidth="2.5" />
                </graphic>
             </Button>
          </left>
@@ -95,11 +91,7 @@
                   <Insets right="50.0" />
                </BorderPane.margin>
                <graphic>
-                  <ImageView fitHeight="44.0" fitWidth="43.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@restart_icon.png" />
-                     </image>
-                  </ImageView>
+                   <SVGPath content="M32 12                   A20 20 0 1 1 12 32                   M12 32 L8 40                   M12 32 L20 35" fill="transparent" stroke="WHITE" strokeLineCap="round" strokeLineJoin="round" strokeWidth="4.5" />
                </graphic>
             </Button>
          </right>
@@ -147,15 +139,38 @@
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" StackPane.alignment="TOP_RIGHT" />
-                  <ImageView fitHeight="52.0" fitWidth="46.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
-                     <image>
-                        <Image url="@hintIcon.png" />
-                     </image>
-                     <StackPane.margin>
-                        <Insets right="10.0" top="10.0" />
-                     </StackPane.margin>
-                  </ImageView>
+                   <Button fx:id="hint"
+                           mnemonicParsing="false"
+                           onAction="#onHintClick"
+                           prefHeight="70.0"
+                           prefWidth="70.0"
+                           style="-fx-background-color: #2d532c; -fx-background-radius: 35;"
+                           StackPane.alignment="TOP_RIGHT">
+
+                       <graphic>
+                           <StackPane alignment="CENTER">
+                               <SVGPath
+                                       content="M20 6
+             A12 12 0 1 1 20 30
+             A12 12 0 1 1 20 6
+             M15 30 L15 33 Q15 36 20 36 Q25 36 25 33 L25 30
+             M16 37 L24 37
+             M17 39 L23 39
+             M20 0 L20 2
+             M31 9 L33 7
+             M36 20 L38 20
+             M31 31 L33 33
+             M9 9 L7 7
+             M4 20 L2 20
+             M9 31 L7 33"
+                                       fill="transparent"
+                                       stroke="#f5e6a6"
+                                       strokeWidth="2.2"
+                                       strokeLineCap="round"
+                                       strokeLineJoin="round"/>
+                           </StackPane>
+                       </graphic>
+                   </Button>
                   <StackPane alignment="TOP_RIGHT" mouseTransparent="true" prefHeight="88.0" prefWidth="57.0">
                      <children>
                         <Circle fill="WHITE" radius="11.0" stroke="WHITE" strokeType="INSIDE" />
