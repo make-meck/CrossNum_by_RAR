@@ -44,6 +44,8 @@ public class GameState {
     public String savedLayoutName= null;
     public int savedScore;
     public int savedCombo;
+    public int savedTheme;
+
 
 
     public static GameState getInstance(){

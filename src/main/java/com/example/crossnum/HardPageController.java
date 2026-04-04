@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -85,7 +87,6 @@ public class HardPageController {
     private static List<String> run(String... keys) {
         return Arrays.asList(keys);
     }
-
 
     //  LAYOUTS — pool of puzzle shapes picked randomly each new game
 
@@ -182,6 +183,7 @@ public class HardPageController {
         ));
     }
 
+
     // SCORE CONSTANTS
     private static final int base_score = 500;
     private static final int point_per_correct = 10;
@@ -190,8 +192,6 @@ public class HardPageController {
 
 
     //  INSTANCE FIELDS
-
-
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
     private final Map<String, Integer>   solution  = new HashMap<>();
     private final Set<String>            correctCells = new HashSet<>();
@@ -215,6 +215,34 @@ public class HardPageController {
     @FXML private Label     timerLabel;
     @FXML private Label     hintLabel;
     @FXML private GridPane  hardPagePane;
+    @FXML private BorderPane hardLevelPage;
+    @FXML private StackPane stackPaneBack;
+    @FXML private Ellipse scoreEllipse;
+    @FXML private Ellipse hardEllipse;
+    @FXML private Circle restartCirle;
+    @FXML private Circle backCircle;
+
+
+
+    //THEMES
+    record GameTheme(
+            String name,
+            String blackCell, //cell background of the clue
+            String whitecell, //textfield cell
+            String pageBackground,
+            String labelText, //score, timer, and hint label color
+            String buttonBase //base color for buttons
+           // String backgroundImage;
+
+    ) {}
+    private static final List<GameTheme> THEMES = List.of(
+            new GameTheme("Forest",  "#2d532c", "#ffffff", "#1a3a19", "#ffffff", "#3a7a39"),
+            new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
+            new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
+            new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
+            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166")
+    );
+    private int themeIndex = 0; // this tracks which theme is active
 
 
     //  INITIALIZE
@@ -227,6 +255,7 @@ public class HardPageController {
         clearFieldsForPlayer();
 
         GameState state = GameState.getInstance();
+        themeIndex = state.savedTheme;
 
         if (state.hasSavedState) {
             // Restore the saved layout, solution, and timer
@@ -241,6 +270,7 @@ public class HardPageController {
 
             // Build the grid first so fieldMap is populated
             buildGrid();
+            applyTheme();
             clearFieldsForPlayer();
 
             // Then restore what the player had typed and cell colours
@@ -279,6 +309,46 @@ public class HardPageController {
         updateHintButton();
     }
 
+        // For the theme
+    private void applyTheme(){
+        GameTheme t= THEMES.get(themeIndex);
+
+        //Pane background
+        hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() +  ";");
+
+        //Ellipses and Circles
+        javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
+        if (scoreEllipse  != null) scoreEllipse.setFill(accent);
+        if (hardEllipse   != null) hardEllipse.setFill(accent);
+        if (backCircle    != null) backCircle.setFill(accent);
+        if (restartCirle != null) restartCirle.setFill(accent);
+       // if (hintCircle    != null) hintCircle.setFill(accent);
+
+        //labels
+        for(Label lbl: List.of(scoreLabel, timerLabel, hintLabel)){
+            if (lbl != null) lbl.setStyle("-fx-text-fill: " + t.labelText() + ";");
+        }
+        //Buttons
+        String btnStyle = "-fx-background-color: " + t.buttonBase() + "; -fx-text-fill: white;";
+        for (Button btn : List.of(backbuttonHard, hint, restartButton)) {
+            if (btn != null) btn.setStyle(btnStyle);
+        }
+
+        //Re-style all cells already in the grid
+        for(javafx.scene.Node node: hardPagePane.getChildren()){
+            if(node instanceof StackPane sp) {
+                String bg = sp.getStyle();
+                if(bg.contains("#ffffff") || bg.contains("#fff")){
+                    //White(playable) cell
+                    sp.setStyle("-fx-background-color: " + t.whitecell() +
+                            "; -fx-background-radius: 10");
+                } else if(!bg.contains("transparent")){
+                    //Black clue cell
+                    sp.setStyle("-fx-background-color: " + t.blackCell() + "-fx-background-radius:10");
+                }
+            }
+        }
+    }
 
     //  BUILD GRID — creates all cells dynamically from currentLayout
 
@@ -342,8 +412,9 @@ public class HardPageController {
 
     // White playable TextField cell
     private void addWhiteCell(int col, int row, String key) {
+        GameTheme t= THEMES.get(themeIndex);
         StackPane pane = new StackPane();
-        pane.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10;");
+        pane.setStyle("-fx-background-color: " + t.whitecell() + "; -fx-background-radius: 10;");
         pane.setPrefSize(200, 150);
 
         TextField tf = new TextField();
@@ -357,8 +428,10 @@ public class HardPageController {
     }
 
     private void addBlackClueCell(int col, int row, Integer across, Integer down) {
+        GameTheme t = THEMES.get(themeIndex);
+
         GridPane inner = new GridPane();
-        inner.setStyle("-fx-background-color: #2d532c; -fx-background-radius: 10;");
+        inner.setStyle("-fx-background-color:" + t.blackCell()+ " ; -fx-background-radius: 10;");
         inner.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         // 2x2 inner grid: top-left=down label, bottom-right=across label
@@ -425,7 +498,7 @@ public class HardPageController {
         canvas.heightProperty().addListener(redraw);
 
         StackPane pane = new StackPane(inner, canvas);
-        pane.setStyle("-fx-background-color: #2d532c; -fx-background-radius: 10;");
+        pane.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 10;");
 
         GridPane.setColumnIndex(pane, col);
         GridPane.setRowIndex(pane, row);
@@ -475,7 +548,7 @@ public class HardPageController {
                 if (newVal.isEmpty()) {
                     if (prevCorrect) correctCells.remove(key);
                     cellWasCorrect.remove(key);
-                    tf.setStyle("-fx-background-color: #fff;");
+                    tf.setStyle("-fx-background-color: " + THEMES.get(themeIndex).whitecell() + ";");
                     updateScoreDisplay();
                     return;
                 }
@@ -495,7 +568,7 @@ public class HardPageController {
                     }
                     cellWasCorrect.put(key, true);
                     tf.setStyle("-fx-text-fill: #00bf63;" +
-                            "-fx-background-color:#fff;" +
+                            "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";" +
                             "-fx-border-radius:0px;" +
                             "-fx-border-color:transparent;");
                     updateScoreDisplay();
@@ -507,7 +580,8 @@ public class HardPageController {
                     currentScore = Math.max(score_floor, currentScore - penalty_wrong);
                     comboCount   = 1;
                     cellWasCorrect.put(key, false);
-                    tf.setStyle("-fx-text-fill: #c82121;");
+                    tf.setStyle("-fx-text-fill: #c82121;" +
+                            "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";");
                     updateScoreDisplay();
                 }
             });
@@ -622,9 +696,13 @@ public class HardPageController {
 
     @FXML
     protected void onRestartClick() {
+        themeIndex = (themeIndex + 1) % THEMES.size(); // ← advance
+        GameState.getInstance().savedTheme = themeIndex; // ← persist
+
         currentLayout = randomLayout();
         generateSolution(); // fills solution FIRST
         buildGrid();        // builds grid with correct sums
+        applyTheme();
         clearFieldsForPlayer();
 
         currentScore = base_score;
@@ -640,6 +718,7 @@ public class HardPageController {
         hint.setDisable(false);
         hint.setOpacity(1.0);
         updateHintButton();
+
 
         GameState.getInstance().hasSavedState = false;
     }
@@ -660,6 +739,8 @@ public class HardPageController {
     // ── Navigation ────────────────────────────────────────────────────────
 
     private void levelAchievement() {
+        themeIndex = (themeIndex + 1 ) % THEMES.size();
+        GameState.getInstance().savedTheme = themeIndex;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
             Parent root = loader.load();
@@ -673,6 +754,7 @@ public class HardPageController {
     }
 
     private void gameFailed() {
+        themeIndex = (themeIndex +1) % THEMES.size();
         GameState state = GameState.getInstance();
         state.hardSolution    = new HashMap<>(solution);
         state.secondsLeft     = 15 * 60;
@@ -681,6 +763,7 @@ public class HardPageController {
         state.savedLayoutName = currentLayout.name;
         state.savedScore      = currentScore;
         state.savedCombo      = comboCount;
+        state.savedTheme       = themeIndex;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -706,6 +789,7 @@ public class HardPageController {
         state.savedLayoutName = currentLayout.name;
         state.savedCombo      =comboCount;
         state.savedScore      = currentScore;
+        state.savedTheme = themeIndex;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
