@@ -216,11 +216,14 @@ public class HardPageController {
     @FXML private Label     hintLabel;
     @FXML private GridPane  hardPagePane;
     @FXML private BorderPane hardLevelPage;
-    @FXML private StackPane stackPaneBack;
+ //   @FXML private StackPane stackPaneBack;
     @FXML private Ellipse scoreEllipse;
     @FXML private Ellipse hardEllipse;
     @FXML private Circle restartCirle;
     @FXML private Circle backCircle;
+    @FXML private Circle hintCircle;
+    @FXML private StackPane restartPane;
+
 
 
 
@@ -240,7 +243,8 @@ public class HardPageController {
             new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
             new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
             new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
-            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166")
+            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166"),
+            new GameTheme("Rainbow", "#4B0082", "#9400D3", "#FF7F00","#FFFFFF", "#FF007F" )
     );
     private int themeIndex = 0; // this tracks which theme is active
 
@@ -249,14 +253,8 @@ public class HardPageController {
 
     @FXML
     private void initialize() {
-        currentLayout = randomLayout();
-        generateSolution(); // fills solution FIRST
-        buildGrid();        // builds grid with correct sums
-        clearFieldsForPlayer();
-
         GameState state = GameState.getInstance();
         themeIndex = state.savedTheme;
-
         if (state.hasSavedState) {
             // Restore the saved layout, solution, and timer
             currentLayout = findLayoutByName(state.savedLayoutName);
@@ -299,9 +297,12 @@ public class HardPageController {
             currentLayout = randomLayout();
             generateSolution(); // generateSolution() reads from fieldMap
             buildGrid();        // buildGrid() populates fieldMap
+            applyTheme();
             clearFieldsForPlayer();
             currentScore= base_score;
             comboCount = 1;
+            secondsLeft = 15*60;
+            timerLabel.setText("15:00");
         }
 
         updateScoreDisplay();
@@ -310,45 +311,38 @@ public class HardPageController {
     }
 
         // For the theme
-    private void applyTheme(){
-        GameTheme t= THEMES.get(themeIndex);
+        private void applyTheme(){
+            GameTheme t= THEMES.get(themeIndex);
 
-        //Pane background
-        hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() +  ";");
+            hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
 
-        //Ellipses and Circles
-        javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
-        if (scoreEllipse  != null) scoreEllipse.setFill(accent);
-        if (hardEllipse   != null) hardEllipse.setFill(accent);
-        if (backCircle    != null) backCircle.setFill(accent);
-        if (restartCirle != null) restartCirle.setFill(accent);
-       // if (hintCircle    != null) hintCircle.setFill(accent);
+            javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
+            if (scoreEllipse != null) scoreEllipse.setFill(accent);
+            if (hardEllipse  != null) hardEllipse.setFill(accent);
+            if (backCircle   != null) backCircle.setFill(accent);
+            if (restartCirle != null) restartCirle.setFill(accent);
+            if (hintCircle   != null) hintCircle.setFill(accent);
 
-        //labels
-        for(Label lbl: List.of(scoreLabel, timerLabel, hintLabel)){
-            if (lbl != null) lbl.setStyle("-fx-text-fill: " + t.labelText() + ";");
-        }
-        //Buttons
-        String btnStyle = "-fx-background-color: " + t.buttonBase() + "; -fx-text-fill: white;";
-        for (Button btn : List.of(backbuttonHard, hint, restartButton)) {
-            if (btn != null) btn.setStyle(btnStyle);
-        }
+            for (Label lbl : List.of(scoreLabel, timerLabel)) {
+                if (lbl != null) lbl.setStyle("-fx-text-fill: " + t.labelText() + ";");
+            }
 
-        //Re-style all cells already in the grid
-        for(javafx.scene.Node node: hardPagePane.getChildren()){
-            if(node instanceof StackPane sp) {
-                String bg = sp.getStyle();
-                if(bg.contains("#ffffff") || bg.contains("#fff")){
-                    //White(playable) cell
-                    sp.setStyle("-fx-background-color: " + t.whitecell() +
-                            "; -fx-background-radius: 10");
-                } else if(!bg.contains("transparent")){
-                    //Black clue cell
-                    sp.setStyle("-fx-background-color: " + t.blackCell() + "-fx-background-radius:10");
+            for (Button btn : List.of(backbuttonHard, hint, restartButton)) {
+                if (btn != null) btn.setStyle("-fx-background-color: transparent;");
+            }
+
+            for (javafx.scene.Node node : hardPagePane.getChildren()) {
+                if (node instanceof StackPane sp) {
+                    String bg = sp.getStyle();
+                    if (bg.contains("#ffffff") || bg.contains("#fff")) {
+                        sp.setStyle("-fx-background-color: " + t.whitecell() + "; -fx-background-radius: 10;");
+                    } else if (!bg.contains("transparent")) {
+
+                        sp.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 10;");
+                    }
                 }
             }
         }
-    }
 
     //  BUILD GRID — creates all cells dynamically from currentLayout
 
@@ -754,16 +748,16 @@ public class HardPageController {
     }
 
     private void gameFailed() {
-        themeIndex = (themeIndex +1) % THEMES.size();
+        themeIndex = (themeIndex + 1) % THEMES.size();
         GameState state = GameState.getInstance();
         state.hardSolution    = new HashMap<>(solution);
-        state.secondsLeft     = 15 * 60;
+        state.secondsLeft     = secondsLeft; // ← save real value, not 15*60
         state.hintsLeft       = hintsLeft;
         state.hasSavedState   = true;
         state.savedLayoutName = currentLayout.name;
         state.savedScore      = currentScore;
         state.savedCombo      = comboCount;
-        state.savedTheme       = themeIndex;
+        state.savedTheme      = themeIndex;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());

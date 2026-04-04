@@ -4,8 +4,6 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -59,26 +57,26 @@
                   <Insets left="50.0" right="50.0" />
                </BorderPane.margin>
                <children>
-                  <StackPane fx:id="stackPaneBack">
+                  <StackPane style="-fx-background-color: transparent;">
                      <children>
-                        <Button fx:id="backbuttonHard" mnemonicParsing="false" onAction="#backbutton" prefHeight="78.0" prefWidth="68.0" style="-fx-background-color: #d0e8d0;" textFill="#d0e8d0" />
-                        <StackPane focusTraversable="true" mouseTransparent="true" prefHeight="66.0" prefWidth="41.0" style="-fx-background-color: #d0e8d0;">
+                        <Button fx:id="backbuttonHard" mnemonicParsing="false" onAction="#backbutton" prefHeight="78.0" prefWidth="68.0" textFill="#d0e8d0" />
+                        <StackPane mouseTransparent="true" style="-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;">
                            <children>
-                              <Circle fx:id="backCircle" fill="#365d35" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-                              <Group StackPane.alignment="CENTER">
-                                 <children>
-                                    <SVGPath content="M247.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L179.2 256 41.9 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" fill="WHITE" rotate="180.0" scaleX="0.1" scaleY="0.1" />
-                                 </children>
-                              </Group>
+                              <Circle fx:id="backCircle" fill="#365d35" mouseTransparent="true" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
                            </children>
                         </StackPane>
+                        <Group StackPane.alignment="CENTER">
+                           <children>
+                              <SVGPath content="M247.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L179.2 256 41.9 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z" fill="WHITE" mouseTransparent="true" rotate="180.0" scaleX="0.1" scaleY="0.1" />
+                           </children>
+                        </Group>
                      </children>
                   </StackPane>
                </children>
             </HBox>
          </left>
          <right>
-            <StackPane BorderPane.alignment="CENTER">
+            <StackPane fx:id="restartPane" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets right="50.0" />
                </BorderPane.margin>
@@ -86,7 +84,7 @@
                   <Button fx:id="restartButton" mnemonicParsing="false" onAction="#onRestartClick" prefHeight="91.0" prefWidth="81.0" style="-fx-background-color: #d0e8d0;" />
                   <StackPane mouseTransparent="true">
                      <children>
-                        <Circle fx:id="restartCircle" fill="#365d35" mouseTransparent="true" radius="32.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                        <Circle fx:id="restartCirle" fill="#365d35" mouseTransparent="true" radius="32.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
                         <Group mouseTransparent="true" scaleX="0.9" scaleY="0.9">
                            <children>
                               <SVGPath content="M436.7 74.7L448 85.4 448 32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 128c0 17.7-14.3 32-32 32l-128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l47.9 0-7.6-7.2c-.2-.2-.4-.4-.6-.6-75-75-196.5-75-271.5 0s-75 196.5 0 271.5 196.5 75 271.5 0c8.2-8.2 15.5-16.9 21.9-26.1 10.1-14.5 30.1-18 44.6-7.9s18 30.1 7.9 44.6c-8.5 12.2-18.2 23.8-29.1 34.7-100 100-262.1 100-362 0S-25 175 75 75c99.9-99.9 261.7-100 361.7-.3z" fill="WHITE" rotate="180.0" scaleX="0.1" scaleY="0.1" />
@@ -151,17 +149,14 @@
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" style="-fx-background-color: #d0e8d0;" StackPane.alignment="TOP_RIGHT" />
-                  <Circle fill="#365d35" mouseTransparent="true" radius="33.0" stroke="#365d35" strokeType="INSIDE" StackPane.alignment="TOP_RIGHT" />
-                  <ImageView fitHeight="53.0" fitWidth="44.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
-                     <image>
-                        <Image url="@hint_icon.png" />
-                     </image>
-                     <StackPane.margin>
-                        <Insets right="10.0" top="10.0" />
-                     </StackPane.margin>
-                  </ImageView>
-                  <Group StackPane.alignment="TOP_RIGHT">
+                  <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="67.0" prefWidth="66.0" style="-fx-background-color: transparent;" StackPane.alignment="TOP_RIGHT" />
+                  <Circle fx:id="hintCircle" fill="#365d35" mouseTransparent="true" radius="33.0" stroke="#365d35" strokeType="INSIDE" strokeWidth="0.0" StackPane.alignment="TOP_RIGHT" />
+                  <Group translateX="18.0" translateY="-26.0">
+                     <children>
+                        <SVGPath fx:id="hintIcon" content="m 8,10.5 -2,0 C 5.862,10.5 5.75,10.612 5.75,10.75 5.75,10.888 5.862,11 6,11 l 2,0 C 8.138,11 8.25,10.888 8.25,10.75 8.25,10.612 8.138,10.5 8,10.5 Z m 0,1 -2,0 C 5.862,11.5 5.75,11.612 5.75,11.75 5.75,11.888 5.862,12 6,12 l 2,0 C 8.138,12 8.25,11.888 8.25,11.75 8.25,11.612 8.138,11.5 8,11.5 Z m 0.125,1 -2.25,0 0.594,0.391 C 6.546,12.96 6.659,13 6.7765,13 l 0.4475,0 c 0.117,0 0.2305,-0.04 0.3075,-0.109 L 8.125,12.5 Z M 10,5.6005 C 10,7.385 8.393,8.592 8.393,10 l -2.7860002,0 c 0,-1.408 -1.6069999,-2.615 -1.6069999,-4.3995 0,-1.8615 1.499,-2.886 2.9984999,-2.886 C 8.4989999,2.7145 10,3.74 10,5.6005 Z m 2,-0.3455 0,0.686 -1.269,0 c 0.01,-0.1115 0.019,-0.224 0.019,-0.3405 0,-0.1185 -0.0085,-0.232 -0.0175,-0.345 l 1.2675,0 z m -5.3240002,-3.2765 0,-0.9785 0.6855001,0 0,0.982 c -0.121,-0.011 -0.242,-0.018 -0.3630001,-0.018 -0.1075,0 -0.215,0.01 -0.3225,0.014 z M 9.4364999,2.7505 10.221499,1.879 10.731,2.338 9.9295,3.2265 C 9.8045003,3.078 9.6329998,2.8905 9.4364999,2.7505 Z m -5.369,0.476 -0.8015,-0.8885 0.5095,-0.459 0.785,0.8715 c -0.196,0.14 -0.368,0.3275 -0.493,0.476 z M 3.269,5.941 l -1.2690001,0 0,-0.686 1.2675,0 c -0.009,0.113 -0.0175,0.227 -0.0175,0.3455 0,0.1165 0.009,0.229 0.019,0.3405 z" fill="WHITE" layoutX="100.0" layoutY="1.0" mouseTransparent="true" scaleX="4.0" scaleY="4.0" />
+                     </children>
+                  </Group>
+                  <Group translateX="2.0" StackPane.alignment="TOP_RIGHT">
                      <children>
                         <Circle fill="WHITE" radius="10.0" stroke="WHITE" strokeType="INSIDE" />
                         <Label fx:id="hintLabel" prefHeight="6.0" prefWidth="11.0" text="1" translateX="-5.0" translateY="-9.0">

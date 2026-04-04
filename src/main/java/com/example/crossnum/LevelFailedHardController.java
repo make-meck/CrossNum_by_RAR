@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class LevelFailedHardController {
 
@@ -15,6 +16,17 @@ public class LevelFailedHardController {
 
     @FXML
     private void onMainMenu(ActionEvent event) {
+        GameState state = GameState.getInstance();
+        state.hasSavedState   = false;  // ← fresh game
+        state.hardSolution    = new HashMap<>();
+        state.hardFieldValues = new HashMap<>();
+        state.hardFieldStyles = new HashMap<>();
+        state.secondsLeft     = 15 * 60;
+        state.hintsLeft       = 3;
+        state.savedScore      = 500;
+        state.savedCombo      = 1;
+        state.savedLayoutName = null;
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("start_page.fxml"));
             Stage stage = (Stage) mainMenuButton.getScene().getWindow();
@@ -29,7 +41,15 @@ public class LevelFailedHardController {
     @FXML
     private void onHardRetry(ActionEvent event) {
         GameState state = GameState.getInstance();
-        state.hasSavedState = false;
+        state.hasSavedState   = false;  // ← fresh game
+        state.hardSolution    = new HashMap<>();
+        state.hardFieldValues = new HashMap<>();
+        state.hardFieldStyles = new HashMap<>();
+        state.secondsLeft     = 15 * 60;
+        state.hintsLeft       = 3;
+        state.savedScore      = 500;
+        state.savedCombo      = 1;
+        state.savedLayoutName = null;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_page_Improved.fxml"));
@@ -41,4 +61,4 @@ public class LevelFailedHardController {
             e.printStackTrace();
         }
     }
-}
+    }
