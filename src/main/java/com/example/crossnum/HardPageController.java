@@ -368,6 +368,19 @@ public class HardPageController {
         // For the theme
         private void applyTheme(){
             GameTheme t= THEMES.get(themeIndex);
+            /*
+            // Page background — image takes priority over color
+            if (t.backgroundImage() != null) {
+            String url = getClass().getResource(t.backgroundImage()).toExternalForm();
+             hardLevelPage.setStyle(
+              "-fx-background-image: url('" + url + "');" +
+             "-fx-background-size: cover;" +
+              "-fx-background-position: center;"
+                 );
+            } else {
+             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
+               }
+             */
 
             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
 
