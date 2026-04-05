@@ -148,6 +148,14 @@
 #backbuttonEasy:hover {
     -fx-opacity: 0.7;
 }
+
+#backbuttonMedium {
+    -fx-opacity: 1;
+}
+
+#backbuttonMedium:hover {
+    -fx-opacity: 0.7;
+}
 #restart {
     -fx-opacity: 1;
 }

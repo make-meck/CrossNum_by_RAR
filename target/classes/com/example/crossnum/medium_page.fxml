@@ -109,11 +109,7 @@
                         <Insets left="50.0" right="50.0" />
                     </BorderPane.margin>
                     <graphic>
-                        <ImageView fitHeight="45.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@back_icon.png" />
-                            </image>
-                        </ImageView>
+                        <SVGPath content="M20 10 L10 20 L20 30" fill="transparent" scaleX="2.0" scaleY="2.0" stroke="WHITE" strokeLineCap="round" strokeLineJoin="round" strokeWidth="2.5" />
                     </graphic>
                 </Button>
             </left>
@@ -123,11 +119,7 @@
                         <Insets right="50.0" />
                     </BorderPane.margin>
                     <graphic>
-                        <ImageView fitHeight="44.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@restart_icon.png" />
-                            </image>
-                        </ImageView>
+                        <SVGPath content="M32 12                   A20 20 0 1 1 12 32                   M12 32 L8 40                   M12 32 L20 35" fill="transparent" stroke="WHITE" strokeLineCap="round" strokeLineJoin="round" strokeWidth="4.5" />
                     </graphic>
                 </Button>
             </right>
