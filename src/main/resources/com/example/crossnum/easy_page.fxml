@@ -181,30 +181,14 @@
                         <Insets top="10.0" />
                      </StackPane.margin>
                      <graphic>
-                         <SVGPath fx:id="eraserSVG"
-                                  content="M16 28
-             L28 16
-             Q30 14 32 16
-             L42 26
-             Q44 28 42 30
-             L30 42
-             Q25 47 21 42
-             L13 34
-             Q12 32 16 28
-             Z
-             M18 26 L32 40
-             M11 45 L36 45"
-                                  fill="transparent"
-                                  stroke="black"
-                                  strokeLineCap="round"
-                                  strokeLineJoin="round"
-                                  strokeWidth="2.5" />                     </graphic></Button>
+                         <SVGPath fx:id="eraserSVG" content="M16 28                   L28 16                   Q30 14 32 16                   L42 26                   Q44 28 42 30                   L30 42                   Q25 47 21 42                   L13 34                   Q12 32 16 28                   Z                   M18 26 L32 40                   M11 45 L36 45" fill="transparent" scaleX="1.1" scaleY="1.15" stroke="black" strokeLineCap="round" strokeLineJoin="round" strokeWidth="2.5" />
+                     </graphic></Button>
                   <Button fx:id="pen" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPenClick" prefHeight="57.0" prefWidth="74.0" style="-fx-background-color: transparent;" StackPane.alignment="TOP_RIGHT">
                      <StackPane.margin>
                         <Insets top="10.0" />
                      </StackPane.margin>
                      <graphic>
-                         <SVGPath fx:id="penSVG" content="M22 4 A18 18 0 1 0 22 40 A18 18 0 1 0 22 4                   M14 26 L20 20 L28 12 L34 18 L26 26 L20 32 Z                   M14 26 L12 34 L20 32                   M28 12 L31 9 L37 15 L34 18" fill="transparent" stroke="black" strokeLineCap="round" strokeLineJoin="round" strokeWidth="2.5" />
+                         <SVGPath fx:id="penSVG" content="M22 2 A20 20 0 1 0 22 42 A20 20 0 1 0 22 2                  M14 26 L20 20 L28 12 L34 18 L26 26 L20 32 Z                   M14 26 L12 34 L20 32                   M28 12 L31 9 L37 15 L34 18" fill="transparent" scaleX="1.1" scaleY="1.1" stroke="black" strokeLineCap="round" strokeLineJoin="round" strokeWidth="2.5" />
                      </graphic></Button>
                </children>
                <BorderPane.margin>
