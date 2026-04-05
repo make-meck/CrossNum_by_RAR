@@ -17,7 +17,7 @@ public class LevelFailedHardController {
     @FXML
     private void onMainMenu(ActionEvent event) {
         GameState state = GameState.getInstance();
-        state.hasSavedState   = false;  // ← fresh game
+        state.hasSavedState   = false;
         state.hardSolution    = new HashMap<>();
         state.hardFieldValues = new HashMap<>();
         state.hardFieldStyles = new HashMap<>();
@@ -26,6 +26,7 @@ public class LevelFailedHardController {
         state.savedScore      = 500;
         state.savedCombo      = 1;
         state.savedLayoutName = null;
+
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("start_page.fxml"));
@@ -41,7 +42,7 @@ public class LevelFailedHardController {
     @FXML
     private void onHardRetry(ActionEvent event) {
         GameState state = GameState.getInstance();
-        state.hasSavedState   = false;  // ← fresh game
+        state.hasSavedState   = false;
         state.hardSolution    = new HashMap<>();
         state.hardFieldValues = new HashMap<>();
         state.hardFieldStyles = new HashMap<>();

@@ -14,7 +14,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,8 +33,6 @@ import java.util.*;
     Every game has a starting score of 500, if the player has typed the correct number, they will have +10 times combo points.
     If the player has typed the wrong answer their score will be deducted and the combo points will go back to one
 
-    Note:
-    #lalagyan nalang ng label for the score sa fxml ng level achievement, and level failed
 */
 public class HardPageController {
 
@@ -106,7 +103,7 @@ public class HardPageController {
                         "5,4","6,4",
                         "1,5","2,5","3,5","4,5","5,5","6,5",
                         "2,6","3,6","4,6","5,6","6,6"),
-                runs(
+                runs(   //across
                         run("1,1","2,1","3,1","4,1","5,1"),
                         run("1,2","2,2","3,2","4,2","5,2","6,2"),
                         run("1,3","2,3"),
@@ -116,7 +113,7 @@ public class HardPageController {
                         run("1,5","2,5","3,5","4,5","5,5","6,5"),
                         run("2,6","3,6","4,6","5,6","6,6")
                 ),
-                runs(
+                runs( // down
                         run("1,1","1,2","1,3","1,4","1,5"),
                         run("2,1","2,2","2,3","2,4","2,5","2,6"),
                         run("3,1","3,2"),
@@ -181,13 +178,72 @@ public class HardPageController {
                         run("6,4","6,5","6,6")
                 )
         ));
+        LAYOUTS.add(
+                new LayoutDefinition(
+                        "layout4",
+                        cells(
+                                "2,2", "3,2", "4,2", "5,2",
+                                        "2,3", "3,3", "4,3", "5,3", "6,3",
+                                        "2,4", "3,4", "4,4",  "5,4", "6,4",
+                                        "2,5", "3,5", "4,5", "5,5", "6,5",
+                                        "2,6", "3,6", "4,6", "5,6", "6,6"),
+                        runs(
+                                run("2,2", "3,2", "4,2", "5,2"),
+                                run( "2,3", "3,3", "4,3", "5,3", "6,3"),
+                                run("2,4", "3,4", "4,4",  "5,4", "6,4"),
+                                run(  "2,5", "3,5", "4,5", "5,5", "6,5"),
+                                run( "2,6", "3,6", "4,6", "5,6", "6,6")
+                        ),
+                        runs(
+                                run("2,2", "2,3", "2,4", "2,5", "2,6"),
+                                run("3,2", "3,3", "3,4", "3,5", "3,6"),
+                                run("4,2", "4,3", "4,4", "4,5", "4,6"),
+                                run("5,2", "5,3","5,4","5,5", "5,6"),
+                                run("6,3","6,4","6,5", "6,6")
+
+                        )
+
+                ));
+
+        LAYOUTS.add(
+                new LayoutDefinition(
+                        "Layout5",
+                        cells("1,1", "2,1", "3,1", "4,1", "5,1", "6,1",
+                                "1,2", "2,2", "4,2", "5,2", "6,2",
+                                "1,3", "2,3", "4,3", "6,3",
+                                "1,4", "2,4","3,4","4,4", "5,4", "6,4",
+                                "1,5", "2,5", "4,5", "5,5", "6,5",
+                                "1,6", "2,6", "4,6", "5,6"),
+
+                        runs(
+                                run("1,1", "2,1", "3,1", "4,1", "5,1", "6,1"),
+                                run( "1,2", "2,2"),
+                                run("1,3", "2,3"),
+                                run("4,2", "5,2", "6,2"),
+                                run(  "1,4", "2,4","3,4","4,4", "5,4", "6,4"),
+                                run( "1,5", "2,5"),
+                                run( "4,5", "5,5", "6,5"),
+                                run(  "1,6", "2,6"),
+                                run("4,6", "5,6")
+                        ),
+                        runs(
+                                run("1,1", "1,2", "1,3", "1,4", "1,5", "1,6"),
+                                run("2,1","2,2","2,3", "2,4", "2,5", "2,6"),
+                                run("4,1", "4,2", "4,3", "4,4", "4,5", "4,6"),
+                                run("5,1", "5,2"),
+                                run("5,4","5,5","5,6"),
+                                run("6,1", "6,2", "6,3", "6,4", "6,5")
+                        )
+
+                ));
+
     }
 
 
     // SCORE CONSTANTS
     private static final int base_score = 500;
     private static final int point_per_correct = 10;
-    private static final int penalty_wrong = 30;
+    private static final int penalty_wrong = 20;
     private static final int score_floor = 0;
 
 
@@ -199,6 +255,7 @@ public class HardPageController {
 
     // The currently active layout — set in initialize() and onRestartClick()
     private LayoutDefinition currentLayout;
+    private String prevLayoutName = null;
     //Used for the score system
     private int currentScore = base_score;
     private int comboCount = 1;
@@ -216,14 +273,11 @@ public class HardPageController {
     @FXML private Label     hintLabel;
     @FXML private GridPane  hardPagePane;
     @FXML private BorderPane hardLevelPage;
- //   @FXML private StackPane stackPaneBack;
     @FXML private Ellipse scoreEllipse;
     @FXML private Ellipse hardEllipse;
     @FXML private Circle restartCirle;
     @FXML private Circle backCircle;
     @FXML private Circle hintCircle;
-    @FXML private StackPane restartPane;
-
 
 
 
@@ -235,7 +289,6 @@ public class HardPageController {
             String pageBackground,
             String labelText, //score, timer, and hint label color
             String buttonBase //base color for buttons
-           // String backgroundImage;
 
     ) {}
     private static final List<GameTheme> THEMES = List.of(
@@ -244,7 +297,8 @@ public class HardPageController {
             new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
             new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
             new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166"),
-            new GameTheme("Rainbow", "#4B0082", "#9400D3", "#FF7F00","#FFFFFF", "#FF007F" )
+            new GameTheme("Royal", "#4B0082", "#9400D3", "#FF7F00","#FFFFFF", "#FF007F" ),
+            new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
     );
     private int themeIndex = 0; // this tracks which theme is active
 
@@ -254,7 +308,7 @@ public class HardPageController {
     @FXML
     private void initialize() {
         GameState state = GameState.getInstance();
-        themeIndex = state.savedTheme;
+        themeIndex = state.hardSavedTheme;
         if (state.hasSavedState) {
             // Restore the saved layout, solution, and timer
             currentLayout = findLayoutByName(state.savedLayoutName);
@@ -265,6 +319,7 @@ public class HardPageController {
             hintsLeft   = state.hintsLeft;
             currentScore = state.savedScore;
             comboCount = state.savedCombo;
+            prevLayoutName = state.prevLayoutName;
 
             // Build the grid first so fieldMap is populated
             buildGrid();
@@ -390,7 +445,7 @@ public class HardPageController {
                 }
             }
         }
-
+/*
         //for debugging
         for (List<String> run : currentLayout.acrossRuns) {
             if (run.isEmpty()) continue;
@@ -400,8 +455,11 @@ public class HardPageController {
             // DEBUG
             System.out.println("Run: " + run + " labelCell: " + labelCell + " sum: " + sum);
             acrossLabelMap.put(labelCell, sum);
+            }
+   */
+
         }
-    }
+
     //Cell builders
 
     // White playable TextField cell
@@ -518,9 +576,7 @@ public class HardPageController {
         hardPagePane.getChildren().add(pane);
     }
 
-
     //  GAME LOGIC
-
 
     private void clearFieldsForPlayer() {
         correctCells.clear();
@@ -604,9 +660,12 @@ public class HardPageController {
             System.out.println("Backtracking failed, retrying...");
             generateSolution();
         }
-        // DEBUG — remove after fixing
+        /*
+        // DEBUG
         System.out.println("Solution size: " + solution.size());
         System.out.println("Solution: " + solution);
+        */
+
     }
 
     private boolean backtrack(List<String> cells, int index) {
@@ -691,7 +750,7 @@ public class HardPageController {
     @FXML
     protected void onRestartClick() {
         themeIndex = (themeIndex + 1) % THEMES.size(); // ← advance
-        GameState.getInstance().savedTheme = themeIndex; // ← persist
+        GameState.getInstance().hardSavedTheme = themeIndex; // ← persist
 
         currentLayout = randomLayout();
         generateSolution(); // fills solution FIRST
@@ -734,7 +793,7 @@ public class HardPageController {
 
     private void levelAchievement() {
         themeIndex = (themeIndex + 1 ) % THEMES.size();
-        GameState.getInstance().savedTheme = themeIndex;
+        GameState.getInstance().hardSavedTheme = themeIndex;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
             Parent root = loader.load();
@@ -757,7 +816,8 @@ public class HardPageController {
         state.savedLayoutName = currentLayout.name;
         state.savedScore      = currentScore;
         state.savedCombo      = comboCount;
-        state.savedTheme      = themeIndex;
+        state.hardSavedTheme      = themeIndex;
+        state.prevLayoutName = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -783,7 +843,8 @@ public class HardPageController {
         state.savedLayoutName = currentLayout.name;
         state.savedCombo      =comboCount;
         state.savedScore      = currentScore;
-        state.savedTheme = themeIndex;
+        state.hardSavedTheme      = themeIndex;
+        state.prevLayoutName  = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -802,7 +863,16 @@ public class HardPageController {
     // ── Layout utilities ──────────────────────────────────────────────────
 
     private LayoutDefinition randomLayout() {
-        return LAYOUTS.get(new Random().nextInt(LAYOUTS.size()));
+        List<LayoutDefinition> available = new ArrayList<>(LAYOUTS);
+
+       //This wwill eliminate displaying the same layout from the previous round
+        if (prevLayoutName != null && available.size() > 1) {
+            available.removeIf(l -> l.name.equals(prevLayoutName));
+        }
+
+        LayoutDefinition chosen = available.get(new Random().nextInt(available.size()));
+        prevLayoutName = chosen.name;
+        return chosen;
     }
 
     private LayoutDefinition findLayoutByName(String name) {

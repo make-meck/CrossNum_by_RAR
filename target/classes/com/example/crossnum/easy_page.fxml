@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
+<BorderPane fx:id="easyPagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.EasyPageController">
     <center>
         <StackPane prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
             <children>
@@ -139,35 +139,11 @@
          <right>
             <StackPane prefHeight="99.0" prefWidth="104.0" BorderPane.alignment="CENTER">
                <children>
-                   <Button fx:id="hint"
-                           mnemonicParsing="false"
-                           onAction="#onHintClick"
-                           prefHeight="70.0"
-                           prefWidth="70.0"
-                           style="-fx-background-color: #2d532c; -fx-background-radius: 35;"
-                           StackPane.alignment="TOP_RIGHT">
+                   <Button fx:id="hint" mnemonicParsing="false" onAction="#onHintClick" prefHeight="70.0" prefWidth="70.0" style="-fx-background-color: #2d532c; -fx-background-radius: 35;" StackPane.alignment="TOP_RIGHT">
 
                        <graphic>
                            <StackPane alignment="CENTER">
-                               <SVGPath
-                                       content="M20 6
-             A12 12 0 1 1 20 30
-             A12 12 0 1 1 20 6
-             M15 30 L15 33 Q15 36 20 36 Q25 36 25 33 L25 30
-             M16 37 L24 37
-             M17 39 L23 39
-             M20 0 L20 2
-             M31 9 L33 7
-             M36 20 L38 20
-             M31 31 L33 33
-             M9 9 L7 7
-             M4 20 L2 20
-             M9 31 L7 33"
-                                       fill="transparent"
-                                       stroke="#f5e6a6"
-                                       strokeWidth="2.2"
-                                       strokeLineCap="round"
-                                       strokeLineJoin="round"/>
+                               <SVGPath content="M20 6              A12 12 0 1 1 20 30              A12 12 0 1 1 20 6              M15 30 L15 33 Q15 36 20 36 Q25 36 25 33 L25 30              M16 37 L24 37              M17 39 L23 39              M20 0 L20 2              M31 9 L33 7              M36 20 L38 20              M31 31 L33 33              M9 9 L7 7              M4 20 L2 20              M9 31 L7 33" fill="transparent" stroke="#f5e6a6" strokeLineCap="round" strokeLineJoin="round" strokeWidth="2.2" />
                            </StackPane>
                        </graphic>
                    </Button>
