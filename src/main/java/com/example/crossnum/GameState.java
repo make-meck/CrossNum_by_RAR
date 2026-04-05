@@ -17,6 +17,7 @@ public class GameState {
     public int easyCellsResolved = 0;
     public boolean hasEasySavedState = false;
     public boolean easyRetryMode = false;
+    public int EasySavedTheme;
 
     //This is for the saving the state of the easy mode
     public int[][] mediumCellValues = new int[7][7];
@@ -44,6 +45,9 @@ public class GameState {
     public String savedLayoutName= null;
     public int savedScore;
     public int savedCombo;
+    public int hardSavedTheme;
+    public String prevLayoutName;
+
 
 
     public static GameState getInstance(){

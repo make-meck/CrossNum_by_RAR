@@ -12,7 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -32,8 +33,6 @@ import java.util.*;
     Every game has a starting score of 500, if the player has typed the correct number, they will have +10 times combo points.
     If the player has typed the wrong answer their score will be deducted and the combo points will go back to one
 
-    Note:
-    #lalagyan nalang ng label for the score sa fxml ng level achievement, and level failed
 */
 public class HardPageController {
 
@@ -86,7 +85,6 @@ public class HardPageController {
         return Arrays.asList(keys);
     }
 
-
     //  LAYOUTS — pool of puzzle shapes picked randomly each new game
 
 
@@ -105,7 +103,7 @@ public class HardPageController {
                         "5,4","6,4",
                         "1,5","2,5","3,5","4,5","5,5","6,5",
                         "2,6","3,6","4,6","5,6","6,6"),
-                runs(
+                runs(   //across
                         run("1,1","2,1","3,1","4,1","5,1"),
                         run("1,2","2,2","3,2","4,2","5,2","6,2"),
                         run("1,3","2,3"),
@@ -115,7 +113,7 @@ public class HardPageController {
                         run("1,5","2,5","3,5","4,5","5,5","6,5"),
                         run("2,6","3,6","4,6","5,6","6,6")
                 ),
-                runs(
+                runs( // down
                         run("1,1","1,2","1,3","1,4","1,5"),
                         run("2,1","2,2","2,3","2,4","2,5","2,6"),
                         run("3,1","3,2"),
@@ -180,18 +178,76 @@ public class HardPageController {
                         run("6,4","6,5","6,6")
                 )
         ));
+        LAYOUTS.add(
+                new LayoutDefinition(
+                        "layout4",
+                        cells(
+                                "2,2", "3,2", "4,2", "5,2",
+                                        "2,3", "3,3", "4,3", "5,3", "6,3",
+                                        "2,4", "3,4", "4,4",  "5,4", "6,4",
+                                        "2,5", "3,5", "4,5", "5,5", "6,5",
+                                        "2,6", "3,6", "4,6", "5,6", "6,6"),
+                        runs(
+                                run("2,2", "3,2", "4,2", "5,2"),
+                                run( "2,3", "3,3", "4,3", "5,3", "6,3"),
+                                run("2,4", "3,4", "4,4",  "5,4", "6,4"),
+                                run(  "2,5", "3,5", "4,5", "5,5", "6,5"),
+                                run( "2,6", "3,6", "4,6", "5,6", "6,6")
+                        ),
+                        runs(
+                                run("2,2", "2,3", "2,4", "2,5", "2,6"),
+                                run("3,2", "3,3", "3,4", "3,5", "3,6"),
+                                run("4,2", "4,3", "4,4", "4,5", "4,6"),
+                                run("5,2", "5,3","5,4","5,5", "5,6"),
+                                run("6,3","6,4","6,5", "6,6")
+
+                        )
+
+                ));
+
+        LAYOUTS.add(
+                new LayoutDefinition(
+                        "Layout5",
+                        cells("1,1", "2,1", "3,1", "4,1", "5,1", "6,1",
+                                "1,2", "2,2", "4,2", "5,2", "6,2",
+                                "1,3", "2,3", "4,3", "6,3",
+                                "1,4", "2,4","3,4","4,4", "5,4", "6,4",
+                                "1,5", "2,5", "4,5", "5,5", "6,5",
+                                "1,6", "2,6", "4,6", "5,6"),
+
+                        runs(
+                                run("1,1", "2,1", "3,1", "4,1", "5,1", "6,1"),
+                                run( "1,2", "2,2"),
+                                run("1,3", "2,3"),
+                                run("4,2", "5,2", "6,2"),
+                                run(  "1,4", "2,4","3,4","4,4", "5,4", "6,4"),
+                                run( "1,5", "2,5"),
+                                run( "4,5", "5,5", "6,5"),
+                                run(  "1,6", "2,6"),
+                                run("4,6", "5,6")
+                        ),
+                        runs(
+                                run("1,1", "1,2", "1,3", "1,4", "1,5", "1,6"),
+                                run("2,1","2,2","2,3", "2,4", "2,5", "2,6"),
+                                run("4,1", "4,2", "4,3", "4,4", "4,5", "4,6"),
+                                run("5,1", "5,2"),
+                                run("5,4","5,5","5,6"),
+                                run("6,1", "6,2", "6,3", "6,4", "6,5")
+                        )
+
+                ));
+
     }
+
 
     // SCORE CONSTANTS
     private static final int base_score = 500;
     private static final int point_per_correct = 10;
-    private static final int penalty_wrong = 30;
+    private static final int penalty_wrong = 20;
     private static final int score_floor = 0;
 
 
     //  INSTANCE FIELDS
-
-
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
     private final Map<String, Integer>   solution  = new HashMap<>();
     private final Set<String>            correctCells = new HashSet<>();
@@ -199,6 +255,7 @@ public class HardPageController {
 
     // The currently active layout — set in initialize() and onRestartClick()
     private LayoutDefinition currentLayout;
+    private String prevLayoutName = null;
     //Used for the score system
     private int currentScore = base_score;
     private int comboCount = 1;
@@ -215,19 +272,43 @@ public class HardPageController {
     @FXML private Label     timerLabel;
     @FXML private Label     hintLabel;
     @FXML private GridPane  hardPagePane;
+    @FXML private BorderPane hardLevelPage;
+    @FXML private Ellipse scoreEllipse;
+    @FXML private Ellipse hardEllipse;
+    @FXML private Circle restartCirle;
+    @FXML private Circle backCircle;
+    @FXML private Circle hintCircle;
+
+
+
+    //THEMES
+    record GameTheme(
+            String name,
+            String blackCell, //cell background of the clue
+            String whitecell, //textfield cell
+            String pageBackground,
+            String labelText, //score, timer, and hint label color
+            String buttonBase //base color for buttons
+
+    ) {}
+    private static final List<GameTheme> THEMES = List.of(
+            new GameTheme("Forest",  "#2d532c", "#ffffff", "#1a3a19", "#ffffff", "#3a7a39"),
+            new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
+            new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
+            new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
+            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166"),
+            new GameTheme("Royal", "#4B0082", "#9400D3", "#FF7F00","#FFFFFF", "#FF007F" ),
+            new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
+    );
+    private int themeIndex = 0; // this tracks which theme is active
 
 
     //  INITIALIZE
 
     @FXML
     private void initialize() {
-        currentLayout = randomLayout();
-        generateSolution(); // fills solution FIRST
-        buildGrid();        // builds grid with correct sums
-        clearFieldsForPlayer();
-
         GameState state = GameState.getInstance();
-
+        themeIndex = state.hardSavedTheme;
         if (state.hasSavedState) {
             // Restore the saved layout, solution, and timer
             currentLayout = findLayoutByName(state.savedLayoutName);
@@ -238,9 +319,11 @@ public class HardPageController {
             hintsLeft   = state.hintsLeft;
             currentScore = state.savedScore;
             comboCount = state.savedCombo;
+            prevLayoutName = state.prevLayoutName;
 
             // Build the grid first so fieldMap is populated
             buildGrid();
+            applyTheme();
             clearFieldsForPlayer();
 
             // Then restore what the player had typed and cell colours
@@ -269,9 +352,12 @@ public class HardPageController {
             currentLayout = randomLayout();
             generateSolution(); // generateSolution() reads from fieldMap
             buildGrid();        // buildGrid() populates fieldMap
+            applyTheme();
             clearFieldsForPlayer();
             currentScore= base_score;
             comboCount = 1;
+            secondsLeft = 15*60;
+            timerLabel.setText("15:00");
         }
 
         updateScoreDisplay();
@@ -279,6 +365,52 @@ public class HardPageController {
         updateHintButton();
     }
 
+        // For the theme
+        private void applyTheme(){
+            GameTheme t= THEMES.get(themeIndex);
+            /*
+            // Page background — image takes priority over color
+            if (t.backgroundImage() != null) {
+            String url = getClass().getResource(t.backgroundImage()).toExternalForm();
+             hardLevelPage.setStyle(
+              "-fx-background-image: url('" + url + "');" +
+             "-fx-background-size: cover;" +
+              "-fx-background-position: center;"
+                 );
+            } else {
+             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
+               }
+             */
+
+            hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
+
+            javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
+            if (scoreEllipse != null) scoreEllipse.setFill(accent);
+            if (hardEllipse  != null) hardEllipse.setFill(accent);
+            if (backCircle   != null) backCircle.setFill(accent);
+            if (restartCirle != null) restartCirle.setFill(accent);
+            if (hintCircle   != null) hintCircle.setFill(accent);
+
+            for (Label lbl : List.of(scoreLabel, timerLabel)) {
+                if (lbl != null) lbl.setStyle("-fx-text-fill: " + t.labelText() + ";");
+            }
+
+            for (Button btn : List.of(backbuttonHard, hint, restartButton)) {
+                if (btn != null) btn.setStyle("-fx-background-color: transparent;");
+            }
+
+            for (javafx.scene.Node node : hardPagePane.getChildren()) {
+                if (node instanceof StackPane sp) {
+                    String bg = sp.getStyle();
+                    if (bg.contains("#ffffff") || bg.contains("#fff")) {
+                        sp.setStyle("-fx-background-color: " + t.whitecell() + "; -fx-background-radius: 10;");
+                    } else if (!bg.contains("transparent")) {
+
+                        sp.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 10;");
+                    }
+                }
+            }
+        }
 
     //  BUILD GRID — creates all cells dynamically from currentLayout
 
@@ -326,7 +458,7 @@ public class HardPageController {
                 }
             }
         }
-
+/*
         //for debugging
         for (List<String> run : currentLayout.acrossRuns) {
             if (run.isEmpty()) continue;
@@ -336,14 +468,18 @@ public class HardPageController {
             // DEBUG
             System.out.println("Run: " + run + " labelCell: " + labelCell + " sum: " + sum);
             acrossLabelMap.put(labelCell, sum);
+            }
+   */
+
         }
-    }
+
     //Cell builders
 
     // White playable TextField cell
     private void addWhiteCell(int col, int row, String key) {
+        GameTheme t= THEMES.get(themeIndex);
         StackPane pane = new StackPane();
-        pane.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10;");
+        pane.setStyle("-fx-background-color: " + t.whitecell() + "; -fx-background-radius: 10;");
         pane.setPrefSize(200, 150);
 
         TextField tf = new TextField();
@@ -357,8 +493,10 @@ public class HardPageController {
     }
 
     private void addBlackClueCell(int col, int row, Integer across, Integer down) {
+        GameTheme t = THEMES.get(themeIndex);
+
         GridPane inner = new GridPane();
-        inner.setStyle("-fx-background-color: #2d532c; -fx-background-radius: 10;");
+        inner.setStyle("-fx-background-color:" + t.blackCell()+ " ; -fx-background-radius: 10;");
         inner.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         // 2x2 inner grid: top-left=down label, bottom-right=across label
@@ -425,7 +563,7 @@ public class HardPageController {
         canvas.heightProperty().addListener(redraw);
 
         StackPane pane = new StackPane(inner, canvas);
-        pane.setStyle("-fx-background-color: #2d532c; -fx-background-radius: 10;");
+        pane.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 10;");
 
         GridPane.setColumnIndex(pane, col);
         GridPane.setRowIndex(pane, row);
@@ -451,9 +589,7 @@ public class HardPageController {
         hardPagePane.getChildren().add(pane);
     }
 
-
     //  GAME LOGIC
-
 
     private void clearFieldsForPlayer() {
         correctCells.clear();
@@ -475,7 +611,7 @@ public class HardPageController {
                 if (newVal.isEmpty()) {
                     if (prevCorrect) correctCells.remove(key);
                     cellWasCorrect.remove(key);
-                    tf.setStyle("-fx-background-color: #fff;");
+                    tf.setStyle("-fx-background-color: " + THEMES.get(themeIndex).whitecell() + ";");
                     updateScoreDisplay();
                     return;
                 }
@@ -495,7 +631,7 @@ public class HardPageController {
                     }
                     cellWasCorrect.put(key, true);
                     tf.setStyle("-fx-text-fill: #00bf63;" +
-                            "-fx-background-color:#fff;" +
+                            "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";" +
                             "-fx-border-radius:0px;" +
                             "-fx-border-color:transparent;");
                     updateScoreDisplay();
@@ -507,7 +643,8 @@ public class HardPageController {
                     currentScore = Math.max(score_floor, currentScore - penalty_wrong);
                     comboCount   = 1;
                     cellWasCorrect.put(key, false);
-                    tf.setStyle("-fx-text-fill: #c82121;");
+                    tf.setStyle("-fx-text-fill: #c82121;" +
+                            "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";");
                     updateScoreDisplay();
                 }
             });
@@ -536,9 +673,12 @@ public class HardPageController {
             System.out.println("Backtracking failed, retrying...");
             generateSolution();
         }
-        // DEBUG — remove after fixing
+        /*
+        // DEBUG
         System.out.println("Solution size: " + solution.size());
         System.out.println("Solution: " + solution);
+        */
+
     }
 
     private boolean backtrack(List<String> cells, int index) {
@@ -622,9 +762,13 @@ public class HardPageController {
 
     @FXML
     protected void onRestartClick() {
+        themeIndex = (themeIndex + 1) % THEMES.size(); // ← advance
+        GameState.getInstance().hardSavedTheme = themeIndex; // ← persist
+
         currentLayout = randomLayout();
         generateSolution(); // fills solution FIRST
         buildGrid();        // builds grid with correct sums
+        applyTheme();
         clearFieldsForPlayer();
 
         currentScore = base_score;
@@ -640,6 +784,7 @@ public class HardPageController {
         hint.setDisable(false);
         hint.setOpacity(1.0);
         updateHintButton();
+
 
         GameState.getInstance().hasSavedState = false;
     }
@@ -660,6 +805,8 @@ public class HardPageController {
     // ── Navigation ────────────────────────────────────────────────────────
 
     private void levelAchievement() {
+        themeIndex = (themeIndex + 1 ) % THEMES.size();
+        GameState.getInstance().hardSavedTheme = themeIndex;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
             Parent root = loader.load();
@@ -673,14 +820,17 @@ public class HardPageController {
     }
 
     private void gameFailed() {
+        themeIndex = (themeIndex + 1) % THEMES.size();
         GameState state = GameState.getInstance();
         state.hardSolution    = new HashMap<>(solution);
-        state.secondsLeft     = 15 * 60;
+        state.secondsLeft     = secondsLeft; // ← save real value, not 15*60
         state.hintsLeft       = hintsLeft;
         state.hasSavedState   = true;
         state.savedLayoutName = currentLayout.name;
         state.savedScore      = currentScore;
         state.savedCombo      = comboCount;
+        state.hardSavedTheme      = themeIndex;
+        state.prevLayoutName = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -706,6 +856,8 @@ public class HardPageController {
         state.savedLayoutName = currentLayout.name;
         state.savedCombo      =comboCount;
         state.savedScore      = currentScore;
+        state.hardSavedTheme      = themeIndex;
+        state.prevLayoutName  = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -724,7 +876,16 @@ public class HardPageController {
     // ── Layout utilities ──────────────────────────────────────────────────
 
     private LayoutDefinition randomLayout() {
-        return LAYOUTS.get(new Random().nextInt(LAYOUTS.size()));
+        List<LayoutDefinition> available = new ArrayList<>(LAYOUTS);
+
+       //This wwill eliminate displaying the same layout from the previous round
+        if (prevLayoutName != null && available.size() > 1) {
+            available.removeIf(l -> l.name.equals(prevLayoutName));
+        }
+
+        LayoutDefinition chosen = available.get(new Random().nextInt(available.size()));
+        prevLayoutName = chosen.name;
+        return chosen;
     }
 
     private LayoutDefinition findLayoutByName(String name) {

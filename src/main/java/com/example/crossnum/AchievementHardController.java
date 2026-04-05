@@ -19,6 +19,8 @@ public class AchievementHardController {
     @FXML private Button mainMenuButton;
     @FXML private Button nextButton;
     @FXML private Button hardRetryButton;
+    @FXML private Label remarkLabel;
+    @FXML private Label scoreLabel;
 
 
 
@@ -37,6 +39,23 @@ public class AchievementHardController {
             if (i >= stars) {
                 allStars.get(i).setOpacity(0.25); // dimmed
             }
+        }
+
+        if (remarkLabel != null) {
+            String message;
+            if (stars == 3) {
+                message = "EXCELLENT";
+            } else if (stars == 2) {
+                message = "GREAT JOB";
+            } else if (stars == 1) {
+                message = "GOOD EFFORT";
+            } else {
+                message = "TRY AGAIN";
+            }
+            remarkLabel.setText(message);
+        }
+        if (scoreLabel != null) {
+            scoreLabel.setText("Score: " + accuScore);
         }
     }
 
