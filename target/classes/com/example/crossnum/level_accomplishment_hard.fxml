@@ -23,7 +23,7 @@
                         <Blend mode="ADD" />
                     </effect>
                 </Label>
-            <Label fx:id="scoreLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="76.0" text="SCORE: " textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="remarkLabel1" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="76.0" text="SCORE: " textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="24.0" />
                </font>

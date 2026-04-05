@@ -36,7 +36,7 @@ public class EasyPageController {
     @FXML private Label welcomeText;
     @FXML private Button hint, eraser, pen, back, restart;
     @FXML private Circle toggleCircle;
-    @FXML private ImageView penImage, eraserImage;
+    @FXML private SVGPath penSVG, eraserSVG;
     @FXML private Button backbuttonEasy;
     @FXML private SVGPath heart1;
     @FXML private SVGPath heart2;
@@ -91,11 +91,10 @@ public class EasyPageController {
 
     @FXML
     public void initialize() {
-        // penMode is initialized as true so set the UI as penMode too
         toggleCircle.setTranslateX(75);
-        penImage.setImage(blackPen);
-        eraserImage.setImage(whiteEraser);
-
+        penSVG.setStroke(Color.BLACK);
+        eraserSVG.setStroke(Color.WHITE);
+        // penMode is initialized as true so set the UI as penMode too
         //Once the player has opened the easy mode, the saved game state will display in the screen
         GameState state = GameState.getInstance();
         themeIndex = GameState.getInstance().EasySavedTheme;
@@ -517,12 +516,12 @@ public class EasyPageController {
     private void updateToggle() {
         if (penMode) {
             toggleCircle.setTranslateX(75);
-            penImage.setImage(blackPen);
-            eraserImage.setImage(whiteEraser);
+            penSVG.setStroke(Color.BLACK);
+            eraserSVG.setStroke(Color.WHITE);
         } else {
             toggleCircle.setTranslateX(0);
-            eraserImage.setImage(blackEraser);
-            penImage.setImage(whitePen);
+            eraserSVG.setStroke(Color.BLACK);
+            penSVG.setStroke(Color.WHITE);
         }
 
     }
