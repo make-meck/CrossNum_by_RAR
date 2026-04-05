@@ -23,6 +23,14 @@
                         <Blend mode="ADD" />
                     </effect>
                 </Label>
+            <Label fx:id="remarkLabel1" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="76.0" text="SCORE: " textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="24.0" />
+               </font>
+               <effect>
+                  <Blend mode="ADD" />
+               </effect>
+            </Label>
 
                 <HBox fx:id="starBox" alignment="CENTER" spacing="10.0">
                     <children>
