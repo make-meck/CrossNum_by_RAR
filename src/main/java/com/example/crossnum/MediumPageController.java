@@ -68,7 +68,7 @@ class Fraction {
 public class MediumPageController {
     @FXML private GridPane puzzleGrid;
     @FXML private Circle toggleCircle;
-    @FXML private ImageView penImage, eraserImage;
+    @FXML private SVGPath penSVG, eraserSVG;
     @FXML private Button backbuttonMedium;
     @FXML private SVGPath heart1;
     @FXML private SVGPath heart2;
@@ -106,9 +106,8 @@ public class MediumPageController {
     public void initialize() {
         // penMode is initialized as true so set the UI as penMode too
         toggleCircle.setTranslateX(75);
-        penImage.setImage(blackPen);
-        eraserImage.setImage(whiteEraser);
-
+        penSVG.setStroke(Color.BLACK);
+        eraserSVG.setStroke(Color.WHITE);
         //Once the player has opened the medium mode, the saved game state will display in the screen
         GameState state = GameState.getInstance();
         if(state.hasMediumSavedState) {
@@ -668,16 +667,14 @@ public class MediumPageController {
     private void updateToggle() {
         if (penMode) {
             toggleCircle.setTranslateX(75);
-            penImage.setImage(blackPen);
-            eraserImage.setImage(whiteEraser);
+            penSVG.setStroke(Color.BLACK);
+            eraserSVG.setStroke(Color.WHITE);
         } else {
             toggleCircle.setTranslateX(0);
-            eraserImage.setImage(blackEraser);
-            penImage.setImage(whitePen);
+            eraserSVG.setStroke(Color.BLACK);
+            penSVG.setStroke(Color.WHITE);
         }
-        TranslateTransition tt = new TranslateTransition(Duration.millis(500), toggleCircle);
-        tt.setToX(penMode ? 75 : 0);
-        tt.play();
+
     }
 
     @FXML
