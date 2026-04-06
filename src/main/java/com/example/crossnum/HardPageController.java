@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
@@ -237,6 +238,10 @@ public class HardPageController {
 
                 ));
 
+
+
+
+
     }
 
 
@@ -301,6 +306,18 @@ public class HardPageController {
             new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
     );
     private int themeIndex = 0; // this tracks which theme is active
+
+    // this is used for the sound effects
+    private void playSound(String filename) {
+        try {
+            var resource = getClass().getResource("/audio/" + filename);
+            if (resource == null) { System.out.println("NOT FOUND"); return; }
+            AudioClip clip = new AudioClip(resource.toExternalForm());
+            clip.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     //  INITIALIZE
@@ -807,16 +824,24 @@ public class HardPageController {
     private void levelAchievement() {
         themeIndex = (themeIndex + 1 ) % THEMES.size();
         GameState.getInstance().hardSavedTheme = themeIndex;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
-            Parent root = loader.load();
-            AchievementHardController ac = loader.getController();
-            int timeTaken = (15 * 60) - secondsLeft;
-            ac.setStats(secondsLeft, timeTaken,currentScore);
-            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) { e.printStackTrace(); }
+        playSound("game_success.mp3");
+        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+        delay.setOnFinished(e -> {
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
+                Parent root = loader.load();
+                AchievementHardController ac = loader.getController();
+                int timeTaken = (15 * 60) - secondsLeft;
+                ac.setStats(secondsLeft, timeTaken, currentScore);
+                Stage stage = (Stage) backbuttonHard.getScene().getWindow();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        delay.play();
     }
 
     private void gameFailed() {
@@ -835,14 +860,18 @@ public class HardPageController {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
             state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
         }
-
+        playSound("game_failed.wav");
+        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+        delay.setOnFinished(e ->{
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_failed_hard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException ex) { ex.printStackTrace(); }
+    });
+        delay.play();
     }
 
     @FXML

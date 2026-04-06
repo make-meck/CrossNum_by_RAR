@@ -117,7 +117,7 @@ public class AchievementHardController {
         full.play();
     }
 
-    //it displays the scroe and the stars the player has accumulated 
+    //it displays the scroe and the stars the player has accumulated
     public void setStats(int secondsLeft, int timeTaken, int accuScore) {
 
         int stars;
