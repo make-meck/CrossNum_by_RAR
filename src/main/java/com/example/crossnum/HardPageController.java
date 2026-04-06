@@ -531,25 +531,21 @@ public class HardPageController {
             Label lbl = new Label(String.valueOf(across));
             lbl.setTextFill(Color.WHITE);
             lbl.setFont(Font.font("Arial Bold", 14));
-            lbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            GridPane.setColumnIndex(lbl, 1);
-            GridPane.setRowIndex(lbl, 0);
-            GridPane.setHalignment(lbl, javafx.geometry.HPos.RIGHT);
-            GridPane.setValignment(lbl, javafx.geometry.VPos.TOP);
-            GridPane.setMargin(lbl, new javafx.geometry.Insets(3, 4, 0, 0));
-            inner.getChildren().add(lbl);
 
-            // Running sum for across run
             Label runLbl = new Label("0");
             runLbl.setTextFill(Color.web("#b0e0b0"));
             runLbl.setFont(Font.font("Arial", 9));
-            runLbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            GridPane.setColumnIndex(runLbl, 1);
-            GridPane.setRowIndex(runLbl, 1);  // bottom row
-            GridPane.setHalignment(runLbl, javafx.geometry.HPos.RIGHT);  // right side
-            GridPane.setValignment(runLbl, javafx.geometry.VPos.BOTTOM); // bottom side
-            GridPane.setMargin(runLbl, new javafx.geometry.Insets(0, 3, 2, 0)); // tight to bottom-right
-            inner.getChildren().add(runLbl);
+
+            javafx.scene.layout.VBox acrossBox = new javafx.scene.layout.VBox(lbl, runLbl);
+            acrossBox.setAlignment(javafx.geometry.Pos.TOP_RIGHT);
+            acrossBox.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            GridPane.setColumnIndex(acrossBox, 1);
+            GridPane.setRowIndex(acrossBox, 0);
+            GridPane.setHalignment(acrossBox, javafx.geometry.HPos.RIGHT);
+            GridPane.setValignment(acrossBox, javafx.geometry.VPos.TOP);
+            GridPane.setMargin(acrossBox, new javafx.geometry.Insets(3, 4, 0, 0));
+            inner.getChildren().add(acrossBox);
+
             String runKey = (col + 1) + "," + row;
             acrossRunningLabels.put(runKey, runLbl);
         }
