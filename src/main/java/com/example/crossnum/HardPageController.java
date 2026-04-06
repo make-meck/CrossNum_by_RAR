@@ -310,7 +310,7 @@ public class HardPageController {
     );
     private int themeIndex = 0; // this tracks which theme is active
 
-    // this is used for the sound effects
+
 
 
 
