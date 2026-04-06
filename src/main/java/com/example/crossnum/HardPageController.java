@@ -257,6 +257,10 @@ public class HardPageController {
     private final Set<String>            correctCells = new HashSet<>();
     private final Map<String, Boolean>   cellWasCorrect = new HashMap<>();
 
+    private final Map<String, Label> acrossRunningLabels = new LinkedHashMap<>();
+    private final Map<String, Label> downRunningLabels   = new LinkedHashMap<>();
+
+
     // The currently active layout — set in initialize() and onRestartClick()
     private LayoutDefinition currentLayout;
     private String prevLayoutName = null;
@@ -362,6 +366,7 @@ public class HardPageController {
             int minutes = secondsLeft / 60;
             int seconds = secondsLeft % 60;
             timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+            updateRunningSums();
 
         } else {
             // Fresh game — pick a layout, build the grid, then solve it
@@ -433,6 +438,8 @@ public class HardPageController {
     private void buildGrid() {
         hardPagePane.getChildren().clear();
         fieldMap.clear();
+        acrossRunningLabels.clear();
+        downRunningLabels.clear();
 
         // Work out which black cells carry ACROSS labels (cell to the LEFT of run start)
         // and which carry DOWN labels (cell ABOVE run start)
@@ -512,23 +519,18 @@ public class HardPageController {
         GameTheme t = THEMES.get(themeIndex);
 
         GridPane inner = new GridPane();
-        inner.setStyle("-fx-background-color:" + t.blackCell()+ " ; -fx-background-radius: 10;");
+        inner.setStyle("-fx-background-color:" + t.blackCell() + " ; -fx-background-radius: 10;");
         inner.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        // 2x2 inner grid: top-left=down label, bottom-right=across label
-        ColumnConstraints c1 = new ColumnConstraints();
-        c1.setPercentWidth(50);
-        ColumnConstraints c2 = new ColumnConstraints();
-        c2.setPercentWidth(50);
+        ColumnConstraints c1 = new ColumnConstraints(); c1.setPercentWidth(50);
+        ColumnConstraints c2 = new ColumnConstraints(); c2.setPercentWidth(50);
         inner.getColumnConstraints().addAll(c1, c2);
 
-        RowConstraints r1 = new RowConstraints();
-        r1.setPercentHeight(50);
-        RowConstraints r2 = new RowConstraints();
-        r2.setPercentHeight(50);
+        RowConstraints r1 = new RowConstraints(); r1.setPercentHeight(50);
+        RowConstraints r2 = new RowConstraints(); r2.setPercentHeight(50);
         inner.getRowConstraints().addAll(r1, r2);
 
-        // Down label — top-left cell of inner grid
+        // down running sum label
         if (down != null) {
             Label lbl = new Label(String.valueOf(down));
             lbl.setTextFill(Color.WHITE);
@@ -538,12 +540,26 @@ public class HardPageController {
             GridPane.setRowIndex(lbl, 1);
             GridPane.setHalignment(lbl, javafx.geometry.HPos.LEFT);
             GridPane.setValignment(lbl, javafx.geometry.VPos.BOTTOM);
-            javafx.geometry.Insets margin = new javafx.geometry.Insets(0, 0, 3, 4);
-            GridPane.setMargin(lbl, margin);
+            GridPane.setMargin(lbl, new javafx.geometry.Insets(0, 0, 3, 4));
             inner.getChildren().add(lbl);
+
+            // Running sum for this down run — top-left corner
+            Label runLbl = new Label("0");
+            runLbl.setTextFill(Color.web("#b0e0b0"));
+            runLbl.setFont(Font.font("Arial", 10));
+            runLbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            GridPane.setColumnIndex(runLbl, 0);
+            GridPane.setRowIndex(runLbl, 0);
+            GridPane.setHalignment(runLbl, javafx.geometry.HPos.LEFT);
+            GridPane.setValignment(runLbl, javafx.geometry.VPos.TOP);
+            GridPane.setMargin(runLbl, new javafx.geometry.Insets(3, 0, 0, 4));
+            inner.getChildren().add(runLbl);
+
+            String runKey = col + "," + (row + 1);   // the first cell of the run below this clue cell is col,(row+1)
+            downRunningLabels.put(runKey, runLbl);
         }
 
-        // Across label — bottom-right cell of inner grid
+        // accross running sum label
         if (across != null) {
             Label lbl = new Label(String.valueOf(across));
             lbl.setTextFill(Color.WHITE);
@@ -553,22 +569,33 @@ public class HardPageController {
             GridPane.setRowIndex(lbl, 0);
             GridPane.setHalignment(lbl, javafx.geometry.HPos.RIGHT);
             GridPane.setValignment(lbl, javafx.geometry.VPos.TOP);
-            javafx.geometry.Insets margin = new javafx.geometry.Insets(3, 4, 0, 0);
-            GridPane.setMargin(lbl, margin);
+            GridPane.setMargin(lbl, new javafx.geometry.Insets(3, 4, 0, 0));
             inner.getChildren().add(lbl);
+
+            // Running sum for across run
+            Label runLbl = new Label("0");
+            runLbl.setTextFill(Color.web("#b0e0b0"));
+            runLbl.setFont(Font.font("Arial", 10));
+            runLbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            GridPane.setColumnIndex(runLbl, 1);
+            GridPane.setRowIndex(runLbl, 1);
+            GridPane.setHalignment(runLbl, javafx.geometry.HPos.RIGHT);
+            GridPane.setValignment(runLbl, javafx.geometry.VPos.BOTTOM);
+            GridPane.setMargin(runLbl, new javafx.geometry.Insets(0, 4, 3, 0));
+            inner.getChildren().add(runLbl);
+
+            String runKey = (col + 1) + "," + row;   // the first cell of the run to the right is (col+1),row
+            acrossRunningLabels.put(runKey, runLbl);
         }
 
-        // Diagonal line drawn on top using a Canvas that fills the cell
+        // diagonal line
         javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas();
-        // Bind canvas size to the inner GridPane size
         canvas.widthProperty().bind(inner.widthProperty());
         canvas.heightProperty().bind(inner.heightProperty());
         canvas.setMouseTransparent(true);
 
-        // Redraw line whenever size changes
         javafx.beans.value.ChangeListener<Number> redraw = (obs, oldVal, newVal) -> {
-            double w = canvas.getWidth();
-            double h = canvas.getHeight();
+            double w = canvas.getWidth(), h = canvas.getHeight();
             javafx.scene.canvas.GraphicsContext gc = canvas.getGraphicsContext2D();
             gc.clearRect(0, 0, w, h);
             gc.setStroke(javafx.scene.paint.Color.WHITE);
@@ -587,7 +614,6 @@ public class HardPageController {
         GridPane.setVgrow(pane, Priority.SOMETIMES);
         hardPagePane.getChildren().add(pane);
     }
-
 
     // Transparent filler for unused corners
     private void addEmptyCell(int col, int row) {
@@ -629,6 +655,7 @@ public class HardPageController {
                     cellWasCorrect.remove(key);
                     tf.setStyle("-fx-background-color: " + THEMES.get(themeIndex).whitecell() + ";");
                     updateScoreDisplay();
+                    updateRunningSums();
                     return;
                 }
 
@@ -659,6 +686,7 @@ public class HardPageController {
                             "-fx-border-radius:0px;" +
                             "-fx-border-color:transparent;");
                     updateScoreDisplay();
+                    updateRunningSums();
                     checkIfAllCorrect();
 
                 } else {
@@ -670,6 +698,7 @@ public class HardPageController {
                     tf.setStyle("-fx-text-fill: #c82121;" +
                             "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";");
                     updateScoreDisplay();
+                    updateRunningSums();
                 }
             });
         }
@@ -738,6 +767,56 @@ public class HardPageController {
             scoreLabel.setText(currentScore + "  🔥x" + comboCount);
         }else{
             scoreLabel.setText(String.valueOf(currentScore));
+        }
+    }
+
+    private void updateRunningSums() {
+        // updates across running sums
+        for (List<String> run : currentLayout.acrossRuns) {
+            if (run.isEmpty()) continue;
+            String firstCell = run.get(0);
+            Label lbl = acrossRunningLabels.get(firstCell);
+            if (lbl == null) continue;
+
+            int target = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
+            int current = 0;
+            for (String cell : run) {
+                String text = fieldMap.containsKey(cell) ? fieldMap.get(cell).getText().trim() : "";
+                if (!text.isEmpty()) {
+                    try {
+                        int val = Integer.parseInt(text);
+                        if (val == solution.getOrDefault(cell, -999)) current += val;
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            lbl.setText(String.valueOf(current));
+            lbl.setTextFill(current == target
+                    ? Color.web("#00bf63")   // bright green = complete
+                    : Color.web("#e0e0e0"));
+        }
+
+        // updates down running sums
+        for (List<String> run : currentLayout.downRuns) {
+            if (run.isEmpty()) continue;
+            String firstCell = run.get(0);
+            Label lbl = downRunningLabels.get(firstCell);
+            if (lbl == null) continue;
+
+            int target = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
+            int current = 0;
+            for (String cell : run) {
+                String text = fieldMap.containsKey(cell) ? fieldMap.get(cell).getText().trim() : "";
+                if (!text.isEmpty()) {
+                    try {
+                        int val = Integer.parseInt(text);
+                        if (val == solution.getOrDefault(cell, -999)) current += val;
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            lbl.setText(String.valueOf(current));
+            lbl.setTextFill(current == target
+                    ? Color.web("#00bf63")
+                    : Color.web("#e0e0e0"));
         }
     }
 
