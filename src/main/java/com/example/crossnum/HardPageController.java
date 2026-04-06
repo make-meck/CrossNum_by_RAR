@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
@@ -237,13 +238,17 @@ public class HardPageController {
 
                 ));
 
+
+
+
+
     }
 
 
     // SCORE CONSTANTS
     private static final int base_score = 500;
     private static final int point_per_correct = 10;
-    private static final int penalty_wrong = 20;
+    private static final int penalty_wrong = 5;
     private static final int score_floor = 0;
 
 
@@ -292,15 +297,27 @@ public class HardPageController {
 
     ) {}
     private static final List<GameTheme> THEMES = List.of(
-            new GameTheme("Forest",  "#2d532c", "#ffffff", "#1a3a19", "#ffffff", "#3a7a39"),
-            new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
-            new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
-            new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
-            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166"),
-            new GameTheme("Royal", "#4B0082", "#9400D3", "#FF7F00","#FFFFFF", "#FF007F" ),
+            new GameTheme("Forest",   "#2d532c", "#ffffff", "#BBD0BB", "#ffffff", "#3a7a39"),
+            new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#81A6C6", "#cce7ff", "#1e5080"),
+            new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#FF8C00", "#ffd8a8", "#b84500"),
+            new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#B95E82", "#dbb8ff", "#6a2fbf"),
+            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#BFC9D1", "#bdc3c7", "#3d5166"),
+            new GameTheme("Royal", "#4B0082", "#FFFFFF", "#FF7F00","#FFFFFF", "#FF007F" ),
             new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
     );
     private int themeIndex = 0; // this tracks which theme is active
+
+    // this is used for the sound effects
+    private void playSound(String filename) {
+        try {
+            var resource = getClass().getResource("/audio/" + filename);
+            if (resource == null) { System.out.println("NOT FOUND"); return; }
+            AudioClip clip = new AudioClip(resource.toExternalForm());
+            clip.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     //  INITIALIZE
@@ -319,7 +336,7 @@ public class HardPageController {
             hintsLeft   = state.hintsLeft;
             currentScore = state.savedScore;
             comboCount = state.savedCombo;
-            prevLayoutName = state.prevLayoutName;
+            prevLayoutName = state.hardPrevLayoutName;
 
             // Build the grid first so fieldMap is populated
             buildGrid();
@@ -807,20 +824,27 @@ public class HardPageController {
     private void levelAchievement() {
         themeIndex = (themeIndex + 1 ) % THEMES.size();
         GameState.getInstance().hardSavedTheme = themeIndex;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
-            Parent root = loader.load();
-            AchievementHardController ac = loader.getController();
-            int timeTaken = (15 * 60) - secondsLeft;
-            ac.setStats(secondsLeft, timeTaken,currentScore);
-            Stage stage = (Stage) backbuttonHard.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) { e.printStackTrace(); }
+        playSound("game_success.mp3");
+        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+        delay.setOnFinished(e -> {
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment_hard.fxml"));
+                Parent root = loader.load();
+                AchievementHardController ac = loader.getController();
+                int timeTaken = (15 * 60) - secondsLeft;
+                ac.setStats(secondsLeft, timeTaken, currentScore);
+                Stage stage = (Stage) backbuttonHard.getScene().getWindow();
+                stage.getScene().setRoot(root);
+                SettingsController.setupGlobalClickSounds(stage.getScene());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        delay.play();
     }
 
     private void gameFailed() {
-        themeIndex = (themeIndex + 1) % THEMES.size();
         GameState state = GameState.getInstance();
         state.hardSolution    = new HashMap<>(solution);
         state.secondsLeft     = secondsLeft; // ← save real value, not 15*60
@@ -830,20 +854,24 @@ public class HardPageController {
         state.savedScore      = currentScore;
         state.savedCombo      = comboCount;
         state.hardSavedTheme      = themeIndex;
-        state.prevLayoutName = prevLayoutName;
+        state.hardPrevLayoutName = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
             state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
         }
-
+        playSound("game_failed.wav");
+        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+        delay.setOnFinished(e ->{
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_level_failed.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_failed_hard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException ex) { ex.printStackTrace(); }
+    });
+        delay.play();
     }
 
     @FXML
@@ -857,7 +885,7 @@ public class HardPageController {
         state.savedCombo      =comboCount;
         state.savedScore      = currentScore;
         state.hardSavedTheme      = themeIndex;
-        state.prevLayoutName  = prevLayoutName;
+        state.hardPrevLayoutName  = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());

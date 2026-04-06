@@ -1,9 +1,6 @@
 package com.example.crossnum;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 class Fraction {
@@ -74,6 +75,14 @@ public class MediumPageController {
     @FXML private SVGPath heart2;
     @FXML private SVGPath heart3;
     @FXML private Label totalHints;
+    @FXML private BorderPane mediumPagePane;
+    @FXML private Ellipse ellipseMed;
+    @FXML private Rectangle medAction;
+    @FXML private Button restart;
+    @FXML private Button hint;
+    @FXML private Button pen;
+    @FXML private Button eraser;
+
 
     private boolean penMode = true;
     private int lives = 3;
@@ -101,6 +110,27 @@ public class MediumPageController {
         boolean isSolution;
         boolean isResolved = false;
     }
+    //used for game themes
+    record GameTheme(
+            String name,
+            String blackCell,
+            String whiteCell,
+            String pageBackground,
+            String labelText,
+            String buttonBase
+    ) {}
+
+    private static final List<GameTheme> THEMES = List.of(
+            new GameTheme("Forest",   "#2d532c", "#ffffff", "#d0e8d0", "#ffffff", "#3a7a39"),
+            new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#81A6C6", "#cce7ff", "#1e5080"),
+            new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#FF8C00", "#ffd8a8", "#b84500"),
+            new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#B95E82", "#dbb8ff", "#6a2fbf"),
+            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#BFC9D1", "#bdc3c7", "#3d5166"),
+         //   new GameTheme("Royal", "#4B0082", "#FFFFFF", "#FF7F00","#FFFFFF", "#FF007F" ),
+            new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
+    );
+
+    private int themeIndex = 0;
 
     @FXML
     public void initialize() {
@@ -110,6 +140,7 @@ public class MediumPageController {
         eraserSVG.setStroke(Color.WHITE);
         //Once the player has opened the medium mode, the saved game state will display in the screen
         GameState state = GameState.getInstance();
+        themeIndex = GameState.getInstance().MediumSavedTheme;
         if(state.hasMediumSavedState) {
 
             if (state.mediumRetryMode) {
@@ -152,9 +183,9 @@ public class MediumPageController {
                 }
 
                 //this will return the hearts
-                if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
-                if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
-                if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
+                if (lives <= 2) heart1.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 1) heart2.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 0) heart3.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
 
             }
 
@@ -221,9 +252,9 @@ public class MediumPageController {
                 }
 
                 //this will return the hearts
-                if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
-                if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
-                if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
+                if (lives <= 2) heart1.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 1) heart2.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 0) heart3.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
             }
 
         }
@@ -232,6 +263,7 @@ public class MediumPageController {
         }
 
         populateGridUI();
+        applyTheme();
     }
 
     private void generatePuzzle() {
@@ -396,6 +428,7 @@ public class MediumPageController {
             // Using pen
             // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
+                SettingsController.playCorrectSound();
                 label.setTextFill(Color.web("#00bf63"));
                 drawCircle(pane, "Normal");
                 cell.isResolved = true;
@@ -413,7 +446,8 @@ public class MediumPageController {
             // Using eraser
             if (!cell.isSolution) {
                 // The pane will erase the number if the correct box is clicked
-                label.setText(""); // replaces the number with space to remove it
+                SettingsController.playEraseSound();
+                animateErase(label); // replaces the number with space to remove it
                 cell.isResolved = true;
                 cellsResolved++;
                 checkWinCondition();
@@ -512,11 +546,11 @@ public class MediumPageController {
         lives--;
 
         if (lives == 2) {
-            heart1.setStyle("-fx-fill: #808080;");
+            animateHeartLoss(heart1);
         } else if (lives == 1) {
-            heart2.setStyle("-fx-fill: #808080;");
+            animateHeartLoss(heart2);
         } else if (lives == 0) {
-            heart3.setStyle("-fx-fill: #808080;");
+            animateHeartLoss(heart3);
         }
 
         if (lives <= 0) {
@@ -532,6 +566,44 @@ public class MediumPageController {
             }
             System.out.println("Game Over!");
         }
+    }
+
+    private void animateHeartLoss(SVGPath heart) {
+        TranslateTransition fall = new TranslateTransition(Duration.millis(300), heart);
+        fall.setByY(30);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(300), heart);
+        fade.setToValue(0);
+
+        ParallelTransition animation = new ParallelTransition(fall, fade);
+
+        animation.setOnFinished(e -> {
+            heart.setStyle("-fx-fill: #c31515;");
+            heart.setOpacity(0);
+            heart.setTranslateY(0);
+        });
+
+        animation.play();
+    }
+
+    private void animateErase(Label label) {
+        FadeTransition fade = new FadeTransition(Duration.millis(170), label);
+        fade.setToValue(0);
+
+        ScaleTransition scale = new ScaleTransition(Duration.millis(170), label);
+        scale.setToX(0.7);
+        scale.setToY(0.7);
+
+        ParallelTransition animation = new ParallelTransition(fade, scale);
+
+        animation.setOnFinished(e -> {
+            label.setText("");
+            label.setOpacity(1);
+            label.setScaleX(1);
+            label.setScaleY(1);
+        });
+
+        animation.play();
     }
 
     // Will check if all numbers with true value are encircled and all numbers with false value are erased
@@ -602,7 +674,7 @@ public class MediumPageController {
                     if (cell.isSolution) {
                         drawCircle(pane, "Hint");
                     } else {
-                        if (label != null) label.setText("");
+                        if (label != null) animateErase(label);
                     }
 
                     cell.isResolved = true;
@@ -648,6 +720,7 @@ public class MediumPageController {
         }
 
         populateGridUI();
+        applyTheme();
     }
 
     @FXML
@@ -665,16 +738,28 @@ public class MediumPageController {
     }
 
     private void updateToggle() {
+        TranslateTransition move = new TranslateTransition(Duration.millis(100), toggleCircle);
+
         if (penMode) {
-            toggleCircle.setTranslateX(75);
-            penSVG.setStroke(Color.BLACK);
-            eraserSVG.setStroke(Color.WHITE);
+            move.setToX(75);
+
+            StrokeTransition penStroke = new StrokeTransition(Duration.millis(200), penSVG, Color.WHITE, Color.BLACK);
+            StrokeTransition eraserStroke = new StrokeTransition(Duration.millis(200), eraserSVG, Color.BLACK, Color.WHITE);
+
+            penStroke.play();
+            eraserStroke.play();
+
         } else {
-            toggleCircle.setTranslateX(0);
-            eraserSVG.setStroke(Color.BLACK);
-            penSVG.setStroke(Color.WHITE);
+            move.setToX(0);
+
+            StrokeTransition penStroke = new StrokeTransition(Duration.millis(200), penSVG, Color.BLACK, Color.WHITE);
+            StrokeTransition eraserStroke = new StrokeTransition(Duration.millis(200), eraserSVG, Color.WHITE, Color.BLACK);
+
+            penStroke.play();
+            eraserStroke.play();
         }
 
+        move.play();
     }
 
     @FXML
@@ -720,6 +805,49 @@ public class MediumPageController {
                 state.mediumCellValuesDenominator[r][c] = gridData[r][c].value.denominator;
                 state.mediumCellIsSolution[r][c] = gridData[r][c].isSolution;
                 state.mediumCellIsResolved[r][c] = gridData[r][c].isResolved;
+            }
+        }
+    }
+
+    private void applyTheme() {
+        GameTheme t = THEMES.get(themeIndex);
+
+        // Page background
+       mediumPagePane.setStyle("-fx-background-color: " + t.pageBackground() + ";");
+
+        // Back and restart buttons (keep their radius)
+        if (backbuttonMedium != null) backbuttonMedium.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
+        if (restart != null)        restart.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
+        if (hint != null)           hint.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 35;");
+
+        //ellipse and rectangle
+        javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
+        if (ellipseMed != null) ellipseMed.setFill(accent);
+        if(medAction != null) medAction.setFill(accent);
+
+
+        // Pen and eraser stay transparent
+        if (pen != null)   pen.setStyle("-fx-background-color: transparent;");
+        if (eraser != null) eraser.setStyle("-fx-background-color: transparent;");
+
+        // Labels
+      //  if (welcomeText != null) welcomeText.setStyle("-fx-text-fill: " + t.labelText() + ";");
+
+        // Grid cells
+        for (Node node : puzzleGrid.getChildren()) {
+            if (node instanceof StackPane pane) {
+                Integer r = GridPane.getRowIndex(pane);
+                Integer c = GridPane.getColumnIndex(pane);
+                int row = (r == null) ? 0 : r;
+                int col = (c == null) ? 0 : c;
+
+                if (row == 0 && col == 0) continue;
+
+                if (row == 0 || col == 0) {
+                    pane.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 10;");
+                } else {
+                    pane.setStyle("-fx-background-color: " + t.whiteCell() + "; -fx-background-radius: 10;");
+                }
             }
         }
     }

@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.MediumPageController">
+<BorderPane fx:id="mediumPagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d0e8d0;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.crossnum.MediumPageController">
     <center>
         <StackPane prefHeight="250.0" prefWidth="300.0" BorderPane.alignment="CENTER">
             <children>
@@ -126,7 +126,7 @@
                     <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                             <children>
-                                <Ellipse fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
+                                <Ellipse fx:id="ellipseMed" fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
                                 <Label text="MEDIUM" textFill="WHITE">
                                     <font>
                                         <Font name="Arial" size="31.0" />
@@ -139,16 +139,19 @@
                         </StackPane>
                         <StackPane maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                             <children>
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="#c2151559" layoutX="-15.0" layoutY="17.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" />
                                 <SVGPath fx:id="heart3" content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                             </children>
                         </StackPane>
                         <StackPane layoutX="210.0" layoutY="10.0" maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                             <children>
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="#c2151559" layoutX="-15.0" layoutY="17.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" />
                                 <SVGPath fx:id="heart2" content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                             </children>
                         </StackPane>
                         <StackPane layoutX="295.0" layoutY="10.0" maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                             <children>
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="#c2151559" layoutX="-15.0" layoutY="17.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" />
                                 <SVGPath fx:id="heart1" content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                             </children>
                         </StackPane>
@@ -195,7 +198,7 @@
             <left>
                 <StackPane prefHeight="99.0" prefWidth="149.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Rectangle arcHeight="60.0" arcWidth="60.0" fill="#365d35" height="58.0" stroke="#365d35" strokeType="INSIDE" width="152.0" StackPane.alignment="TOP_LEFT">
+                        <Rectangle fx:id="medAction" arcHeight="60.0" arcWidth="60.0" fill="#365d35" height="58.0" stroke="#365d35" strokeType="INSIDE" width="152.0" StackPane.alignment="TOP_LEFT">
                             <StackPane.margin>
                                 <Insets top="10.0" />
                             </StackPane.margin></Rectangle>

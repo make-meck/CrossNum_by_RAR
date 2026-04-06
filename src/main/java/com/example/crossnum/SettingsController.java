@@ -28,6 +28,8 @@ public class SettingsController implements Initializable {
 
     private static Clip audioClip;
     private static Clip soundClip;
+    private static Clip correctClip;
+    private static Clip eraseClip;
     private static boolean isMusicOn = true;
     private static boolean isSoundOn = true;
     private static double musicSavedVolume = 100.0;
@@ -120,6 +122,46 @@ public class SettingsController implements Initializable {
             } catch (Exception e) {
                 System.out.println("SFX Error: " + e.getMessage());
             }
+        }
+
+        if (correctClip == null) {
+            try {
+                URL correctUrl = SettingsController.class.getResource("/audio/yes.wav");
+                AudioInputStream correctStream = AudioSystem.getAudioInputStream(correctUrl);
+                correctClip = AudioSystem.getClip();
+                correctClip.open(correctStream);
+
+                adjustClipVolume(soundSavedVolume, correctClip);
+            } catch (Exception e) {
+                System.out.println("Correct SFX Error: " + e.getMessage());
+            }
+        }
+
+        if (eraseClip == null) {
+            try {
+                URL eraseUrl = SettingsController.class.getResource("/audio/erase.wav");
+                AudioInputStream eraseStream = AudioSystem.getAudioInputStream(eraseUrl);
+                eraseClip = AudioSystem.getClip();
+                eraseClip.open(eraseStream);
+
+                adjustClipVolume(soundSavedVolume, eraseClip);
+            } catch (Exception e) {
+                System.out.println("Erase SFX Error: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void playCorrectSound() {
+        if (isSoundOn && correctClip != null) {
+            correctClip.setFramePosition(0);
+            correctClip.start();
+        }
+    }
+
+    public static void playEraseSound() {
+        if (isSoundOn && eraseClip != null) {
+            eraseClip.setFramePosition(0);
+            eraseClip.start();
         }
     }
 
