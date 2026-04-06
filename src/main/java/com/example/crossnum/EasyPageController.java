@@ -138,9 +138,9 @@ public class EasyPageController {
                 }
 
                 //this will return the hearts
-                if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
-                if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
-                if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
+                if (lives <= 2) heart1.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 1) heart2.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 0) heart3.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
 
             }
 
@@ -190,9 +190,9 @@ public class EasyPageController {
                 }
 
                 //this will return the hearts
-                if (lives <= 2) heart1.setStyle("-fx-fill:#808080");
-                if (lives <= 1) heart2.setStyle("-fx-fill:#808080");
-                if (lives <= 0) heart3.setStyle("-fx-fill:#808080");
+                if (lives <= 2) heart1.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 1) heart2.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
+                if (lives <= 0) heart3.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
             }
 
         }
@@ -461,11 +461,11 @@ public class EasyPageController {
         lives--;
 
         if (lives == 2) {
-            heart1.setStyle("-fx-fill: #808080;");
+            animateHeartLoss(heart1);
         } else if (lives == 1) {
-            heart2.setStyle("-fx-fill: #808080;");
+            animateHeartLoss(heart2);
         } else if (lives == 0) {
-            heart3.setStyle("-fx-fill: #808080;");
+            animateHeartLoss(heart3);
         }
 
         if (lives <= 0) {
@@ -481,6 +481,24 @@ public class EasyPageController {
             }
             System.out.println("Game Over!");
         }
+    }
+
+    private void animateHeartLoss(SVGPath heart) {
+        TranslateTransition fall = new TranslateTransition(Duration.millis(300), heart);
+        fall.setByY(30);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(300), heart);
+        fade.setToValue(0);
+
+        ParallelTransition animation = new ParallelTransition(fall, fade);
+
+        animation.setOnFinished(e -> {
+            heart.setStyle("-fx-fill: #c31515;");
+            heart.setOpacity(0);
+            heart.setTranslateY(0);
+        });
+
+        animation.play();
     }
 
     // Will check if all numbers with true value are encircled and all numbers with false value are erased

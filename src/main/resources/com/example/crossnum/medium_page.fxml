@@ -139,16 +139,19 @@
                         </StackPane>
                         <StackPane maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                             <children>
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="#c2151559" layoutX="-15.0" layoutY="17.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" />
                                 <SVGPath fx:id="heart3" content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                             </children>
                         </StackPane>
                         <StackPane layoutX="210.0" layoutY="10.0" maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                             <children>
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="#c2151559" layoutX="-15.0" layoutY="17.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" />
                                 <SVGPath fx:id="heart2" content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                             </children>
                         </StackPane>
                         <StackPane layoutX="295.0" layoutY="10.0" maxWidth="50.0" minWidth="50.0" prefHeight="150.0" prefWidth="50.0">
                             <children>
+                        <SVGPath content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="#c2151559" layoutX="-15.0" layoutY="17.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" />
                                 <SVGPath fx:id="heart1" content="M 50,25                         C 50,0 90,0 90,30                         C 90,55 50,75 50,80                         C 50,75 10,55 10,30                         C 10,0 50,0 50,25 Z" fill="white" scaleX="0.5" scaleY="0.5" style="-fx-fill: #c82121;" />
                             </children>
                         </StackPane>
