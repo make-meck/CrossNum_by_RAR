@@ -1,8 +1,7 @@
 package com.example.crossnum;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -645,6 +644,14 @@ public class HardPageController {
                         currentScore += earned;
                         comboCount++;
                         correctCells.add(key);
+
+                        String msg = comboCount ==10 ? "MATH WIZARD":
+                                     comboCount == 7 ? "GENIUS!":
+                                             comboCount == 5 ? "AMAZING!" :
+                                    comboCount == 3 ? "AWESOME!":
+                                            comboCount == 2 ? "GREAT":
+                                                    "CORRECT!";
+                        showComboMessage(msg, hardLevelPage);
                     }
                     cellWasCorrect.put(key, true);
                     tf.setStyle("-fx-text-fill: #00bf63;" +
@@ -727,7 +734,7 @@ public class HardPageController {
     // Score Display
     private void updateScoreDisplay(){
         if(scoreLabel == null) return;
-        if(comboCount >2) {
+        if(comboCount >1) {
             scoreLabel.setText(currentScore + "  🔥x" + comboCount);
         }else{
             scoreLabel.setText(String.valueOf(currentScore));
@@ -901,6 +908,39 @@ public class HardPageController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
+
+    private void showComboMessage(String message, javafx.scene.layout.Pane root) {
+        Label toast = new Label(message);
+        toast.setStyle(
+                "-fx-background-color: rgba(0,0,0,0.75);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-family: 'Arial Bold';" +
+                        "-fx-padding: 12 24 12 24;" +
+                        "-fx-background-radius: 30;"
+        );
+        toast.setOpacity(0);
+        root.getChildren().add(toast);
+
+        Platform.runLater(() -> {
+            toast.setLayoutX((root.getWidth()  - toast.getWidth())  / 2);
+            toast.setLayoutY((root.getHeight() - toast.getHeight()) / 2);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), toast);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+
+            PauseTransition stay = new PauseTransition(Duration.millis(800));
+
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), toast);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(e -> root.getChildren().remove(toast));
+
+            new SequentialTransition(fadeIn, stay, fadeOut).play();
+        });
+    }
+
     // ── Layout utilities ──────────────────────────────────────────────────
 
     private LayoutDefinition randomLayout() {
@@ -930,3 +970,4 @@ public class HardPageController {
     // Extracts the row number from a "col,row" key
     private int row(String key) { return Integer.parseInt(key.split(",")[1]); }
 }
+
