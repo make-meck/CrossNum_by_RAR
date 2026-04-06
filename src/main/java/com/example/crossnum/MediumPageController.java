@@ -123,13 +123,14 @@ public class MediumPageController {
             String buttonBase
     ) {}
 
-    private static final List<EasyPageController.GameTheme> THEMES = List.of(
-            new EasyPageController.GameTheme("Forest",   "#2d532c", "#ffffff", "#d0e8d0", "#ffffff", "#3a7a39"),
-            new EasyPageController.GameTheme("Ocean",    "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
-            new EasyPageController.GameTheme("Sunset",   "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
-            new EasyPageController.GameTheme("Amethyst", "#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
-            new EasyPageController.GameTheme("Slate",    "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166"),
-            new EasyPageController.GameTheme("Royal",    "#4B0082", "#9400D3", "#FF7F00", "#FFFFFF", "#FF007F")
+    private static final List<GameTheme> THEMES = List.of(
+            new GameTheme("Forest",   "#2d532c", "#ffffff", "#d0e8d0", "#ffffff", "#3a7a39"),
+            new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#81A6C6", "#cce7ff", "#1e5080"),
+            new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#FF8C00", "#ffd8a8", "#b84500"),
+            new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#B95E82", "#dbb8ff", "#6a2fbf"),
+            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#BFC9D1", "#bdc3c7", "#3d5166"),
+         //   new GameTheme("Royal", "#4B0082", "#FFFFFF", "#FF7F00","#FFFFFF", "#FF007F" ),
+            new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
     );
 
     private int themeIndex = 0;
@@ -142,6 +143,7 @@ public class MediumPageController {
         eraserSVG.setStroke(Color.WHITE);
         //Once the player has opened the medium mode, the saved game state will display in the screen
         GameState state = GameState.getInstance();
+        themeIndex = GameState.getInstance().MediumSavedTheme;
         if(state.hasMediumSavedState) {
 
             if (state.mediumRetryMode) {
@@ -759,7 +761,7 @@ public class MediumPageController {
     }
 
     private void applyTheme() {
-        EasyPageController.GameTheme t = THEMES.get(themeIndex);
+        GameTheme t = THEMES.get(themeIndex);
 
         // Page background
        mediumPagePane.setStyle("-fx-background-color: " + t.pageBackground() + ";");

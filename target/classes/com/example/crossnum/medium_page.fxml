@@ -126,7 +126,7 @@
                     <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                             <children>
-                                <Ellipse fx:id="ellpseMed" fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
+                                <Ellipse fx:id="ellipseMed" fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
                                 <Label text="MEDIUM" textFill="WHITE">
                                     <font>
                                         <Font name="Arial" size="31.0" />

@@ -72,8 +72,8 @@ public class AchievementEasyController {
         @FXML
         private void onMediumNext(ActionEvent event) {
             try {
-                GameState.getInstance().hasEasySavedState= false;
-                GameState.getInstance().EasySavedTheme = new Random().nextInt(7);
+                GameState.getInstance().hasMediumSavedState= false;
+                GameState.getInstance().MediumSavedTheme= new Random().nextInt(7);
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("medium_page.fxml"));
                 Stage stage = (Stage) mediumNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();
