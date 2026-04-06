@@ -513,13 +513,13 @@ public class HardPageController {
             // Running sum for this down run — top-left corner
             Label runLbl = new Label("0");
             runLbl.setTextFill(Color.web("#b0e0b0"));
-            runLbl.setFont(Font.font("Arial", 10));
+            runLbl.setFont(Font.font("Arial", 9));
             runLbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             GridPane.setColumnIndex(runLbl, 0);
-            GridPane.setRowIndex(runLbl, 0);
+            GridPane.setRowIndex(runLbl, 0);  // top row
             GridPane.setHalignment(runLbl, javafx.geometry.HPos.LEFT);
             GridPane.setValignment(runLbl, javafx.geometry.VPos.TOP);
-            GridPane.setMargin(runLbl, new javafx.geometry.Insets(3, 0, 0, 4));
+            GridPane.setMargin(runLbl, new javafx.geometry.Insets(2, 0, 0, 3));
             inner.getChildren().add(runLbl);
 
             String runKey = col + "," + (row + 1);   // the first cell of the run below this clue cell is col,(row+1)
@@ -542,16 +542,15 @@ public class HardPageController {
             // Running sum for across run
             Label runLbl = new Label("0");
             runLbl.setTextFill(Color.web("#b0e0b0"));
-            runLbl.setFont(Font.font("Arial", 10));
+            runLbl.setFont(Font.font("Arial", 9));
             runLbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             GridPane.setColumnIndex(runLbl, 1);
-            GridPane.setRowIndex(runLbl, 1);
-            GridPane.setHalignment(runLbl, javafx.geometry.HPos.RIGHT);
-            GridPane.setValignment(runLbl, javafx.geometry.VPos.BOTTOM);
-            GridPane.setMargin(runLbl, new javafx.geometry.Insets(0, 4, 3, 0));
+            GridPane.setRowIndex(runLbl, 1);  // bottom row
+            GridPane.setHalignment(runLbl, javafx.geometry.HPos.RIGHT);  // right side
+            GridPane.setValignment(runLbl, javafx.geometry.VPos.BOTTOM); // bottom side
+            GridPane.setMargin(runLbl, new javafx.geometry.Insets(0, 3, 2, 0)); // tight to bottom-right
             inner.getChildren().add(runLbl);
-
-            String runKey = (col + 1) + "," + row;   // the first cell of the run to the right is (col+1),row
+            String runKey = (col + 1) + "," + row;
             acrossRunningLabels.put(runKey, runLbl);
         }
 
@@ -693,11 +692,6 @@ public class HardPageController {
             System.out.println("Backtracking failed, retrying...");
             generateSolution();
         }
-        /*
-        // DEBUG
-        System.out.println("Solution size: " + solution.size());
-        System.out.println("Solution: " + solution);
-        */
 
     }
 
