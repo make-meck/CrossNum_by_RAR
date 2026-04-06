@@ -30,6 +30,7 @@ public class GameState {
     public int mediumCellsResolved = 0;
     public boolean hasMediumSavedState = false;
     public boolean mediumRetryMode = false;
+    public int MediumSavedTheme;
 
     public int[][] mediumCellValuesNumerator = new int[7][7];
     public int[][] mediumCellValuesDenominator = new int[7][7];
