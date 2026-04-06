@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public class AchievementHardController {
@@ -61,10 +62,22 @@ public class AchievementHardController {
 
     @FXML
     private void onMainMenu(ActionEvent event) {
+        GameState state = GameState.getInstance();
+        state.hasSavedState   = false;
+        state.hardSolution    = new HashMap<>();
+        state.hardFieldValues = new HashMap<>();
+        state.hardFieldStyles = new HashMap<>();
+        state.secondsLeft     = 15 * 60;
+        state.hintsLeft       = 3;
+        state.savedScore      = 500;
+        state.savedCombo      = 1;
+        state.savedLayoutName = null;
+
+
         try {
-            FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("start_page.fxml"));
             Stage stage = (Stage) mainMenuButton.getScene().getWindow();
-            Parent root = backbuttonLoader.load();
+            Parent root = loader.load();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
@@ -86,15 +99,22 @@ public class AchievementHardController {
     }
 
     @FXML
-    private void onHardRetry (ActionEvent event) {
+    private void onHardRetry(ActionEvent event) {
         GameState state = GameState.getInstance();
-        // indicates that the user failed and still has the saved puzzle
-        state.hasSavedState = true;
+        state.hasSavedState   = true;
+        state.hardSolution    = new HashMap<>();
+        state.hardFieldValues = new HashMap<>();
+        state.hardFieldStyles = new HashMap<>();
+        state.secondsLeft     = 15 * 60;
+        state.hintsLeft       = 3;
+        state.savedScore      = 500;
+        state.savedCombo      = 1;
+        state.savedLayoutName = null;
 
         try {
-            FXMLLoader retryLoader = new FXMLLoader(getClass().getResource("hard_page_Improved.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_page_Improved.fxml"));
             Stage stage = (Stage) hardRetryButton.getScene().getWindow();
-            Parent root = retryLoader.load();
+            Parent root = loader.load();
             stage.getScene().setRoot(root);
             SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {

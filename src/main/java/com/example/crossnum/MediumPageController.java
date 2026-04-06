@@ -15,10 +15,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -26,6 +29,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 class Fraction {
@@ -74,6 +78,14 @@ public class MediumPageController {
     @FXML private SVGPath heart2;
     @FXML private SVGPath heart3;
     @FXML private Label totalHints;
+    @FXML private BorderPane mediumPagePane;
+    @FXML private Ellipse ellipseMed;
+    @FXML private Rectangle medAction;
+    @FXML private Button restart;
+    @FXML private Button hint;
+    @FXML private Button pen;
+    @FXML private Button eraser;
+
 
     private boolean penMode = true;
     private int lives = 3;
@@ -101,6 +113,26 @@ public class MediumPageController {
         boolean isSolution;
         boolean isResolved = false;
     }
+    //used for game themes
+    record GameTheme(
+            String name,
+            String blackCell,
+            String whiteCell,
+            String pageBackground,
+            String labelText,
+            String buttonBase
+    ) {}
+
+    private static final List<EasyPageController.GameTheme> THEMES = List.of(
+            new EasyPageController.GameTheme("Forest",   "#2d532c", "#ffffff", "#d0e8d0", "#ffffff", "#3a7a39"),
+            new EasyPageController.GameTheme("Ocean",    "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
+            new EasyPageController.GameTheme("Sunset",   "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
+            new EasyPageController.GameTheme("Amethyst", "#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
+            new EasyPageController.GameTheme("Slate",    "#2e3f50", "#ecf0f1", "#1a252f", "#bdc3c7", "#3d5166"),
+            new EasyPageController.GameTheme("Royal",    "#4B0082", "#9400D3", "#FF7F00", "#FFFFFF", "#FF007F")
+    );
+
+    private int themeIndex = 0;
 
     @FXML
     public void initialize() {
@@ -232,6 +264,7 @@ public class MediumPageController {
         }
 
         populateGridUI();
+        applyTheme();
     }
 
     private void generatePuzzle() {
@@ -648,6 +681,7 @@ public class MediumPageController {
         }
 
         populateGridUI();
+        applyTheme();
     }
 
     @FXML
@@ -720,6 +754,49 @@ public class MediumPageController {
                 state.mediumCellValuesDenominator[r][c] = gridData[r][c].value.denominator;
                 state.mediumCellIsSolution[r][c] = gridData[r][c].isSolution;
                 state.mediumCellIsResolved[r][c] = gridData[r][c].isResolved;
+            }
+        }
+    }
+
+    private void applyTheme() {
+        EasyPageController.GameTheme t = THEMES.get(themeIndex);
+
+        // Page background
+       mediumPagePane.setStyle("-fx-background-color: " + t.pageBackground() + ";");
+
+        // Back and restart buttons (keep their radius)
+        if (backbuttonMedium != null) backbuttonMedium.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
+        if (restart != null)        restart.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
+        if (hint != null)           hint.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 35;");
+
+        //ellipse and rectangle
+        javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
+        if (ellipseMed != null) ellipseMed.setFill(accent);
+        if(medAction != null) medAction.setFill(accent);
+
+
+        // Pen and eraser stay transparent
+        if (pen != null)   pen.setStyle("-fx-background-color: transparent;");
+        if (eraser != null) eraser.setStyle("-fx-background-color: transparent;");
+
+        // Labels
+      //  if (welcomeText != null) welcomeText.setStyle("-fx-text-fill: " + t.labelText() + ";");
+
+        // Grid cells
+        for (Node node : puzzleGrid.getChildren()) {
+            if (node instanceof StackPane pane) {
+                Integer r = GridPane.getRowIndex(pane);
+                Integer c = GridPane.getColumnIndex(pane);
+                int row = (r == null) ? 0 : r;
+                int col = (c == null) ? 0 : c;
+
+                if (row == 0 && col == 0) continue;
+
+                if (row == 0 || col == 0) {
+                    pane.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 10;");
+                } else {
+                    pane.setStyle("-fx-background-color: " + t.whiteCell() + "; -fx-background-radius: 10;");
+                }
             }
         }
     }

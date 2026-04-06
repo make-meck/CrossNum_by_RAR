@@ -292,7 +292,7 @@ public class HardPageController {
 
     ) {}
     private static final List<GameTheme> THEMES = List.of(
-            new GameTheme("Forest",  "#2d532c", "#ffffff", "#1a3a19", "#ffffff", "#3a7a39"),
+            new GameTheme("Forest",   "#2d532c", "#ffffff", "#d0e8d0", "#ffffff", "#3a7a39"),
             new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
             new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
             new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
@@ -838,7 +838,7 @@ public class HardPageController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hard_level_failed.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("level_failed_hard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) backbuttonHard.getScene().getWindow();
             stage.getScene().setRoot(root);
