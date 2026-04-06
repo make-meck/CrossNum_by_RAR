@@ -446,6 +446,7 @@ public class MediumPageController {
             // Using eraser
             if (!cell.isSolution) {
                 // The pane will erase the number if the correct box is clicked
+                SettingsController.playEraseSound();
                 animateErase(label); // replaces the number with space to remove it
                 cell.isResolved = true;
                 cellsResolved++;
