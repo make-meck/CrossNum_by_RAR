@@ -369,7 +369,7 @@ public class EasyPageController {
             // Using eraser
             if (!cell.isSolution) {
                 // The pane will erase the number if the correct box is clicked
-                label.setText(""); // replaces the number with space to remove it
+                animateErase(label); // replaces the number with space to remove it
                 cell.isResolved = true;
                 cellsResolved++;
                 checkWinCondition();
@@ -502,6 +502,26 @@ public class EasyPageController {
         animation.play();
     }
 
+    private void animateErase(Label label) {
+        FadeTransition fade = new FadeTransition(Duration.millis(170), label);
+        fade.setToValue(0);
+
+        ScaleTransition scale = new ScaleTransition(Duration.millis(170), label);
+        scale.setToX(0.7);
+        scale.setToY(0.7);
+
+        ParallelTransition animation = new ParallelTransition(fade, scale);
+
+        animation.setOnFinished(e -> {
+            label.setText("");
+            label.setOpacity(1);
+            label.setScaleX(1);
+            label.setScaleY(1);
+        });
+
+        animation.play();
+    }
+
     // Will check if all numbers with true value are encircled and all numbers with false value are erased
     private void checkWinCondition() {
         if (cellsResolved == 16) {
@@ -605,7 +625,7 @@ public class EasyPageController {
                     if (cell.isSolution) {
                         drawCircle(pane, "Hint");
                     } else {
-                        if (label != null) label.setText("");
+                        if (label != null) animateErase(label);
                     }
 
                     cell.isResolved = true;
