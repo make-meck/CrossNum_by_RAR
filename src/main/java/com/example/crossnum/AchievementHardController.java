@@ -27,16 +27,7 @@ public class AchievementHardController {
     @FXML private Label scoreLabel;
 
 
-    private void playSound(String filename) {
-        try {
-            var resource = getClass().getResource("/audio/" + filename);
-            if (resource == null) { System.out.println("NOT FOUND"); return; }
-            AudioClip clip = new AudioClip(resource.toExternalForm());
-            clip.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
         //Animation for the Stars and the label
     private void playStarStampAnimation(List<Group> stars, int earnedStars) {
         for (int i = 0; i < stars.size(); i++) {

@@ -311,16 +311,7 @@ public class HardPageController {
     private int themeIndex = 0; // this tracks which theme is active
 
     // this is used for the sound effects
-    private void playSound(String filename) {
-        try {
-            var resource = getClass().getResource("/audio/" + filename);
-            if (resource == null) { System.out.println("NOT FOUND"); return; }
-            AudioClip clip = new AudioClip(resource.toExternalForm());
-            clip.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
 
     //  INITIALIZE
@@ -389,19 +380,7 @@ public class HardPageController {
         // For the theme
         private void applyTheme(){
             GameTheme t= THEMES.get(themeIndex);
-            /*
-            // Page background — image takes priority over color
-            if (t.backgroundImage() != null) {
-            String url = getClass().getResource(t.backgroundImage()).toExternalForm();
-             hardLevelPage.setStyle(
-              "-fx-background-image: url('" + url + "');" +
-             "-fx-background-size: cover;" +
-              "-fx-background-position: center;"
-                 );
-            } else {
-             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
-               }
-             */
+
 
             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
 
@@ -465,34 +444,22 @@ public class HardPageController {
         // Paint every cell in the 7×7 grid
         for (int r = 0; r <= 6; r++) {
             for (int c = 0; c <= 6; c++) {
-                String key      = c + "," + r;
-                boolean isActive  = currentLayout.activeCells.contains(key);
+                String key = c + "," + r;
+                boolean isActive = currentLayout.activeCells.contains(key);
                 boolean hasAcross = acrossLabelMap.containsKey(key);
-                boolean hasDown   = downLabelMap.containsKey(key);
+                boolean hasDown = downLabelMap.containsKey(key);
 
                 if (isActive) {
                     addWhiteCell(c, r, key);
                 } else if (hasAcross || hasDown) {
                     addBlackClueCell(c, r,
                             hasAcross ? acrossLabelMap.get(key) : null,
-                            hasDown   ? downLabelMap.get(key)   : null);
+                            hasDown ? downLabelMap.get(key) : null);
                 } else {
                     addEmptyCell(c, r);
                 }
             }
         }
-/*
-        //for debugging
-        for (List<String> run : currentLayout.acrossRuns) {
-            if (run.isEmpty()) continue;
-            String first = run.get(0);
-            String labelCell = (col(first) - 1) + "," + row(first);
-            int sum = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
-            // DEBUG
-            System.out.println("Run: " + run + " labelCell: " + labelCell + " sum: " + sum);
-            acrossLabelMap.put(labelCell, sum);
-            }
-   */
 
         }
 
@@ -910,8 +877,11 @@ public class HardPageController {
     private void levelAchievement() {
         themeIndex = (themeIndex + 1 ) % THEMES.size();
         GameState.getInstance().hardSavedTheme = themeIndex;
-        playSound("game_success.mp3");
-        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+
+        PauseTransition sfxDelay = new PauseTransition(Duration.millis(400));
+        sfxDelay.setOnFinished(e-> SettingsController.playSuccessSound());
+       sfxDelay.play();
+        PauseTransition delay = new PauseTransition(Duration.millis(1500));
         delay.setOnFinished(e -> {
 
             try {
@@ -946,8 +916,12 @@ public class HardPageController {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
             state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
         }
-        playSound("game_failed.wav");
-        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+
+        PauseTransition sfxDelay = new PauseTransition(Duration.millis(400));
+        sfxDelay.setOnFinished(e-> SettingsController.playFailSound());
+        sfxDelay.play();
+
+        PauseTransition delay = new PauseTransition(Duration.millis(1500));
         delay.setOnFinished(e ->{
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_failed_hard.fxml"));
