@@ -9,8 +9,9 @@ import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
-    public class AchievementEasyController {
+public class AchievementEasyController {
 
         @FXML
         private Group star1;
@@ -57,6 +58,7 @@ import java.util.List;
         private void onEasyNext(ActionEvent event) {
             try {
                 GameState.getInstance().hasEasySavedState= false;
+                GameState.getInstance().EasySavedTheme = new Random().nextInt(7);
                 FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("easy_page.fxml"));
                 Stage stage = (Stage) easyNextButton.getScene().getWindow();
                 Parent root = backbuttonLoader.load();

@@ -98,7 +98,7 @@
                <children>
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <Ellipse fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" />
+                        <Ellipse fx:id="easyEllipse" fill="#365d35" radiusX="100.0" radiusY="27.0" stroke="#365d35" strokeType="INSIDE" strokeWidth="0.0" />
                         <Label text="EASY" textFill="WHITE">
                            <font>
                               <Font name="Arial" size="31.0" />
@@ -167,7 +167,7 @@
          <left>
             <StackPane prefHeight="99.0" prefWidth="149.0" BorderPane.alignment="CENTER">
                <children>
-                  <Rectangle arcHeight="60.0" arcWidth="60.0" fill="#365d35" height="58.0" stroke="#365d35" strokeType="INSIDE" width="152.0" StackPane.alignment="TOP_LEFT">
+                  <Rectangle fx:id="actionRectangle" arcHeight="60.0" arcWidth="60.0" fill="#365d35" height="58.0" stroke="#365d35" strokeType="INSIDE" strokeWidth="0.0" width="152.0" StackPane.alignment="TOP_LEFT">
                      <StackPane.margin>
                         <Insets top="10.0" />
                      </StackPane.margin></Rectangle>

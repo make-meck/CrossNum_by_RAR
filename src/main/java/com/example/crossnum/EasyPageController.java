@@ -18,6 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -42,6 +44,8 @@ public class EasyPageController {
     @FXML private SVGPath heart2;
     @FXML private SVGPath heart3;
     @FXML private Label totalHints;
+    @FXML private Rectangle actionRectangle;
+    @FXML private Ellipse easyEllipse;
 
     private boolean penMode = true;
     private int lives = 3;
@@ -79,7 +83,7 @@ public class EasyPageController {
     ) {}
 
     private static final List<GameTheme> THEMES = List.of(
-            new GameTheme("Forest",   "#2d532c", "#ffffff", "#1a3a19", "#ffffff", "#3a7a39"),
+            new GameTheme("Forest",   "#2d532c", "#ffffff", "#d0e8d0", "#ffffff", "#3a7a39"),
             new GameTheme("Ocean",    "#1a3a5c", "#e8f4fd", "#0d2137", "#cce7ff", "#1e5080"),
             new GameTheme("Sunset",   "#7a2d00", "#fff3e0", "#3d1600", "#ffd8a8", "#b84500"),
             new GameTheme("Amethyst", "#3d1a6e", "#f3eaff", "#1e0a38", "#dbb8ff", "#6a2fbf"),
@@ -679,12 +683,17 @@ public class EasyPageController {
         if (restart != null)        restart.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
         if (hint != null)           hint.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 35;");
 
-        // Pen and eraser stay transparent (they use images)
+        //ellipse and rectangle
+        javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
+        if (easyEllipse != null) easyEllipse.setFill(accent);
+        if(actionRectangle != null) actionRectangle.setFill(accent);
+
+
+        // Pen and eraser stay transparent
         if (pen != null)   pen.setStyle("-fx-background-color: transparent;");
         if (eraser != null) eraser.setStyle("-fx-background-color: transparent;");
 
         // Labels
-        if (totalHints != null) totalHints.setStyle("-fx-text-fill: " + t.labelText() + ";");
         if (welcomeText != null) welcomeText.setStyle("-fx-text-fill: " + t.labelText() + ";");
 
         // Grid cells
