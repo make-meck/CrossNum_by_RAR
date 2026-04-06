@@ -47,7 +47,7 @@ public class GameState {
     public int savedScore;
     public int savedCombo;
     public int hardSavedTheme;
-    public String prevLayoutName;
+    public String hardPrevLayoutName;
 
 
 

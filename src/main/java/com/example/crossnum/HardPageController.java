@@ -243,7 +243,7 @@ public class HardPageController {
     // SCORE CONSTANTS
     private static final int base_score = 500;
     private static final int point_per_correct = 10;
-    private static final int penalty_wrong = 20;
+    private static final int penalty_wrong = 5;
     private static final int score_floor = 0;
 
 
@@ -319,7 +319,7 @@ public class HardPageController {
             hintsLeft   = state.hintsLeft;
             currentScore = state.savedScore;
             comboCount = state.savedCombo;
-            prevLayoutName = state.prevLayoutName;
+            prevLayoutName = state.hardPrevLayoutName;
 
             // Build the grid first so fieldMap is populated
             buildGrid();
@@ -820,7 +820,6 @@ public class HardPageController {
     }
 
     private void gameFailed() {
-        themeIndex = (themeIndex + 1) % THEMES.size();
         GameState state = GameState.getInstance();
         state.hardSolution    = new HashMap<>(solution);
         state.secondsLeft     = secondsLeft; // ← save real value, not 15*60
@@ -830,7 +829,7 @@ public class HardPageController {
         state.savedScore      = currentScore;
         state.savedCombo      = comboCount;
         state.hardSavedTheme      = themeIndex;
-        state.prevLayoutName = prevLayoutName;
+        state.hardPrevLayoutName = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
@@ -857,7 +856,7 @@ public class HardPageController {
         state.savedCombo      =comboCount;
         state.savedScore      = currentScore;
         state.hardSavedTheme      = themeIndex;
-        state.prevLayoutName  = prevLayoutName;
+        state.hardPrevLayoutName  = prevLayoutName;
 
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
