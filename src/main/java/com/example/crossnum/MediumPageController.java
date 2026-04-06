@@ -641,6 +641,8 @@ public class MediumPageController {
                         cell.wasHinted = true;
                     } else {
                         if (label != null) animateErase(label);
+                        erasures--;
+                        totalErasures.setText(String.valueOf(erasures));
                     }
 
                     cell.isResolved = true;
@@ -657,12 +659,23 @@ public class MediumPageController {
     private void onRestartClick() {
         lives = 3;
         cellsResolved = 0;
+        hints = 3;
+        totalHints.setText(String.valueOf(hints));
         erasures = countErasures();
         totalErasures.setText(String.valueOf(erasures));
 
         heart1.setStyle("-fx-fill: #c82121;");
+        heart1.setOpacity(1);
+        heart1.setTranslateY(0);
+
         heart2.setStyle("-fx-fill: #c82121;");
+        heart2.setOpacity(1);
+        heart2.setTranslateY(0);
+
         heart3.setStyle("-fx-fill: #c82121;");
+        heart3.setOpacity(1);
+        heart3.setTranslateY(0);
+
 
         for (Node node : puzzleGrid.getChildren()) {
             if (node instanceof StackPane) {
