@@ -1,9 +1,6 @@
 package com.example.crossnum;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -353,6 +350,7 @@ public class EasyPageController {
             // Using pen
             // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
+                SettingsController.playCorrectSound();
                 label.setTextFill(Color.web("#00bf63"));
                 drawCircle(pane, "Normal");
                 cell.isResolved = true;
@@ -518,16 +516,28 @@ public class EasyPageController {
     }
 
     private void updateToggle() {
+        TranslateTransition move = new TranslateTransition(Duration.millis(100), toggleCircle);
+
         if (penMode) {
-            toggleCircle.setTranslateX(75);
-            penSVG.setStroke(Color.BLACK);
-            eraserSVG.setStroke(Color.WHITE);
+            move.setToX(75);
+
+            StrokeTransition penStroke = new StrokeTransition(Duration.millis(200), penSVG, Color.WHITE, Color.BLACK);
+            StrokeTransition eraserStroke = new StrokeTransition(Duration.millis(200), eraserSVG, Color.BLACK, Color.WHITE);
+
+            penStroke.play();
+            eraserStroke.play();
+
         } else {
-            toggleCircle.setTranslateX(0);
-            eraserSVG.setStroke(Color.BLACK);
-            penSVG.setStroke(Color.WHITE);
+            move.setToX(0);
+
+            StrokeTransition penStroke = new StrokeTransition(Duration.millis(200), penSVG, Color.BLACK, Color.WHITE);
+            StrokeTransition eraserStroke = new StrokeTransition(Duration.millis(200), eraserSVG, Color.WHITE, Color.BLACK);
+
+            penStroke.play();
+            eraserStroke.play();
         }
 
+        move.play();
     }
 
     @FXML

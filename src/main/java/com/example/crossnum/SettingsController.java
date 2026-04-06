@@ -28,6 +28,7 @@ public class SettingsController implements Initializable {
 
     private static Clip audioClip;
     private static Clip soundClip;
+    private static Clip correctClip;
     private static boolean isMusicOn = true;
     private static boolean isSoundOn = true;
     private static double musicSavedVolume = 100.0;
@@ -120,6 +121,26 @@ public class SettingsController implements Initializable {
             } catch (Exception e) {
                 System.out.println("SFX Error: " + e.getMessage());
             }
+        }
+
+        if (correctClip == null) {
+            try {
+                URL correctUrl = SettingsController.class.getResource("/audio/yes.wav");
+                AudioInputStream correctStream = AudioSystem.getAudioInputStream(correctUrl);
+                correctClip = AudioSystem.getClip();
+                correctClip.open(correctStream);
+
+                adjustClipVolume(soundSavedVolume, correctClip);
+            } catch (Exception e) {
+                System.out.println("Correct SFX Error: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void playCorrectSound() {
+        if (isSoundOn && correctClip != null) {
+            correctClip.setFramePosition(0);
+            correctClip.start();
         }
     }
 
