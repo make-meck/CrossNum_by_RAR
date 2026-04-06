@@ -9,6 +9,7 @@ import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.AudioClip;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -162,6 +163,40 @@ public class SettingsController implements Initializable {
         if (isSoundOn && eraseClip != null) {
             eraseClip.setFramePosition(0);
             eraseClip.start();
+        }
+    }
+    public static void lowerMusic(double targetVolume){
+        if(audioClip == null || !isMusicOn) return;
+        adjustClipVolume(targetVolume, audioClip);
+    }
+
+    public static void restoreAudio(){
+        if(audioClip == null || !isMusicOn) return;
+        adjustClipVolume(musicSavedVolume, audioClip);
+    }
+    public static void playSuccessSound(){
+        if(!isSoundOn) return;
+        try{
+            URL successUrl = SettingsController.class.getResource("/audio/game_success.mp3");
+            if(successUrl == null) return;
+            AudioClip clip = new AudioClip(successUrl.toExternalForm());
+            clip.setVolume(soundSavedVolume/100.00);
+            clip.play();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void playFailSound(){
+        if(!isSoundOn) return;
+        try{
+            URL failUrl = SettingsController.class.getResource("/audio/game_failed.wav");
+            if(failUrl == null) return;
+            AudioClip clip = new AudioClip(failUrl.toExternalForm());
+            clip.setVolume(soundSavedVolume/100);
+            clip.play();
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 

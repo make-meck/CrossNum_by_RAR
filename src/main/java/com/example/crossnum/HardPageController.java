@@ -92,7 +92,6 @@ public class HardPageController {
 
     static {
 
-        // LAYOUT 1 — Original ───────────────────────────────────────────
         LAYOUTS.add(new LayoutDefinition(
                 "Layout1",
                 cells("1,1","2,1","3,1","4,1","5,1",
@@ -125,7 +124,6 @@ public class HardPageController {
                 )
         ));
 
-        // LAYOUT 2 — Staircase
         LAYOUTS.add(new LayoutDefinition(
                 "Layout2",
                 cells("1,1","2,1","3,1",
@@ -152,7 +150,6 @@ public class HardPageController {
                 )
         ));
 
-        // LAYOUT 3 — Windows
         LAYOUTS.add(new LayoutDefinition(
                 "Layout3",
                 cells("1,1","2,1","3,1",
@@ -243,13 +240,11 @@ public class HardPageController {
 
     }
 
-
     // SCORE CONSTANTS
     private static final int base_score = 500;
     private static final int point_per_correct = 10;
-    private static final int penalty_wrong = 5;
+    private static final int penalty_wrong = 100;
     private static final int score_floor = 0;
-
 
     //  INSTANCE FIELDS
     private final Map<String, TextField> fieldMap = new LinkedHashMap<>();
@@ -257,9 +252,10 @@ public class HardPageController {
     private final Set<String>            correctCells = new HashSet<>();
     private final Map<String, Boolean>   cellWasCorrect = new HashMap<>();
 
-    // The currently active layout — set in initialize() and onRestartClick()
+
     private LayoutDefinition currentLayout;
     private String prevLayoutName = null;
+
     //Used for the score system
     private int currentScore = base_score;
     private int comboCount = 1;
@@ -267,7 +263,6 @@ public class HardPageController {
     private int secondsLeft = 15 * 60;
     private int hintsLeft   = 3;
 
-    // ── FXML injections — only structural elements remain ─────────────────
     // (TextFields and sum Labels are now created in Java by buildGrid())
     @FXML private Label scoreLabel;
     @FXML private Button    backbuttonHard;
@@ -282,8 +277,6 @@ public class HardPageController {
     @FXML private Circle restartCirle;
     @FXML private Circle backCircle;
     @FXML private Circle hintCircle;
-
-
 
     //THEMES
     record GameTheme(
@@ -300,23 +293,11 @@ public class HardPageController {
             new GameTheme("Ocean",   "#1a3a5c", "#e8f4fd", "#81A6C6", "#cce7ff", "#1e5080"),
             new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#FF8C00", "#ffd8a8", "#b84500"),
             new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#B95E82", "#dbb8ff", "#6a2fbf"),
-            new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#BFC9D1", "#bdc3c7", "#3d5166"),
+            new GameTheme("Gray",   "#2e3f50", "#ecf0f1", "#BFC9D1", "#6A7074", "#3d5166"),
             new GameTheme("Royal", "#4B0082", "#FFFFFF", "#FF7F00","#FFFFFF", "#FF007F" ),
             new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
     );
     private int themeIndex = 0; // this tracks which theme is active
-
-    // this is used for the sound effects
-    private void playSound(String filename) {
-        try {
-            var resource = getClass().getResource("/audio/" + filename);
-            if (resource == null) { System.out.println("NOT FOUND"); return; }
-            AudioClip clip = new AudioClip(resource.toExternalForm());
-            clip.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     //  INITIALIZE
@@ -366,8 +347,8 @@ public class HardPageController {
         } else {
             // Fresh game — pick a layout, build the grid, then solve it
             currentLayout = randomLayout();
-            generateSolution(); // generateSolution() reads from fieldMap
-            buildGrid();        // buildGrid() populates fieldMap
+            generateSolution();
+            buildGrid();
             applyTheme();
             clearFieldsForPlayer();
             currentScore= base_score;
@@ -384,19 +365,6 @@ public class HardPageController {
         // For the theme
         private void applyTheme(){
             GameTheme t= THEMES.get(themeIndex);
-            /*
-            // Page background — image takes priority over color
-            if (t.backgroundImage() != null) {
-            String url = getClass().getResource(t.backgroundImage()).toExternalForm();
-             hardLevelPage.setStyle(
-              "-fx-background-image: url('" + url + "');" +
-             "-fx-background-size: cover;" +
-              "-fx-background-position: center;"
-                 );
-            } else {
-             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
-               }
-             */
 
             hardLevelPage.setStyle("-fx-background-color: " + t.pageBackground() + ";");
 
@@ -427,6 +395,35 @@ public class HardPageController {
                 }
             }
         }
+
+    // Responsible for the layout of the game
+
+    private LayoutDefinition randomLayout() {
+        List<LayoutDefinition> available = new ArrayList<>(LAYOUTS);
+
+        //This wwill eliminate displaying the same layout from the previous round
+        if (prevLayoutName != null && available.size() > 1) {
+            available.removeIf(l -> l.name.equals(prevLayoutName));
+        }
+
+        LayoutDefinition chosen = available.get(new Random().nextInt(available.size()));
+        prevLayoutName = chosen.name;
+        return chosen;
+    }
+
+    private LayoutDefinition findLayoutByName(String name) {
+        if (name == null) return null;
+        return LAYOUTS.stream()
+                .filter(l -> l.name.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Extracts the column number from a "col,row" key
+    private int col(String key) { return Integer.parseInt(key.split(",")[0]); }
+
+    // Extracts the row number from a "col,row" key
+    private int row(String key) { return Integer.parseInt(key.split(",")[1]); }
 
     //  BUILD GRID — creates all cells dynamically from currentLayout
 
@@ -474,18 +471,6 @@ public class HardPageController {
                 }
             }
         }
-/*
-        //for debugging
-        for (List<String> run : currentLayout.acrossRuns) {
-            if (run.isEmpty()) continue;
-            String first = run.get(0);
-            String labelCell = (col(first) - 1) + "," + row(first);
-            int sum = run.stream().mapToInt(c -> solution.getOrDefault(c, 0)).sum();
-            // DEBUG
-            System.out.println("Run: " + run + " labelCell: " + labelCell + " sum: " + sum);
-            acrossLabelMap.put(labelCell, sum);
-            }
-   */
 
         }
 
@@ -507,7 +492,7 @@ public class HardPageController {
         fieldMap.put(key, tf);
         placeInGrid(pane, col, row);
     }
-
+    // For the Sum boxes
     private void addBlackClueCell(int col, int row, Integer across, Integer down) {
         GameTheme t = THEMES.get(themeIndex);
 
@@ -588,7 +573,6 @@ public class HardPageController {
         hardPagePane.getChildren().add(pane);
     }
 
-
     // Transparent filler for unused corners
     private void addEmptyCell(int col, int row) {
         StackPane pane = new StackPane();
@@ -605,8 +589,9 @@ public class HardPageController {
         hardPagePane.getChildren().add(pane);
     }
 
-    //  GAME LOGIC
+    // The Logic of the Game
 
+    //The methods checks if the answer is correct or not.
     private void clearFieldsForPlayer() {
         correctCells.clear();
         cellWasCorrect.clear();
@@ -637,21 +622,13 @@ public class HardPageController {
                 boolean isCorrect = (entered == expected);
 
                 if (isCorrect) {
-                    // ── Correct answer ────────────────────────────────────
+                    // Correct answer
                     if (!prevCorrect) {
                         // Award points only when transitioning to correct
                         int earned = point_per_correct * comboCount;
                         currentScore += earned;
                         comboCount++;
                         correctCells.add(key);
-
-                        String msg = comboCount ==10 ? "MATH WIZARD":
-                                     comboCount == 7 ? "GENIUS!":
-                                             comboCount == 5 ? "AMAZING!" :
-                                    comboCount == 3 ? "AWESOME!":
-                                            comboCount == 2 ? "GREAT":
-                                                    "CORRECT!";
-                        showComboMessage(msg, hardLevelPage);
                     }
                     cellWasCorrect.put(key, true);
                     tf.setStyle("-fx-text-fill: #00bf63;" +
@@ -662,7 +639,7 @@ public class HardPageController {
                     checkIfAllCorrect();
 
                 } else {
-                    // ── Wrong answer ──────────────────────────────────────
+                    //  Wrong answer
                     if (prevCorrect) correctCells.remove(key);
                     currentScore = Math.max(score_floor, currentScore - penalty_wrong);
                     comboCount   = 1;
@@ -675,7 +652,7 @@ public class HardPageController {
         }
     }
 
-
+    //The method is responsible for checking if the player has finished the puzzel correctly.
     private void checkIfAllCorrect() {
         for (Map.Entry<String, TextField> entry : fieldMap.entrySet()) {
             String input = entry.getValue().getText().trim();
@@ -689,6 +666,7 @@ public class HardPageController {
         delay.play();
     }
 
+    //Responsible for generating a solution the Solution
     private void generateSolution() {
         solution.clear();
         List<String> cells = new ArrayList<>(currentLayout.activeCells);
@@ -697,14 +675,9 @@ public class HardPageController {
             System.out.println("Backtracking failed, retrying...");
             generateSolution();
         }
-        /*
-        // DEBUG
-        System.out.println("Solution size: " + solution.size());
-        System.out.println("Solution: " + solution);
-        */
 
     }
-
+    //Backtracking Algorithm
     private boolean backtrack(List<String> cells, int index) {
         if (index == cells.size()) return true;
         String key = cells.get(index);
@@ -719,7 +692,7 @@ public class HardPageController {
         }
         return false;
     }
-
+    //Checks the validity of the solution
     private boolean isValid(String key, int digit) {
         for (List<String> run : currentLayout.runs) {
             if (!run.contains(key)) continue;
@@ -731,7 +704,7 @@ public class HardPageController {
         return true;
     }
 
-    // Score Display
+    // Score Display and Logic
     private void updateScoreDisplay(){
         if(scoreLabel == null) return;
         if(comboCount >1) {
@@ -741,8 +714,7 @@ public class HardPageController {
         }
     }
 
-    // Hint
-
+    // Hint Logic
     @FXML
     protected void onHintClick() {
         if (hintsLeft <= 0) return;
@@ -783,7 +755,6 @@ public class HardPageController {
     }
 
     //  Restart
-
     @FXML
     protected void onRestartClick() {
         themeIndex = (themeIndex + 1) % THEMES.size(); // ← advance
@@ -813,7 +784,7 @@ public class HardPageController {
         GameState.getInstance().hasSavedState = false;
     }
 
-    // ── Timer ─────────────────────────────────────────────────────────────
+    // Timer for the hard Mode
 
     private void startTimer() {
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -826,13 +797,17 @@ public class HardPageController {
         timer.play();
     }
 
-    // ── Navigation ────────────────────────────────────────────────────────
+    // Methods for navigating the player to the achievement page
 
     private void levelAchievement() {
         themeIndex = (themeIndex + 1 ) % THEMES.size();
         GameState.getInstance().hardSavedTheme = themeIndex;
-        playSound("game_success.mp3");
-        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+
+        SettingsController.lowerMusic(5);
+        PauseTransition sfxDelay = new PauseTransition(Duration.millis(400));
+        sfxDelay.setOnFinished( e->  SettingsController.playSuccessSound());
+        sfxDelay.play();
+        PauseTransition delay = new PauseTransition(Duration.millis(1500));
         delay.setOnFinished(e -> {
 
             try {
@@ -850,6 +825,7 @@ public class HardPageController {
         });
         delay.play();
     }
+    //Navigates the player to the game failed page
 
     private void gameFailed() {
         GameState state = GameState.getInstance();
@@ -867,9 +843,15 @@ public class HardPageController {
             state.hardFieldValues.put(entry.getKey(), entry.getValue().getText());
             state.hardFieldStyles.put(entry.getKey(), entry.getValue().getStyle());
         }
-        playSound("game_failed.wav");
-        PauseTransition delay = new PauseTransition(Duration.millis(1000));
+        SettingsController.lowerMusic(5);
+
+        PauseTransition sfxDelay = new PauseTransition(Duration.millis(400));
+        sfxDelay.setOnFinished( e->  SettingsController.playFailSound());
+        sfxDelay.play();
+
+        PauseTransition delay = new PauseTransition(Duration.millis(1500));
         delay.setOnFinished(e ->{
+            SettingsController.restoreAudio();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("level_failed_hard.fxml"));
             Parent root = loader.load();
@@ -880,7 +862,7 @@ public class HardPageController {
     });
         delay.play();
     }
-
+    //Navigates the player back to the starting page of the game
     @FXML
     private void backbutton(ActionEvent event) {
         GameState state = GameState.getInstance();
@@ -909,65 +891,7 @@ public class HardPageController {
     }
 
 
-    private void showComboMessage(String message, javafx.scene.layout.Pane root) {
-        Label toast = new Label(message);
-        toast.setStyle(
-                "-fx-background-color: rgba(0,0,0,0.75);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 16px;" +
-                        "-fx-font-family: 'Arial Bold';" +
-                        "-fx-padding: 12 24 12 24;" +
-                        "-fx-background-radius: 30;"
-        );
-        toast.setOpacity(0);
-        root.getChildren().add(toast);
 
-        Platform.runLater(() -> {
-            toast.setLayoutX((root.getWidth()  - toast.getWidth())  / 2);
-            toast.setLayoutY((root.getHeight() - toast.getHeight()) / 2);
 
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), toast);
-            fadeIn.setFromValue(0);
-            fadeIn.setToValue(1);
-
-            PauseTransition stay = new PauseTransition(Duration.millis(800));
-
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), toast);
-            fadeOut.setFromValue(1);
-            fadeOut.setToValue(0);
-            fadeOut.setOnFinished(e -> root.getChildren().remove(toast));
-
-            new SequentialTransition(fadeIn, stay, fadeOut).play();
-        });
-    }
-
-    // ── Layout utilities ──────────────────────────────────────────────────
-
-    private LayoutDefinition randomLayout() {
-        List<LayoutDefinition> available = new ArrayList<>(LAYOUTS);
-
-       //This wwill eliminate displaying the same layout from the previous round
-        if (prevLayoutName != null && available.size() > 1) {
-            available.removeIf(l -> l.name.equals(prevLayoutName));
-        }
-
-        LayoutDefinition chosen = available.get(new Random().nextInt(available.size()));
-        prevLayoutName = chosen.name;
-        return chosen;
-    }
-
-    private LayoutDefinition findLayoutByName(String name) {
-        if (name == null) return null;
-        return LAYOUTS.stream()
-                .filter(l -> l.name.equals(name))
-                .findFirst()
-                .orElse(null);
-    }
-
-    // Extracts the column number from a "col,row" key
-    private int col(String key) { return Integer.parseInt(key.split(",")[0]); }
-
-    // Extracts the row number from a "col,row" key
-    private int row(String key) { return Integer.parseInt(key.split(",")[1]); }
 }
 

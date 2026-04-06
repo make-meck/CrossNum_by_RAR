@@ -37,6 +37,7 @@ public class AchievementHardController {
             e.printStackTrace();
         }
     }
+        //Animation for the Stars and the label
     private void playStarStampAnimation(List<Group> stars, int earnedStars) {
         for (int i = 0; i < stars.size(); i++) {
             Group star = stars.get(i);
@@ -46,8 +47,15 @@ public class AchievementHardController {
             star.setScaleY(0);
             star.setOpacity(0);
 
+
             PauseTransition delay = new PauseTransition(Duration.millis(i * 2000));
-            delay.setOnFinished(e -> playSound("star_shine.wav")); // ← plays on each star stamp
+            delay.setOnFinished(e -> {
+                playSound("star_shine.wav");
+
+                PauseTransition restoreMusic = new PauseTransition(Duration.millis(800));
+                restoreMusic.setOnFinished(ev -> SettingsController.restoreAudio());
+                restoreMusic.play();
+            } ); // ← plays on each star stamp
 
             ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), star);
             scaleUp.setFromX(0);
@@ -143,7 +151,7 @@ public class AchievementHardController {
             scoreLabel.setText("Score: " + accuScore);
         }
     }
-
+    //Navigates the player back to the starting page
     @FXML
     private void onMainMenu(ActionEvent event) {
         GameState state = GameState.getInstance();
@@ -168,6 +176,7 @@ public class AchievementHardController {
             e.printStackTrace();
         }
     }
+    //navigates the player to the next puzzle in hard mode
     @FXML
     private void onNext(ActionEvent event) {
         try {
@@ -181,7 +190,7 @@ public class AchievementHardController {
             e.printStackTrace();
         }
     }
-
+    //This allows the player to return and try to solve the puzzle once again
     @FXML
     private void onHardRetry(ActionEvent event) {
         GameState state = GameState.getInstance();
