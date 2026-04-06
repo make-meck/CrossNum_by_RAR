@@ -39,21 +39,18 @@ class Fraction {
         simplify();
     }
 
-    // Add another fraction
     public Fraction add(Fraction other){
         int newNum = this.numerator * other.denominator + other.numerator * this.denominator;
         int newDen = this.denominator * other.denominator;
         return new Fraction(newNum, newDen);
     }
 
-    // Simplify fraction
     private void simplify(){
         int gcd = gcd(numerator, denominator);
         numerator /= gcd;
         denominator /= gcd;
     }
 
-    // GCD helper
     private int gcd(int a, int b){
         if(b == 0) return Math.abs(a);
         return gcd(b, a % b);
@@ -75,6 +72,7 @@ public class MediumPageController {
     @FXML private SVGPath heart2;
     @FXML private SVGPath heart3;
     @FXML private Label totalHints;
+    @FXML private Label totalErasures;
     @FXML private BorderPane mediumPagePane;
     @FXML private Ellipse ellipseMed;
     @FXML private Rectangle medAction;
@@ -83,18 +81,15 @@ public class MediumPageController {
     @FXML private Button pen;
     @FXML private Button eraser;
 
-
     private boolean penMode = true;
     private int lives = 3;
-    private int cellsResolved = 0; // level success determinant
+    private int cellsResolved = 0;
     private int hints = 3;
+    private int erasures = 0;
 
-    // The puzzle grid (array) that holds the random generated logical data
     private MediumPageController.Cell[][] gridData = new MediumPageController.Cell[7][7];
-    // Arrays to hold the current sums per row and column during a round
     private Label[] currentRowSums = new Label[7];
     private Label[] currentColSums = new Label[7];
-    // Arrays to hold the target sums per row and column
     private Label[] targetRowLabels = new Label[7];
     private Label[] targetColLabels = new Label[7];
 
@@ -103,14 +98,13 @@ public class MediumPageController {
     private final Image whitePen = new Image(getClass().getResource("white_pen.png").toExternalForm());
     private final Image blackPen = new Image(getClass().getResource("pen.png").toExternalForm());
 
-    // inner class that holds the logical state of each grid/box
-    // for puzzle numbers, boolean masking values, or puzzle state (if already solved or not)
     public class Cell {
         Fraction value;
         boolean isSolution;
         boolean isResolved = false;
+        boolean wasHinted = false;
     }
-    //used for game themes
+
     record GameTheme(
             String name,
             String blackCell,
@@ -126,7 +120,6 @@ public class MediumPageController {
             new GameTheme("Sunset",  "#7a2d00", "#fff3e0", "#FF8C00", "#ffd8a8", "#b84500"),
             new GameTheme("Amethyst","#3d1a6e", "#f3eaff", "#B95E82", "#dbb8ff", "#6a2fbf"),
             new GameTheme("Slate",   "#2e3f50", "#ecf0f1", "#BFC9D1", "#bdc3c7", "#3d5166"),
-         //   new GameTheme("Royal", "#4B0082", "#FFFFFF", "#FF7F00","#FFFFFF", "#FF007F" ),
             new GameTheme("Powerpuff", "#FF3E9B", "#F6FFDC",  "#66D0BC", "#FFFFFF", "#FFEABB")
     );
 
@@ -134,216 +127,239 @@ public class MediumPageController {
 
     @FXML
     public void initialize() {
-        // penMode is initialized as true so set the UI as penMode too
         toggleCircle.setTranslateX(75);
         penSVG.setStroke(Color.BLACK);
         eraserSVG.setStroke(Color.WHITE);
-        //Once the player has opened the medium mode, the saved game state will display in the screen
+
         GameState state = GameState.getInstance();
-        themeIndex = GameState.getInstance().MediumSavedTheme;
-        if(state.hasMediumSavedState) {
+        themeIndex = GameState.getInstance().getMediumSavedTheme();
+
+        if (state.hasMediumSavedState) {
 
             if (state.mediumRetryMode) {
-                for(int r = 0; r<=6; r++){
-                    for (int c= 0; c<=6; c++){
-                        gridData[r][c] = new MediumPageController.Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
+                // Step 1: initialize all cells
+                for (int r = 0; r <= 6; r++) {
+                    for (int c = 0; c <= 6; c++) {
+                        gridData[r][c] = new MediumPageController.Cell();
                     }
                 }
 
-                // After intializing the cells, it will restore the cells data from saved state
-                for(int r =1; r<= 6; r++){  //loops rows 1 to 6 and skips row 0, since it is used for getting the sums
-                    for(int c= 1; c<=6 ; c++){  //same as the previous line
+                // Step 2: restore cell data
+                for (int r = 1; r <= 6; r++) {
+                    for (int c = 1; c <= 6; c++) {
                         gridData[r][c].value = new Fraction(
                                 state.mediumCellValuesNumerator[r][c],
                                 state.mediumCellValuesDenominator[r][c]
-                        ); //restores the number
-                        gridData[r][c].isSolution = state.mediumCellIsSolution[r][c]; //restore if it is part fo the solution
+                        );
+                        gridData[r][c].isSolution = state.mediumCellIsSolution[r][c];
                     }
                 }
 
-                //Recalculates the sum of the rows
-                for (int r = 1; r <= 6; r++) { //it loops each row
-                    Fraction rowSum = new Fraction(0,1);
-                    for (int c = 1; c <= 6; c++) { //loop each colum in this row
-                        if (gridData[r][c].isSolution) //if the cell is a solution
-                            rowSum = rowSum.add(gridData[r][c].value); //the value of the cell will be added to the row sum
+                // Step 3: recalculate row/col sums
+                for (int r = 1; r <= 6; r++) {
+                    Fraction rowSum = new Fraction(0, 1);
+                    for (int c = 1; c <= 6; c++) {
+                        if (gridData[r][c].isSolution)
+                            rowSum = rowSum.add(gridData[r][c].value);
                     }
-                    gridData[r][0] = new MediumPageController.Cell(); //creates a new cells at column 0 (the green sum box)
-                    gridData[r][0].value = rowSum; //it stores the calculated sum in the box
+                    gridData[r][0] = new MediumPageController.Cell();
+                    gridData[r][0].value = rowSum;
                 }
-                //recalculates the sum of the columns
-                for (int c = 1; c <= 6; c++) { //loop each column
-                    Fraction colSum = new Fraction(0,1);
-                    for (int r = 1; r <= 6; r++) { //loop each row in this column
-                        if (gridData[r][c].isSolution) colSum = colSum.add(gridData[r][c].value); //if the cell is a part of the solution and add its value col sum
+                for (int c = 1; c <= 6; c++) {
+                    Fraction colSum = new Fraction(0, 1);
+                    for (int r = 1; r <= 6; r++) {
+                        if (gridData[r][c].isSolution)
+                            colSum = colSum.add(gridData[r][c].value);
                     }
-                    gridData[0][c] = new MediumPageController.Cell(); //creates a new cells at row 0
-                    gridData[0][c].value = colSum; //store the calculated sum in the cell
-
+                    gridData[0][c] = new MediumPageController.Cell();
+                    gridData[0][c].value = colSum;
                 }
 
-                //this will return the hearts
+                // In retry mode all cells are unresolved, so erasures = set to original possible erasure
+                erasures = countErasures();
+
                 if (lives <= 2) heart1.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
                 if (lives <= 1) heart2.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
                 if (lives <= 0) heart3.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
 
-            }
-
-            else {
-                //Restores the saved state, such as the lives and hints
-                lives = state.mediumLives; //The saved lives will be restored
-                hints = state.mediumHints; // the number of hints available will be restored
-                cellsResolved = state.mediumCellsResolved; //this will determine how many cells have been restored
+            } else {
+                // Restore saved state — initialize gridData FIRST, then compute from it
+                lives = state.mediumLives;
+                hints = state.mediumHints;
+                cellsResolved = state.mediumCellsResolved;
                 totalHints.setText(String.valueOf(hints));
 
-                //First, it will intialize all the cells first
+                // Step 1: initialize all cells
                 for (int r = 0; r <= 6; r++) {
                     for (int c = 0; c <= 6; c++) {
-                        gridData[r][c] = new MediumPageController.Cell(); //It will create new cell objects at each position, without this, cells are null and could cause a crash
+                        gridData[r][c] = new MediumPageController.Cell();
                     }
                 }
 
-                // After intializing the cells, it will restore the cells data from saved state
-                for (int r = 1; r <= 6; r++) {  //loops rows 1 to 6 and skips row 0, since it is used for getting the sums
-                    for (int c = 1; c <= 6; c++) {  //same as the previous line
+                // Step 2: restore cell data from saved state
+                for (int r = 1; r <= 6; r++) {
+                    for (int c = 1; c <= 6; c++) {
                         gridData[r][c].value = new Fraction(
                                 state.mediumCellValuesNumerator[r][c],
                                 state.mediumCellValuesDenominator[r][c]
-                        ); //restores the number
-                        gridData[r][c].isSolution = state.mediumCellIsSolution[r][c]; //restore if it is part fo the solution
-                        gridData[r][c].isResolved = state.mediumCellIsResolved[r][c]; //restores if player has already solved it
+                        );
+                        gridData[r][c].isSolution = state.mediumCellIsSolution[r][c];
+                        gridData[r][c].isResolved = state.mediumCellIsResolved[r][c];
+                        gridData[r][c].wasHinted = state.mediumCellWasHinted[r][c]; // FIX 3
                     }
                 }
 
-                //Recalculates the sum of the rows
-                for (int r = 1; r <= 6; r++) { //it loops each row
-                    Fraction rowSum = new Fraction(0,1);
-                    for(int c = 1; c <= 6; c++){
-                        if(gridData[r][c].isSolution){
+                // Step 3: recalculate row/col sums
+                for (int r = 1; r <= 6; r++) {
+                    Fraction rowSum = new Fraction(0, 1);
+                    for (int c = 1; c <= 6; c++) {
+                        if (gridData[r][c].isSolution) {
                             Fraction temp = rowSum.add(gridData[r][c].value);
-
-                            if(temp.numerator <= 99){
-                                rowSum = temp;
-                            } else {
-                                gridData[r][c].isSolution = false; // skip this cell
-                            }
+                            if (temp.numerator <= 99) rowSum = temp;
+                            else gridData[r][c].isSolution = false;
                         }
                     }
-                    gridData[r][0] = new Cell(); //creates a new cells at column 0 (the green sum box)
-                    gridData[r][0].value = rowSum; //it stores the calculated sum in the box
+                    gridData[r][0] = new Cell();
+                    gridData[r][0].value = rowSum;
                 }
-                //recalculates the sum of the columns
-                for (int c = 1; c <= 6; c++) { //loop each column
-                    Fraction colSum = new Fraction(0,1);
+                for (int c = 1; c <= 6; c++) {
+                    Fraction colSum = new Fraction(0, 1);
                     for (int r = 1; r <= 6; r++) {
                         if (gridData[r][c].isSolution) {
                             Fraction temp = colSum.add(gridData[r][c].value);
-
-                            if (temp.numerator <= 99) {
-                                colSum = temp;
-                            } else {
-                                gridData[r][c].isSolution = false;
-                            }
+                            if (temp.numerator <= 99) colSum = temp;
+                            else gridData[r][c].isSolution = false;
                         }
                     }
-                    gridData[0][c] = new MediumPageController.Cell(); //creates a new cells at row 0
-                    gridData[0][c].value = colSum; //store the calculated sum in the cell
-
+                    gridData[0][c] = new MediumPageController.Cell();
+                    gridData[0][c].value = colSum;
                 }
 
-                //this will return the hearts
+                // Step 4: recompute remaining erasures now that gridData is fully populated
+                int erasuresDone = 0;
+                for (int rr = 1; rr <= 6; rr++)
+                    for (int cc = 1; cc <= 6; cc++)
+                        if (!gridData[rr][cc].isSolution && gridData[rr][cc].isResolved) erasuresDone++;
+                erasures = countErasures() - erasuresDone;  // FIX 1
+
                 if (lives <= 2) heart1.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
                 if (lives <= 1) heart2.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
                 if (lives <= 0) heart3.setStyle("-fx-fill:#c31515; -fx-opacity: 0;");
             }
 
-        }
-        else{
+        } else {
             generatePuzzle();
+            erasures = countErasures();  // counts number of possible erasures
         }
+
+        totalErasures.setText(String.valueOf(erasures));   // display the erasure number
+        totalErasures.setAlignment(Pos.CENTER);
 
         populateGridUI();
         applyTheme();
+
+        // save state of the running sums for when returning from the menu
+        if (state.hasMediumSavedState && !state.mediumRetryMode) {
+            restoreRunningSums();
+        }
+    }
+
+    // counts all the false cells or possible erasure per round
+    private int countErasures() {
+        int count = 0;
+        for (int r = 1; r <= 6; r++)
+            for (int c = 1; c <= 6; c++)
+                if (!gridData[r][c].isSolution) count++;
+        return count;
+    }
+
+    // restores running sums when going back from the menu
+    private void restoreRunningSums() {
+        for (int r = 1; r <= 6; r++) {
+            Fraction currentSum = new Fraction(0, 1);
+            for (int c = 1; c <= 6; c++) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution)
+                    currentSum = currentSum.add(gridData[r][c].value);
+            }
+            if (currentRowSums[r] != null) {
+                boolean matches = currentSum.numerator == gridData[r][0].value.numerator
+                        && currentSum.denominator == gridData[r][0].value.denominator;
+                currentRowSums[r].setText(currentSum.toString());
+                if (matches && currentSum.numerator != 0) {
+                    currentRowSums[r].setTextFill(Color.web("#00bf63"));
+                    targetRowLabels[r].setTextFill(Color.web("#00bf63"));
+                } else {
+                    currentRowSums[r].setTextFill(Color.web("#e0e0e0"));
+                    targetRowLabels[r].setTextFill(Color.WHITE);
+                }
+            }
+        }
+        for (int c = 1; c <= 6; c++) {
+            Fraction currentSum = new Fraction(0, 1);
+            for (int r = 1; r <= 6; r++) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution)
+                    currentSum = currentSum.add(gridData[r][c].value);
+            }
+            if (currentColSums[c] != null) {
+                boolean matches = currentSum.numerator == gridData[0][c].value.numerator
+                        && currentSum.denominator == gridData[0][c].value.denominator;
+                currentColSums[c].setText(currentSum.toString());
+                if (matches && currentSum.numerator != 0) {
+                    currentColSums[c].setTextFill(Color.web("#00bf63"));
+                    targetColLabels[c].setTextFill(Color.web("#00bf63"));
+                } else {
+                    currentColSums[c].setTextFill(Color.web("#e0e0e0"));
+                    targetColLabels[c].setTextFill(Color.WHITE);
+                }
+            }
+        }
     }
 
     private void generatePuzzle() {
         Random rand = new Random();
         boolean hasZeroSum;
 
-        /*
-            Forward Propagation with Boolean Masking Algorithm:
-            1. With forward propagation algorithm, it will first generate random numbers that will be displayed
-               on the gridPane. By gridPane, it is the white boxes only and not yet the green box with the
-               sums per row and column. Consider it as the first layer of the grid.
-            2. Boolean masking will be done: it is like flipping a coin per grid (randomly) to determine
-               its boolean value (true/false). Consider it the invisible second layer on top of the first.
-            3. Then, sums will be determined per row and column. The code will first calculate the row sums
-               based on the boolean value determined per grid and number. A true value will retrieve the number
-               from the first layer and add it to another determined true value in the same row. While false
-               value will be ignored and will not be added in the calculated row sum. The same calculation will
-               be done per column. After every row calculation and column calculation, the computed sum and then
-               be displayed in the green box.
-        */
-
         do {
-            hasZeroSum = false; // Resets the flag for each puzzle generation attempt
+            hasZeroSum = false;
 
-            // (1)(2) Loop that will generate random numbers and boolean values (per indices) and store it in the array.
             for (int r = 1; r <= 6; r++) {
                 for (int c = 1; c <= 6; c++) {
-                    gridData[r][c] = new MediumPageController.Cell(); // Constructor
-                    boolean isFraction = rand.nextInt(4) == 0; // 25% chance fraction
+                    gridData[r][c] = new MediumPageController.Cell();
+                    boolean isFraction = rand.nextInt(4) == 0;
 
-                    if(isFraction){
+                    if (isFraction) {
                         int denom;
                         int choice = rand.nextInt(3);
-
                         if (choice == 0) denom = 2;
                         else if (choice == 1) denom = 4;
                         else denom = 3;
                         int numer = 1 + rand.nextInt(denom - 1);
                         gridData[r][c].value = new Fraction(numer, denom);
-                    }else{
-                        gridData[r][c].value = new Fraction(1 + rand.nextInt(9), 1); // whole number
+                    } else {
+                        gridData[r][c].value = new Fraction(1 + rand.nextInt(9), 1);
                     }
-                    gridData[r][c].isSolution = rand.nextBoolean(); // random boolean values (true/false)
+                    gridData[r][c].isSolution = rand.nextBoolean();
                 }
             }
 
-            // (3) Loop that will calculate the row sums based on boolean mask
-            // true will add, false will not add
             for (int r = 1; r <= 6; r++) {
-                Fraction rowSum = new Fraction(0,1);
-                for(int c = 1; c <= 6; c++){
-                    if(gridData[r][c].isSolution){
+                Fraction rowSum = new Fraction(0, 1);
+                for (int c = 1; c <= 6; c++) {
+                    if (gridData[r][c].isSolution)
                         rowSum = rowSum.add(gridData[r][c].value);
-                    }
                 }
-
-                // If a row sum is 0, set hasZeroSum as true so the puzzle regenerates
-                if (rowSum.numerator == 0) {
-                    hasZeroSum = true;
-                }
-
+                if (rowSum.numerator == 0) hasZeroSum = true;
                 gridData[r][0] = new Cell();
                 gridData[r][0].value = rowSum;
             }
 
-            // (3) Loop that will calculate the column sums based on boolean mask
-            // true will add, false will not add
             for (int c = 1; c <= 6; c++) {
                 Fraction colSum = new Fraction(0, 1);
                 for (int r = 1; r <= 6; r++) {
-                    if (gridData[r][c].isSolution) {
+                    if (gridData[r][c].isSolution)
                         colSum = colSum.add(gridData[r][c].value);
-                    }
                 }
-
-                // If a column sum is 0, set hasZeroSum as true so the puzzle regenerates
-                if (colSum.numerator == 0) {
-                    hasZeroSum = true;
-                }
-
+                if (colSum.numerator == 0) hasZeroSum = true;
                 gridData[0][c] = new Cell();
                 gridData[0][c].value = colSum;
             }
@@ -351,66 +367,53 @@ public class MediumPageController {
     }
 
     private void populateGridUI() {
-        // Loop through the GridPane's children to populate with the logical data generated
         for (Node node : puzzleGrid.getChildren()) {
             if (node instanceof StackPane) {
                 StackPane pane = (StackPane) node;
 
-                // Get row and column indices
                 Integer r = GridPane.getRowIndex(pane);
                 Integer c = GridPane.getColumnIndex(pane);
-                int row = (r == null) ? 0 : r; // as GridPane returns null for index 0 sometimes
+                int row = (r == null) ? 0 : r;
                 int col = (c == null) ? 0 : c;
 
-                // No UI and data for the top-left corner
-                if (row == 0 && col == 0) continue; // [0,0]
+                if (row == 0 && col == 0) continue;
 
-                //This clear the existing children before adding new ones, this is important in restoring data
                 pane.getChildren().clear();
 
-                // style for displaying numbers
                 Label label = new Label(gridData[row][col].value.toString());
                 label.setFont(Font.font("Arial", FontWeight.BOLD, 15));
 
-                // Populate the green boxes with the row sums and column sums from gridData array
                 if (row == 0 || col == 0) {
                     label.setTextFill(Color.WHITE);
                     pane.getChildren().add(label);
 
-                    // Store the label in the array
                     if (col == 0) targetRowLabels[row] = label;
                     if (row == 0) targetColLabels[col] = label;
 
-                    // for displaying the current sums based on the encircled numbers per row and column
-                    // style of how it'll be displayed
                     Label currentSumLabel = new Label("0");
                     currentSumLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
                     currentSumLabel.setTextFill(Color.web("#e0e0e0"));
                     StackPane.setAlignment(currentSumLabel, Pos.TOP_LEFT);
                     StackPane.setMargin(currentSumLabel, new Insets(3));
-                    // the actual population
                     pane.getChildren().add(currentSumLabel);
 
-                    // Store references to update the sum
                     if (col == 0) currentRowSums[row] = currentSumLabel;
                     if (row == 0) currentColSums[col] = currentSumLabel;
-                }
-                // Populate the green boxes with the numbers stored in gridData array
-                else {
+
+                } else {
                     label.setTextFill(Color.BLACK);
                     pane.getChildren().add(label);
 
-
-                    //restores visual state if cell was already resolved
-                    if(gridData[row][col].isResolved){
-                        if(gridData[row][col].isSolution){
-                            drawCircle(pane, "Normal");
-                        }
-                        else{
+                    // restore the yellow circle from the use of hints when coming from the main menu
+                    if (gridData[row][col].isResolved) {
+                        if (gridData[row][col].isSolution) {
+                            String circleMode = gridData[row][col].wasHinted ? "Hint" : "Normal";
+                            drawCircle(pane, circleMode);
+                        } else {
                             label.setText("");
                         }
                     }
-                    // passes arguments every box clicked for pen and eraser gameplay
+
                     int finalRow = row;
                     int finalCol = col;
                     pane.setOnMouseClicked(e -> handleCellClick(pane, label, finalRow, finalCol));
@@ -425,8 +428,6 @@ public class MediumPageController {
         if (cell.isResolved || lives <= 0) return;
 
         if (penMode) {
-            // Using pen
-            // The pane will contain circle if correct box is clicked
             if (cell.isSolution) {
                 SettingsController.playCorrectSound();
                 label.setTextFill(Color.web("#00bf63"));
@@ -435,47 +436,42 @@ public class MediumPageController {
                 cellsResolved++;
                 updateRunningSums();
                 checkWinCondition();
-            }
-            // The lives will decrease if the wrong box is clicked
-            else {
+            } else {
                 label.setTextFill(Color.web("#c82121"));
                 deductLife();
             }
-        }
-        else {
-            // Using eraser
+        } else {
             if (!cell.isSolution) {
-                // The pane will erase the number if the correct box is clicked
+                if (erasures <= 0) return;
+                erasures--;
+                totalErasures.setText(String.valueOf(erasures));
+
                 SettingsController.playEraseSound();
-                animateErase(label); // replaces the number with space to remove it
+                animateErase(label);
                 cell.isResolved = true;
                 cellsResolved++;
                 checkWinCondition();
-            }
-            // The lives will decrease if the wrong box is clicked
-            else {
+            } else {
                 label.setTextFill(Color.web("#c82121"));
                 deductLife();
             }
         }
     }
 
-    // The method that adds circle when using pen mode
     private void drawCircle(StackPane pane, String mode) {
-
         Circle circle = new Circle(25);
         circle.setFill(Color.TRANSPARENT);
 
-        if (mode == "Hint") circle.setStroke(Color.web("#f1dd2b"));
+        if ("Hint".equals(mode)) circle.setStroke(Color.web("#f1dd2b"));
         else circle.setStroke(Color.web("#00bf63"));
 
         circle.setStrokeWidth(4);
-
         circle.setOpacity(0);
         circle.setScaleX(0.5);
         circle.setScaleY(0.5);
 
         pane.getChildren().add(circle);
+
         FadeTransition fade = new FadeTransition(Duration.millis(200), circle);
         fade.setToValue(1);
 
@@ -485,55 +481,43 @@ public class MediumPageController {
 
         ParallelTransition animation = new ParallelTransition(fade, scale);
         animation.play();
-
     }
 
-    // This method calculates and updates the current sums per row and column
     private void updateRunningSums() {
-        // for row current sums
         for (int r = 1; r <= 6; r++) {
             Fraction currentSum = new Fraction(0, 1);
             for (int c = 1; c <= 6; c++) {
-                if (gridData[r][c].isResolved && gridData[r][c].isSolution) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution)
                     currentSum = currentSum.add(gridData[r][c].value);
-                }
             }
             if (currentRowSums[r] != null) {
-                // simplifying numerator/denominator to check if fractions are equal
-                boolean sumMatches = (currentSum.numerator == gridData[r][0].value.numerator
-                        && currentSum.denominator == gridData[r][0].value.denominator);
-                currentRowSums[r].setText(String.valueOf(currentSum));
-                // will change the color when the target sum is matched
+                boolean sumMatches = currentSum.numerator == gridData[r][0].value.numerator
+                        && currentSum.denominator == gridData[r][0].value.denominator;
+                currentRowSums[r].setText(currentSum.toString());
                 if (sumMatches && currentSum.numerator != 0) {
                     currentRowSums[r].setTextFill(Color.web("#00bf63"));
                     targetRowLabels[r].setTextFill(Color.web("#00bf63"));
                 } else {
-                    currentRowSums[r].setText(String.valueOf(currentSum));
                     currentRowSums[r].setTextFill(Color.web("#e0e0e0"));
                     targetRowLabels[r].setTextFill(Color.WHITE);
                 }
             }
         }
 
-        // for current column sums
         for (int c = 1; c <= 6; c++) {
             Fraction currentSum = new Fraction(0, 1);
             for (int r = 1; r <= 6; r++) {
-                if (gridData[r][c].isResolved && gridData[r][c].isSolution) {
+                if (gridData[r][c].isResolved && gridData[r][c].isSolution)
                     currentSum = currentSum.add(gridData[r][c].value);
-                }
             }
             if (currentColSums[c] != null) {
-                // simplifying numerator/denominator to check if fractions are equal
-                boolean sumMatches = (currentSum.numerator == gridData[0][c].value.numerator
-                        && currentSum.denominator == gridData[0][c].value.denominator);
-                currentColSums[c].setText(String.valueOf(currentSum));
-                // will change the color when the target sum is matched
+                boolean sumMatches = currentSum.numerator == gridData[0][c].value.numerator
+                        && currentSum.denominator == gridData[0][c].value.denominator;
+                currentColSums[c].setText(currentSum.toString());
                 if (sumMatches && currentSum.numerator != 0) {
                     currentColSums[c].setTextFill(Color.web("#00bf63"));
                     targetColLabels[c].setTextFill(Color.web("#00bf63"));
                 } else {
-                    currentColSums[c].setText(String.valueOf(currentSum));
                     currentColSums[c].setTextFill(Color.web("#e0e0e0"));
                     targetColLabels[c].setTextFill(Color.WHITE);
                 }
@@ -541,17 +525,12 @@ public class MediumPageController {
         }
     }
 
-    // Handles the UI of hearts that will serve as lives per round
     private void deductLife() {
         lives--;
 
-        if (lives == 2) {
-            animateHeartLoss(heart1);
-        } else if (lives == 1) {
-            animateHeartLoss(heart2);
-        } else if (lives == 0) {
-            animateHeartLoss(heart3);
-        }
+        if (lives == 2) animateHeartLoss(heart1);
+        else if (lives == 1) animateHeartLoss(heart2);
+        else if (lives == 0) animateHeartLoss(heart3);
 
         if (lives <= 0) {
             saveGameToState();
@@ -564,7 +543,6 @@ public class MediumPageController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Game Over!");
         }
     }
 
@@ -576,13 +554,11 @@ public class MediumPageController {
         fade.setToValue(0);
 
         ParallelTransition animation = new ParallelTransition(fall, fade);
-
         animation.setOnFinished(e -> {
             heart.setStyle("-fx-fill: #c31515;");
             heart.setOpacity(0);
             heart.setTranslateY(0);
         });
-
         animation.play();
     }
 
@@ -595,20 +571,17 @@ public class MediumPageController {
         scale.setToY(0.7);
 
         ParallelTransition animation = new ParallelTransition(fade, scale);
-
         animation.setOnFinished(e -> {
             label.setText("");
             label.setOpacity(1);
             label.setScaleX(1);
             label.setScaleY(1);
         });
-
         animation.play();
     }
 
-    // Will check if all numbers with true value are encircled and all numbers with false value are erased
     private void checkWinCondition() {
-        if (cellsResolved ==36) {
+        if (cellsResolved == 36) {
             saveGameToState();
             try {
                 FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment_medium.fxml"));
@@ -616,8 +589,7 @@ public class MediumPageController {
                 Parent root = levelSuccessLoader.load();
 
                 AchievementEasyController stats = levelSuccessLoader.getController();
-                int heartsLeft = lives;
-                stats.setStars(heartsLeft);
+                stats.setStars(lives);
 
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
@@ -627,34 +599,27 @@ public class MediumPageController {
         }
     }
 
-
     @FXML
     protected void onHintClick() {
-        // Checks lives. If there's no hint left, return. Otherwise, decrement by one.
         if (hints <= 0) return;
         hints--;
-        totalHints.setText(String.valueOf(hints)); // Displays the updated number of hints
+        totalHints.setText(String.valueOf(hints));
 
-        // Gathers all the unresolved cells.
         java.util.List<int[]> unresolvedCells = new java.util.ArrayList<>();
         for (int r = 1; r <= 6; r++) {
             for (int c = 1; c <= 6; c++) {
-                if (!gridData[r][c].isResolved) {
-                    unresolvedCells.add(new int[]{r, c}); // Creates an array holding two values --> the indices of the unresolved cell
-                }
+                if (!gridData[r][c].isResolved)
+                    unresolvedCells.add(new int[]{r, c});
             }
         }
 
-        // Exit if all cells are already resolved
         if (unresolvedCells.isEmpty()) return;
 
-        // Chooses a random cell from the unresolvedCells list
         Random rand = new Random();
         int[] chosen = unresolvedCells.get(rand.nextInt(unresolvedCells.size()));
         int row = chosen[0], col = chosen[1];
         MediumPageController.Cell cell = gridData[row][col];
 
-        // Loops over the grid cells and find the cell pane that matches the random hint cell's indices
         for (Node node : puzzleGrid.getChildren()) {
             if (node instanceof StackPane pane) {
                 Integer r = GridPane.getRowIndex(pane);
@@ -673,6 +638,7 @@ public class MediumPageController {
 
                     if (cell.isSolution) {
                         drawCircle(pane, "Hint");
+                        cell.wasHinted = true;
                     } else {
                         if (label != null) animateErase(label);
                     }
@@ -689,15 +655,15 @@ public class MediumPageController {
 
     @FXML
     private void onRestartClick() {
-        // Lives will also be reset
         lives = 3;
         cellsResolved = 0;
+        erasures = countErasures();
+        totalErasures.setText(String.valueOf(erasures));
 
         heart1.setStyle("-fx-fill: #c82121;");
         heart2.setStyle("-fx-fill: #c82121;");
         heart3.setStyle("-fx-fill: #c82121;");
 
-        // Resets boxes' logic
         for (Node node : puzzleGrid.getChildren()) {
             if (node instanceof StackPane) {
                 StackPane pane = (StackPane) node;
@@ -706,15 +672,13 @@ public class MediumPageController {
                 int row = (r == null) ? 0 : r;
                 int col = (c == null) ? 0 : c;
 
-                // lop-left empty
                 if (row == 0 && col == 0) continue;
 
-                // reset white boxes' logical data
                 if (row > 0 && col > 0) {
                     gridData[row][col].isResolved = false;
+                    gridData[row][col].wasHinted = false;
                 }
 
-                // erases everything contained in the grid
                 pane.getChildren().clear();
             }
         }
@@ -727,14 +691,12 @@ public class MediumPageController {
     private void onPenClick() {
         penMode = true;
         updateToggle();
-        System.out.println("PEN");
     }
 
     @FXML
     private void onEraserClick() {
         penMode = false;
         updateToggle();
-        System.out.println("ERASER");
     }
 
     private void updateToggle() {
@@ -742,19 +704,14 @@ public class MediumPageController {
 
         if (penMode) {
             move.setToX(75);
-
             StrokeTransition penStroke = new StrokeTransition(Duration.millis(200), penSVG, Color.WHITE, Color.BLACK);
             StrokeTransition eraserStroke = new StrokeTransition(Duration.millis(200), eraserSVG, Color.BLACK, Color.WHITE);
-
             penStroke.play();
             eraserStroke.play();
-
         } else {
             move.setToX(0);
-
             StrokeTransition penStroke = new StrokeTransition(Duration.millis(200), penSVG, Color.BLACK, Color.WHITE);
             StrokeTransition eraserStroke = new StrokeTransition(Duration.millis(200), eraserSVG, Color.WHITE, Color.BLACK);
-
             penStroke.play();
             eraserStroke.play();
         }
@@ -764,36 +721,33 @@ public class MediumPageController {
 
     @FXML
     private void backbutton(ActionEvent event) {
-        //This will save the state of the game
         GameState state = GameState.getInstance();
-        state.mediumLives= lives;
+        state.mediumLives = lives;
         state.mediumHints = hints;
         state.mediumCellsResolved = cellsResolved;
-        state.hasMediumSavedState= true;
+        state.hasMediumSavedState = true;
         state.mediumRetryMode = false;
 
-        //This will save the data in the grid
-
-        for(int r = 1; r<=6; r++){
-            for(int c = 1; c<=6; c++){
+        for (int r = 1; r <= 6; r++) {
+            for (int c = 1; c <= 6; c++) {
                 state.mediumCellValuesNumerator[r][c] = gridData[r][c].value.numerator;
                 state.mediumCellValuesDenominator[r][c] = gridData[r][c].value.denominator;
-                state.mediumCellIsSolution[r][c]= gridData[r][c].isSolution;
+                state.mediumCellIsSolution[r][c] = gridData[r][c].isSolution;
                 state.mediumCellIsResolved[r][c] = gridData[r][c].isResolved;
+                state.mediumCellWasHinted[r][c] = gridData[r][c].wasHinted;
             }
         }
+
         try {
             FXMLLoader backbuttonLoader = new FXMLLoader(getClass().getResource("start_page.fxml"));
             Stage stage = (Stage) backbuttonMedium.getScene().getWindow();
             Parent root = backbuttonLoader.load();
             stage.getScene().setRoot(root);
-            // SettingsController.setupGlobalClickSounds(stage.getScene());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Helper method to save the current logical data of the round
     private void saveGameToState() {
         GameState state = GameState.getInstance();
         state.hasMediumSavedState = true;
@@ -805,35 +759,28 @@ public class MediumPageController {
                 state.mediumCellValuesDenominator[r][c] = gridData[r][c].value.denominator;
                 state.mediumCellIsSolution[r][c] = gridData[r][c].isSolution;
                 state.mediumCellIsResolved[r][c] = gridData[r][c].isResolved;
+                state.mediumCellWasHinted[r][c] = gridData[r][c].wasHinted;
             }
         }
     }
 
     private void applyTheme() {
+        themeIndex = themeIndex % THEMES.size();
         GameTheme t = THEMES.get(themeIndex);
 
-        // Page background
-       mediumPagePane.setStyle("-fx-background-color: " + t.pageBackground() + ";");
+        mediumPagePane.setStyle("-fx-background-color: " + t.pageBackground() + ";");
 
-        // Back and restart buttons (keep their radius)
         if (backbuttonMedium != null) backbuttonMedium.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
-        if (restart != null)        restart.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
-        if (hint != null)           hint.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 35;");
+        if (restart != null)          restart.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 40;");
+        if (hint != null)             hint.setStyle("-fx-background-color: " + t.blackCell() + "; -fx-background-radius: 35;");
 
-        //ellipse and rectangle
         javafx.scene.paint.Color accent = javafx.scene.paint.Color.web(t.blackCell());
         if (ellipseMed != null) ellipseMed.setFill(accent);
-        if(medAction != null) medAction.setFill(accent);
+        if (medAction != null)  medAction.setFill(accent);
 
-
-        // Pen and eraser stay transparent
-        if (pen != null)   pen.setStyle("-fx-background-color: transparent;");
+        if (pen != null)    pen.setStyle("-fx-background-color: transparent;");
         if (eraser != null) eraser.setStyle("-fx-background-color: transparent;");
 
-        // Labels
-      //  if (welcomeText != null) welcomeText.setStyle("-fx-text-fill: " + t.labelText() + ";");
-
-        // Grid cells
         for (Node node : puzzleGrid.getChildren()) {
             if (node instanceof StackPane pane) {
                 Integer r = GridPane.getRowIndex(pane);
@@ -852,4 +799,3 @@ public class MediumPageController {
         }
     }
 }
-

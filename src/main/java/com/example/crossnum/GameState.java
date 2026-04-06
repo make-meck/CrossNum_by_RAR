@@ -10,6 +10,7 @@ public class GameState {
     public int[][] easyCellValues = new int[5][5];
     public boolean[][] easyCellIsSolution = new boolean[5][5];
     public boolean[][] easyCellIsResolved = new boolean[5][5];
+    public boolean[][] easyCellWasHinted = new boolean[5][5];
     public int[] easyRowsSums = new int[5];
     public int[] easyColSums = new int[5];
     public int easyLives= 3;
@@ -19,10 +20,12 @@ public class GameState {
     public boolean easyRetryMode = false;
     public int EasySavedTheme;
 
+
     //This is for the saving the state of the easy mode
     public int[][] mediumCellValues = new int[7][7];
     public boolean[][] mediumCellIsSolution = new boolean[7][7];
     public boolean[][] mediumCellIsResolved = new boolean[7][7];
+    public boolean[][] mediumCellWasHinted = new boolean[7][7];
     public int[] mediumRowsSums = new int[7];
     public int[] mediumColSums = new int[7];
     public int mediumLives= 3;
@@ -57,4 +60,9 @@ public class GameState {
         }
         return instance;
     }
+
+    public int getMediumSavedTheme() {
+        return Math.max(0, Math.min(MediumSavedTheme, 5));
+    }
+
 }
