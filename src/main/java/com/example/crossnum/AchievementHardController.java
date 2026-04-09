@@ -162,7 +162,7 @@ public class AchievementHardController {
         state.secondsLeft     = 15 * 60;
         state.hintsLeft       = 3;
         state.savedScore      = 500;
-        state.savedCombo      = 1;
+        state.savedCombo      = 0;
         state.savedLayoutName = null;
 
 
@@ -200,7 +200,7 @@ public class AchievementHardController {
         state.secondsLeft     = 15 * 60;
         state.hintsLeft       = 3;
         state.savedScore      = 500;
-        state.savedCombo      = 1;
+        state.savedCombo      = 0;
         state.hardPrevLayoutName = null;
 
         try {

@@ -266,10 +266,11 @@ public class HardPageController {
     private String prevLayoutName = null;
     //Used for the score system
     private int currentScore = base_score;
-    private int comboCount = 1;
+    private int comboCount = 0;
     private Timeline timer;
     private int secondsLeft = 15 * 60;
     private int hintsLeft   = 3;
+    private boolean hintInProgress = false;
 
     // ── FXML injections — only structural elements remain ─────────────────
     // (TextFields and sum Labels are now created in Java by buildGrid())
@@ -367,7 +368,7 @@ public class HardPageController {
             applyTheme();
             clearFieldsForPlayer();
             currentScore= base_score;
-            comboCount = 1;
+            comboCount = 0;
             secondsLeft = 15*60;
             timerLabel.setText("15:00");
         }
@@ -606,6 +607,7 @@ public class HardPageController {
 
             tf.textProperty().addListener((obs, oldVal, newVal) -> {
                 // ── Input validation ──────────────────────────────────────
+                if(hintInProgress) return;
                 if (!newVal.matches("[1-9]?")) { tf.setText(oldVal); return; }
                 if (newVal.length() > 1)       { tf.setText(newVal.substring(newVal.length() - 1)); return; }
 
@@ -628,21 +630,15 @@ public class HardPageController {
                 if (isCorrect) {
                     // ── Correct answer ────────────────────────────────────
                     if (!prevCorrect) {
-                        // Award points only when transitioning to correct
-                        int earned = point_per_correct * comboCount;
+                        int earned = point_per_correct * (comboCount +1);
                         currentScore += earned;
+
                         comboCount++;
                         correctCells.add(key);
 
-                        String msg = comboCount ==10 ? "MATH WIZARD":
-                                     comboCount == 7 ? "GENIUS!":
-                                             comboCount == 5 ? "AMAZING!" :
-                                    comboCount == 3 ? "AWESOME!":
-                                            comboCount == 2 ? "GREAT":
-                                                    "CORRECT!";
-                        showComboMessage(msg, hardLevelPage);
                     }
                     cellWasCorrect.put(key, true);
+                    tf.setEditable(false);
                     tf.setStyle("-fx-text-fill: #00bf63;" +
                             "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";" +
                             "-fx-border-radius:0px;" +
@@ -655,7 +651,7 @@ public class HardPageController {
                     // ── Wrong answer ──────────────────────────────────────
                     if (prevCorrect) correctCells.remove(key);
                     currentScore = Math.max(score_floor, currentScore - penalty_wrong);
-                    comboCount   = 1;
+                    comboCount   = 0;
                     cellWasCorrect.put(key, false);
                     tf.setStyle("-fx-text-fill: #c82121;" +
                             "-fx-background-color:" + THEMES.get(themeIndex).whitecell() + ";");
@@ -720,7 +716,7 @@ public class HardPageController {
     // Score Display
     private void updateScoreDisplay(){
         if(scoreLabel == null) return;
-        if(comboCount >1) {
+        if(comboCount >2) {
             scoreLabel.setText(currentScore + "  🔥x" + comboCount);
         }else{
             scoreLabel.setText(String.valueOf(currentScore));
@@ -797,8 +793,11 @@ public class HardPageController {
         TextField tf  = chosen.getValue();
         String    key = chosen.getKey();
 
-        // Hints are neutral — no score change, no combo effect
+
+        hintInProgress = true;
         tf.setText(String.valueOf(solution.get(key)));
+        hintInProgress = false;
+
         tf.setStyle("-fx-font-size:25px; -fx-text-fill: #f1dd2b;");
         tf.setEditable(false);
 
@@ -807,6 +806,7 @@ public class HardPageController {
 
         hintsLeft--;
         updateHintButton();
+        updateRunningSums();
         checkIfAllCorrect();
     }
 
@@ -832,7 +832,7 @@ public class HardPageController {
         clearFieldsForPlayer();
 
         currentScore = base_score;
-        comboCount =1;
+        comboCount =0;
         updateScoreDisplay();
 
         timer.stop();
@@ -951,38 +951,6 @@ public class HardPageController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-
-    private void showComboMessage(String message, javafx.scene.layout.Pane root) {
-        Label toast = new Label(message);
-        toast.setStyle(
-                "-fx-background-color: rgba(0,0,0,0.75);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 16px;" +
-                        "-fx-font-family: 'Arial Bold';" +
-                        "-fx-padding: 12 24 12 24;" +
-                        "-fx-background-radius: 30;"
-        );
-        toast.setOpacity(0);
-        root.getChildren().add(toast);
-
-        Platform.runLater(() -> {
-            toast.setLayoutX((root.getWidth()  - toast.getWidth())  / 2);
-            toast.setLayoutY((root.getHeight() - toast.getHeight()) / 2);
-
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), toast);
-            fadeIn.setFromValue(0);
-            fadeIn.setToValue(1);
-
-            PauseTransition stay = new PauseTransition(Duration.millis(800));
-
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), toast);
-            fadeOut.setFromValue(1);
-            fadeOut.setToValue(0);
-            fadeOut.setOnFinished(e -> root.getChildren().remove(toast));
-
-            new SequentialTransition(fadeIn, stay, fadeOut).play();
-        });
-    }
 
     // ── Layout utilities ──────────────────────────────────────────────────
 
