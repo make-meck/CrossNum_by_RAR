@@ -527,7 +527,14 @@ public class EasyPageController {
     private void checkWinCondition() {
         if (cellsResolved == 16) {
             saveGameToState();
-            try {
+
+            PauseTransition sfxDelay = new PauseTransition(Duration.millis(400));
+            sfxDelay.setOnFinished(e-> SettingsController.playSuccessSound());
+            sfxDelay.play();
+            PauseTransition delay = new PauseTransition(Duration.millis(1500));
+            delay.setOnFinished(e -> {
+
+                try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("level_accomplishment.fxml"));
                 Parent root = loader.load();
 
@@ -537,9 +544,11 @@ public class EasyPageController {
                 Stage stage = (Stage) backbuttonEasy.getScene().getWindow();
                 stage.getScene().setRoot(root);
                 SettingsController.setupGlobalClickSounds(stage.getScene());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                } catch (IOException f) {
+                    f.printStackTrace();
+                }
+            });
+            delay.play();
         }
     }
 

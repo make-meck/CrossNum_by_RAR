@@ -174,6 +174,7 @@ public class SettingsController implements Initializable {
         if(audioClip == null || !isMusicOn) return;
         adjustClipVolume(musicSavedVolume, audioClip);
     }
+
     public static void playSuccessSound(){
         if(!isSoundOn) return;
         try{

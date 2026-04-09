@@ -583,19 +583,27 @@ public class MediumPageController {
     private void checkWinCondition() {
         if (cellsResolved == 36) {
             saveGameToState();
-            try {
-                FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment_medium.fxml"));
-                Stage stage = (Stage) puzzleGrid.getScene().getWindow();
-                Parent root = levelSuccessLoader.load();
 
-                AchievementEasyController stats = levelSuccessLoader.getController();
-                stats.setStars(lives);
+            PauseTransition sfxDelay = new PauseTransition(Duration.millis(400));
+            sfxDelay.setOnFinished(e-> SettingsController.playSuccessSound());
+            sfxDelay.play();
+            PauseTransition delay = new PauseTransition(Duration.millis(1500));
+            delay.setOnFinished(e -> {
+                try {
+                    FXMLLoader levelSuccessLoader = new FXMLLoader(getClass().getResource("level_accomplishment_medium.fxml"));
+                    Stage stage = (Stage) puzzleGrid.getScene().getWindow();
+                    Parent root = levelSuccessLoader.load();
 
-                stage.getScene().setRoot(root);
-                SettingsController.setupGlobalClickSounds(stage.getScene());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                    AchievementEasyController stats = levelSuccessLoader.getController();
+                    stats.setStars(lives);
+
+                    stage.getScene().setRoot(root);
+                    SettingsController.setupGlobalClickSounds(stage.getScene());
+                } catch (IOException f) {
+                    f.printStackTrace();
+                }
+            });
+            delay.play();
         }
     }
 
