@@ -198,9 +198,9 @@
                         <StackPane alignment="TOP_LEFT" mouseTransparent="true" prefHeight="88.0" prefWidth="57.0">
                             <children>
                                 <Circle fill="WHITE" radius="11.0" stroke="WHITE" strokeType="INSIDE" />
-                                <Label fx:id="totalErasures" text="3" textFill="#2d532c">
+                                <Label fx:id="totalErasures" text="3" textFill="#2d532c" alignment="CENTER" minWidth="22" maxWidth="22">
                                     <StackPane.margin>
-                                        <Insets left="6.5" top="2.5" />
+                                        <Insets top="2.5" />
                                     </StackPane.margin>
                                     <font>
                                         <Font name="Arial" size="14.0" />
