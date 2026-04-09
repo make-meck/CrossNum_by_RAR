@@ -259,6 +259,8 @@ public class HardPageController {
 
     private final Map<String, Label> acrossRunningLabels = new LinkedHashMap<>();
     private final Map<String, Label> downRunningLabels   = new LinkedHashMap<>();
+    private final Map<String, Label> acrossTargetLabels = new LinkedHashMap<>();
+    private final Map<String, Label> downTargetLabels   = new LinkedHashMap<>();
 
 
     // The currently active layout — set in initialize() and onRestartClick()
@@ -420,6 +422,8 @@ public class HardPageController {
         fieldMap.clear();
         acrossRunningLabels.clear();
         downRunningLabels.clear();
+        acrossTargetLabels.clear();
+        downTargetLabels.clear();
 
         // Work out which black cells carry ACROSS labels (cell to the LEFT of run start)
         // and which carry DOWN labels (cell ABOVE run start)
@@ -502,6 +506,8 @@ public class HardPageController {
         if (down != null) {
             Label lbl = new Label(String.valueOf(down));
             lbl.setTextFill(Color.WHITE);
+            String downTargetKey = col + "," + (row + 1);
+            downTargetLabels.put(downTargetKey, lbl);
             lbl.setFont(Font.font("Arial Bold", 14));
             lbl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             GridPane.setColumnIndex(lbl, 0);
@@ -531,8 +537,9 @@ public class HardPageController {
         if (across != null) {
             Label lbl = new Label(String.valueOf(across));
             lbl.setTextFill(Color.WHITE);
+            String acrossTargetKey = (col + 1) + "," + row;
+            acrossTargetLabels.put(acrossTargetKey, lbl);
             lbl.setFont(Font.font("Arial Bold", 14));
-
             Label runLbl = new Label("0");
             runLbl.setTextFill(Color.web("#b0e0b0"));
             runLbl.setFont(Font.font("Arial", 9));
@@ -744,8 +751,15 @@ public class HardPageController {
             }
             lbl.setText(String.valueOf(current));
             lbl.setTextFill(current == target
-                    ? Color.web("#00bf63")   // bright green = complete
+                    ? Color.web("#00bf63")
                     : Color.web("#e0e0e0"));
+
+            Label targetLbl = acrossTargetLabels.get(firstCell);
+            if (targetLbl != null) {
+                targetLbl.setTextFill(current == target
+                        ? Color.web("#00bf63")
+                        : Color.WHITE);
+            }
         }
 
         // updates down running sums
@@ -770,6 +784,13 @@ public class HardPageController {
             lbl.setTextFill(current == target
                     ? Color.web("#00bf63")
                     : Color.web("#e0e0e0"));
+
+            Label targetLbl = downTargetLabels.get(firstCell);
+            if (targetLbl != null) {
+                targetLbl.setTextFill(current == target
+                        ? Color.web("#00bf63")
+                        : Color.WHITE);
+            }
         }
     }
 
