@@ -36,6 +36,7 @@ public class SettingsController implements Initializable {
     private static double musicSavedVolume = 100.0;
     private static double soundSavedVolume = 100.0;
 
+    // Initializes the settings UI, button states, and slider values.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         music_button.setSelected(isMusicOn);
@@ -94,7 +95,9 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // loads audio files
     public static void initMusic() {
+        // initializes bgm
         if (audioClip == null) {
             try {
                 URL audioUrl = SettingsController.class.getResource("/audio/crossnum_bgm.wav");
@@ -112,6 +115,7 @@ public class SettingsController implements Initializable {
             }
         }
 
+        // initializes sound effects
         if (soundClip == null) {
             try {
                 URL sfxUrl = SettingsController.class.getResource("/audio/button_click.wav");
@@ -125,6 +129,7 @@ public class SettingsController implements Initializable {
             }
         }
 
+        // initializes correct sound effect
         if (correctClip == null) {
             try {
                 URL correctUrl = SettingsController.class.getResource("/audio/yes.wav");
@@ -138,6 +143,7 @@ public class SettingsController implements Initializable {
             }
         }
 
+        // initializes cell erase sound effect
         if (eraseClip == null) {
             try {
                 URL eraseUrl = SettingsController.class.getResource("/audio/erase.wav");
@@ -152,6 +158,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // plays correct sound effect
     public static void playCorrectSound() {
         if (isSoundOn && correctClip != null) {
             correctClip.setFramePosition(0);
@@ -159,6 +166,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // plays cell erase sound effect
     public static void playEraseSound() {
         if (isSoundOn && eraseClip != null) {
             eraseClip.setFramePosition(0);
@@ -170,11 +178,13 @@ public class SettingsController implements Initializable {
         adjustClipVolume(targetVolume, audioClip);
     }
 
+    // restores bgm after achievement
     public static void restoreAudio(){
         if(audioClip == null || !isMusicOn) return;
         adjustClipVolume(musicSavedVolume, audioClip);
     }
 
+    // plays achievement bgm
     public static void playSuccessSound(){
         if(!isSoundOn) return;
         try{
@@ -188,6 +198,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // plays level failed bgm
     public static void playFailSound(){
         if(!isSoundOn) return;
         try{
@@ -201,6 +212,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // fxml of bgm toggle button when interacting
     @FXML
     public void musicToggle() {
         SettingsController.playClickSound();
@@ -222,6 +234,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // update ui sound effects toggle button when interacting
     @FXML
     public void soundToggle() {
         if (soundClip == null) return;
@@ -239,11 +252,13 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // setting up button click sound effect
     public static void setupGlobalClickSounds(Scene scene) {
         scene.removeEventFilter(MouseEvent.MOUSE_PRESSED, SettingsController::handleGlobalClick);
         scene.addEventFilter(MouseEvent.MOUSE_PRESSED, SettingsController::handleGlobalClick);
     }
 
+    // plays sound effect every button click
     private static void handleGlobalClick(MouseEvent event) {
         Node target = (Node) event.getTarget();
         while (target != null) {
@@ -262,6 +277,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // handles volume change when interacting with the toggle button
     public static void adjustClipVolume(double volumeValue, Clip clipName) {
         if (clipName == null) return;
 
@@ -282,6 +298,7 @@ public class SettingsController implements Initializable {
         }
     }
 
+    // toggle button fxml changed
     private void applySliderFill(Slider slider) {
         Node track = slider.lookup(".track");
         if (track != null) {

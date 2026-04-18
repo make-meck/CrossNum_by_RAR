@@ -591,6 +591,8 @@ public class EasyPageController {
         totalHints.setText(String.valueOf(hints));
 
         java.util.List<int[]> unresolvedCells = new java.util.ArrayList<>();
+
+        // Collect unresolved cells
         for (int r = 1; r <= 4; r++) {
             for (int c = 1; c <= 4; c++) {
                 if (!gridData[r][c].isResolved) {
@@ -599,13 +601,17 @@ public class EasyPageController {
             }
         }
 
+        // If everything is resolved, then return
         if (unresolvedCells.isEmpty()) return;
 
         Random rand = new Random();
+
+        // Chooses a random unresolved cell
         int[] chosen = unresolvedCells.get(rand.nextInt(unresolvedCells.size()));
         int row = chosen[0], col = chosen[1];
         Cell cell = gridData[row][col];
 
+        // Find the corresponding UI cell
         for (Node node : puzzleGrid.getChildren()) {
             if (node instanceof StackPane pane) {
                 Integer r = GridPane.getRowIndex(pane);
@@ -622,15 +628,20 @@ public class EasyPageController {
                         }
                     }
 
+                    // If it's a correct cell, draw yellow circle
                     if (cell.isSolution) {
                         drawCircle(pane, "Hint");
                         cell.wasHinted = true;
-                    } else {
+                    }
+
+                    // Otherwise, erase
+                    else {
                         if (label != null) animateErase(label);
                         erasures--;
                         totalErasures.setText(String.valueOf(erasures));
                     }
 
+                    // Marks the cell as resolved
                     cell.isResolved = true;
                     cellsResolved++;
                     updateRunningSums();
