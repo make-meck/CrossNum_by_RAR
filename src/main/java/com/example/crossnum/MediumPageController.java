@@ -33,18 +33,22 @@ class Fraction {
     int numerator;
     int denominator;
 
+    // User-defined Fraction class
+    // This mode uses Fraction instead of int
     Fraction(int numerator, int denominator){
         this.numerator = numerator;
         this.denominator = denominator;
         simplify();
     }
 
+    // Adds fractions
     public Fraction add(Fraction other){
         int newNum = this.numerator * other.denominator + other.numerator * this.denominator;
         int newDen = this.denominator * other.denominator;
         return new Fraction(newNum, newDen);
     }
 
+    // Simplifies fractions
     private void simplify(){
         int gcd = gcd(numerator, denominator);
         numerator /= gcd;
@@ -56,6 +60,7 @@ class Fraction {
         return gcd(b, a % b);
     }
 
+    // If denominator is 1, display numerator only
     @Override
     public String toString(){
         if(denominator == 1) return Integer.toString(numerator);
@@ -215,7 +220,7 @@ public class MediumPageController {
                     for (int c = 1; c <= 6; c++) {
                         if (gridData[r][c].isSolution) {
                             Fraction temp = rowSum.add(gridData[r][c].value);
-                            if (temp.numerator <= 99) rowSum = temp;
+                            if (temp.numerator <= 99) rowSum = temp; // Prevents large sums
                             else gridData[r][c].isSolution = false;
                         }
                     }
@@ -227,7 +232,7 @@ public class MediumPageController {
                     for (int r = 1; r <= 6; r++) {
                         if (gridData[r][c].isSolution) {
                             Fraction temp = colSum.add(gridData[r][c].value);
-                            if (temp.numerator <= 99) colSum = temp;
+                            if (temp.numerator <= 99) colSum = temp; // Prevents large sums
                             else gridData[r][c].isSolution = false;
                         }
                     }
@@ -325,8 +330,9 @@ public class MediumPageController {
             for (int r = 1; r <= 6; r++) {
                 for (int c = 1; c <= 6; c++) {
                     gridData[r][c] = new MediumPageController.Cell();
-                    boolean isFraction = rand.nextInt(4) == 0;
+                    boolean isFraction = rand.nextInt(4) == 0; // 25% chance of being a fraction
 
+                    // Fraction choices (ex. 1/2, 2/3, 3/4)
                     if (isFraction) {
                         int denom;
                         int choice = rand.nextInt(3);
@@ -335,7 +341,10 @@ public class MediumPageController {
                         else denom = 3;
                         int numer = 1 + rand.nextInt(denom - 1);
                         gridData[r][c].value = new Fraction(numer, denom);
-                    } else {
+                    }
+
+                    // If not a fraction, numer is from 1 to 9 and denom is 1
+                    else {
                         gridData[r][c].value = new Fraction(1 + rand.nextInt(9), 1);
                     }
                     gridData[r][c].isSolution = rand.nextBoolean();

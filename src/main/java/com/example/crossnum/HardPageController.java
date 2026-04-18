@@ -693,7 +693,7 @@ public class HardPageController {
         }
 
     }
-
+    //Sorting Algorithm: Backtracking
     private boolean backtrack(List<String> cells, int index) {
         if (index == cells.size()) return true;
         String key = cells.get(index);
@@ -978,7 +978,7 @@ public class HardPageController {
     private LayoutDefinition randomLayout() {
         List<LayoutDefinition> available = new ArrayList<>(LAYOUTS);
 
-       //This wwill eliminate displaying the same layout from the previous round
+       //This will eliminate displaying the same layout from the previous round
         if (prevLayoutName != null && available.size() > 1) {
             available.removeIf(l -> l.name.equals(prevLayoutName));
         }
